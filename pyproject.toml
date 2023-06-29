@@ -1,0 +1,17 @@
+[tool.braindead.config]
+base_url = "https://grski.pl/"  # give full url ending with slash here
+dist_dir = "public"
+title = "Olaf Górski"
+description = "Python Lead's take on software development, Python, leadership, random thoughts and living a good life."
+content = ""
+name = "grski.pl"
+logo = "logo_url"
+heading = "Olaf Górski - Lead Python Developer"
+github = "https://github.com/grski"
+linkedin = "https://www.linkedin.com/in/olafgorski/"
+copy_text = "Olaf Górski"
+copy_link = "https://grski.pl"
+language = "pl"
+
+[tool.braindead.config.i18n]
+languages = ["en", "pl"]

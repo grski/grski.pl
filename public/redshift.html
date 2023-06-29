@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>How to fix RedShift on Linux: Trying location provider `geoclue2'... - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Quick way that will let you to solve the problem with popular screen filter." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Quick way that will let you to solve the problem with popular screen filter.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2019-05-04T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2019-05-04</h3>
+                <h1 class="title"><a href="https://grski.pl/">How to fix RedShift on Linux: Trying location provider `geoclue2'...</a></h1>
+                <div class="content">
+                    <p>If you ever encountered this RedShift error: Trying location provider <code>geoclue2</code>. here's a way to solve it. </p>
+<p>What is redshift? An app that I use to adjust my screen color temperature to the time of the day, stopped working. Back to the main topic.</p>
+<p>As I've found out in the logs, it spits out msg like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">Trying</span><span class="w"> </span><span class="nv">location</span><span class="w"> </span><span class="nv">provider</span><span class="w"> </span>`<span class="nv">geoclue2</span><span class="err">&#39;...</span>
+<span class="nv">Using</span><span class="w"> </span><span class="nv">provider</span><span class="w"> </span>`<span class="nv">geoclue2</span><span class="err">&#39;.</span>
+<span class="err">Waiting for initial location to become available...</span>
+<span class="err">poll: Interrupted system call</span>
+<span class="err">Unable to get location from provider.</span>
+</code></pre></div>
+
+<p>After a quick investigation, I've found out that it's coz of a package responsible for geolocation. It just doesn't work and screw you.</p>
+<p>Aight, that's not nice, but, still, I gotta use my redshift coz I like it and well, can't sleep well without it. Too lazy to fix the package/make a PR myself. There has to be a quciker way.</p>
+<p>And there is.</p>
+<p>All that I had to do was to modify the configuration to start with manualy entered coordinates instead of trying to autodetect. How?</p>
+<h1>Solution</h1>
+<p>File <code>./.config/redshift.conf</code></p>
+<div class="codehilite"><pre><span></span><code><span class="k">[redshift]</span>
+<span class="na">location-provider</span><span class="o">=</span><span class="s">manual</span>
+
+<span class="k">[manual]</span>
+<span class="na">lat</span><span class="o">=</span><span class="s">52.23</span>
+<span class="na">lon</span><span class="o">=</span><span class="s">21.01</span>
+</code></pre></div>
+
+<p>And that's all.</p>
+<p>Works like a charm.</p>
+<p>Please note though. The coordinates I've specified here are for Warsaw. If you live somewhere else, just google yours.</p>
+<p>Also, considering how I like to keep the colors really warm during the night, i've also added, in the <code>[redshift]</code>section, something like this</p>
+<p><code>temp-night=3000</code></p>
+<p>which is a bit lower than default value of <code>4500</code> - the lower the value, the more <code>yellowy</code> your screen will be.</p>
+<p>Why would you even use this stuff? 
+Tldr; blue light. Read about it. Bad stuff.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

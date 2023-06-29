@@ -1,0 +1,62 @@
+Title: Internet w liczbach: czym jest CDN i dlaczego jest ważny?
+Date: 2018-03-22
+Authors: Olaf Górski
+Slug: cdn
+Description: CDN - Content Delivery Network, to taki cichy bohater, z którego praktycznie każdy z nas korzysta, ale mało kto cokolwiek o nim wie.
+ 
+No, chyba że jesteś sieciowcem, czy programistą, chociaż w sumie to i wśród programistów zdarzają się tacy, którzy skrótu tego nie kojarzą. A powinni, bo to w zasadzie dzięki nim mogą bez problemów korzystać z mobilnej sieci, mniej płacić za Internet, to dzięki CDNom nie zacina ci się film ze śmiesznymi kotkami na youtubie, a twój operator może obsłużyć obecną liczbę klientów zamiast np. połowy. Wiem, trochę przesadzam, ale no tak troszkę tylko.
+
+# Wprowadzenie
+
+Najpierw jednak garść informacji, by zyskać nieco perspektywy. Żyjemy w czasach, gdzie egzystencja bez Internetu jest praktycznie niemożliwa, a na pewno bardzo niewygodne. Większość dzisiejszych luksusów w jakiś sposób bazuje/korzysta z tego wynalazku. Często jednak nie zdajemy sobie sprawy z tego, jak ogromny ten Internet jest i jak szybko się rozwija, pozwólcie, że wyjaśnię.
+
+W tym roku przekroczyliśmy kolejną barierę - obecnie na Ziemi żyje 4 miliardy ludzi korzystających z Internetu, czyli to aż 53% populacji. Jest to wzrost niesamowity, biorąc pod uwagę fakt, że jeszcze 4 lata temu użytkowników Internetu było około 2,4 miliarda, a to dopiero początek roku w zasadzie.
+
+W 2016 dziennie przez Internet przelatywało 44 miliardów GB danych na dzień. Biorąc pod uwagę fakt, że wtedy userów było znacznie mniej, to uwzględniając użytkowników obecnych, daje to nam około 51 miliardów GB dziennie. Oczywiście jest to mocno niedoszaczowany wynik, gdyż nie dość, że użytkowników przybywa, to i jeszcze pochłaniają oni coraz więcej danych, ale na potrzeby tego artykułu wystarczy, gdyż jakiś obraz to nam daje.
+
+Średni użytkownik smartfona zużywa w ciągu miesiąca 2.9 GB transferu mobilnego (dane ze stycznia). To 50% więcej niż rok temu. Sieć rozwija się w zatrważającym tempie. Dlaczego w zatrważającym? Cóż, o ile chodzi o połączenie kablowe, to aż takiej tragedii nie ma, no bo można dołożyć kabel czy dwa, chociaż to też wszystko skomplikowane i kosztowane, to prawdziwy problem rodzi sieć danych komórkowych, gdyż jest ona mocno ograniczona przez fizykę, a biorąc pod uwagę ciągły rozrost... Cóż, mamy się troszkę o co martwić albo nasza sieć nieco się zapcha.
+
+# I wtedy wchodzi CDN, cały na biało
+Tak. Sytuację całą łagodzi właśnie CDN. Cóż to takiego? To takie serwery, które cachują najpopularniejsze treści w Internecie, by ogólnie odciążyć sieć, skrócić czasy ładowania i zapobiec pewnym problemom, poprawić bezpieczeństwo. Serwery te rozrzucone są po całej Ziemi w miejscach strategicznych geograficznie dla sieci.
+
+W sieci mamy dostawców treści. Te treści są różne, tekst, obrazki, filmy, multimedia. Dostawcy treści umieszczają je na swoich stronach, serwerach i jest spoko. W momencie, kiedy chcesz sobie coś w Internecie przeczytać czy obejrzeć, to twoje urządzenie łączy się poprzez Internet z serwerem dostawcy treści i przesyła do Ciebie określoną treść. Wszystko spoko, prawda? No nie. Problem pojawia się, kiedy tych danych i użytkowników przybywa na całym świecie. Problem wynika z architektury Internetu. Gdy oglądasz odcinek swojego ulubionego serialu, to twój komputer nie łączy się bezpośrednio z serwerem dostawcy, nie. Zanim się to stanie musi się on przejść przez dziesiątki innych serwerów, które skierują go we właściwe miejsce, tak samo odpowiedź od tego serwera.
+
+Wyobraź sobie, że jesteś w urzędzie i żeby załatwić określoną sprawę potrzebujesz podpisu dziesięciu różnych urzędników a na koniec jeszcze podpis przełożonego z Ameryki, do którego jest długa kolejka. Zabiera to dużo czasu, energii i tak dalej, prawda? Tak. Skomplikowana sprawa ogółem. Rolą CDN'a jest skrócenie tej listy potrzebnych podpisów do jednego urzędnika, który jest akurat w lokalnym urzędzie.
+
+Czyli jak z serwerami - twoje zapytanie zamiast tłuc się do serwera w Azji czy Ameryce i męczyć jeden serwer, spyta najpierw lokalnego gościa, który jest miasto obok. W 99% przypadków on wystarczy.
+
+# Szczegóły
+
+Z serwera Dostawcy Treści do CDNów przesyłane i cachowane tam są pewne dane - jakie? Te, które są najbardziej popularne - to bardzo ważne, by na CDNach utrzymywać głównie te dane, które są najbardziej popularne, gdyż dzięki temu CDNy przejmują większość ruchu, redukując obciążenie sieci osiągając wysoki hit rate.
+
+Jest to skomplikowany proces, bo przecież w różnych regionach popularne są różne treści, a to jak się one zmienią, nie jest banalne do przewidzenia.
+
+Algorytmy, które się tu wykorzystuje do tego, by przewidzieć co i gdzie będzie popularne, to naprawdę bardzo ciekawa sprawa i ważna - przestrzeń i zasoby CDNów są ograniczone, zatem wybór tych treści jest trudny. Niesamowity przykład takiej optymalizacji i przewidywanie tego, co będzie akurat popularne, można zaobserwować na przykładnie Netflixa i tego, jak oni to rozwiązują.
+
+# Czym jest hit rate, lifetime?
+
+Użyłem wcześniej wyrażenia hit rate. To termin, który określa jaki procent requestów userów może być przetworzona przez CDN i tylko CDN, a jaka potrzebuje pomocy z serwera Dostawcy Treści. Obecnie niektórzy potrafią tak zoptymalizować swoje serwery, by hitrate do cache wynosił nawet w okolicach 99%. Niesamowite wyniki.
+
+Do tego dochodzi jeszcze określenie czasu, przez który raz wgrane treści mają być dostępne - lifetime - po jego wygaśnięciu cache jest 'usuwany' z serwera i na jego miejsce wskakują nowe (albo wciąż te same, jeśli dalej są popularne) dane. Jest on zupełnie różny, zależnie od danych, regionu, samego dostawcy usługi.
+
+# Czy CDN to jeden ogromny serwer?
+Nie, to często całe klastry rozproszonych geograficznie serwerów. Setki tysiące maszyn, które mają pewną hierarchię i według niej działają. Jak?
+Mniej więcej taką. Serwer dostawcy treści to CP.
+
+Następnie mamy CD & LCF - to taka centrala można by rzec.
+
+Potem jest CCF a pod nim CDPF. CCF to lokalny urząd, a CDPF to urzędnik.
+
+Domyślnie, kiedy robisz jakiś request danej treści, to ląduje on w CCF'ie, CCF sprawdza sobie, czy to, czego potrzebujesz, jest gdzieś w jego zasobach, czyli na serwerach CDPF, gdzie trzymane są zcachowane treści.
+
+Jeśli na jednym nie ma, to leci do kolejnego z CDPFów pod swoją kontrolą. Co, jeśli nie znajdzie na żadnym ze swoich CDPFów? Wtedy zgłasza fakt do CD & LCF, który pyta się kolejno pozostałych CCFów.
+
+Jeśli każdy CCF stwierdzi, że tego contentu nie ma na CDPFach pod ich kontrolą? Wtedy CD & LCF robi request do serwera twórcy treści, stamtąd sobie dane pobiera. Także oryginalny serwer jest męczony w bardzo niewielkiej ilości przypadków, dzięki czemu sam serwer jak i jego okoliczna sieć jest znacznie odciążona, ruch zostaje rozrzucony po lokalnych i rozproszonych CCFach zamiast być skupiony w jednej lokalizacji.
+
+To między innymi dzięki takim rozwiązaniom (lub podobnym) GitHub z pomocą firmy Akamai, byli w stanie sprostać niedawnemu rekordowemu atakowi DDOS skierowanymi przeciwko tej popularnej platformie, który w szczytowej fazie przybrał rozmiar 1.35 Tbps - prawie półtora Tb na sekundę. Niesamowite.
+
+# Podsumowanie
+
+Wiele rzeczy jest, dzięki którym nasze dni są łatwiejsze, a nawet tego nie wiemy. CDNy były pewnie dla większości z was czymś właśnie takim. Oczywiście w tekście sporo jest uproszczeń, także bear with it.
+
+Dziękuję za przeczytanie i pozdrawiam

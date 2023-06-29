@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>Gothic 2 Noc Kruka na Linuxie (Manjaro) - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Jak uruchomić gothic 2 noc kruka na linuxie za pomocą wine - instrukcja krok po kroku." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Jak uruchomić gothic 2 noc kruka na linuxie za pomocą wine - instrukcja krok po kroku.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2016-07-16T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2016-07-16</h3>
+                <h1 class="title"><a href="https://grski.pl/">Gothic 2 Noc Kruka na Linuxie (Manjaro)</a></h1>
+                <div class="content">
+                    <p>Naszła mnie ostatnio wielka ochota na to, żeby pograć sobię w jedną z pierwszych gier, w które kiedykolwiek grałem - Gothic 2. Wielu wspomina tę grę z sentymentem i uważa ją za jedną z lepszych. Ja również.
+Pojawił się jednak problem - przecież mam linuxa, w nic nie pogram, nie? No właśnie nie do końca.</p>
+<h1>Proste rozwiązanie</h1>
+<p>Przeglądając sieć w poszukiwaniu relacji z prób odpalenia Gothic 2 na linuxie, spotkałem się raczej z pozytywnymi odpowiedziami, zatem się zdecydowałem spróbować. Po szybkich zakupach na <a href="https://cdp.pl/">cdp.pl</a>, gdzie za Gothic 2 razem z dodatkiem Noc Kruka, zapłaciłem jakoś 8 czy 9 złotych, szybko grę pobrałem i zabrałem się za próbę jej instalacji.</p>
+<h1>Co będzie potrzebne</h1>
+<p>Niżej znajdują się dwa narzędzia, które będą nam potrzebne, obok napisałem jeszcze wersje, z których ja korzystałem, gdyż czasami zdarza się, że gra dobrze działa na jednej wersji Wine a źle na innej, ale tutaj chyba takiego problemu nie ma. Niemniej jednak dla pewności podam użyte przeze mnie wersje na <code>Manjaro Linux, linux44</code></p>
+<div class="codehilite"><pre><span></span><code>    wine 1.9.12-1
+    winetricks 20160622-1
+</code></pre></div>
+
+<p>Instalacja tych programów jest raczej banalna, można to zrobić czy to przez graficzny menadżer, czy też klepiąc w konsoli (w przypadku manjaro z menadżerem pakietów pacman):</p>
+<div class="codehilite"><pre><span></span><code>    sudo pacman -S wine winetricks
+</code></pre></div>
+
+<p>i gotowe. Co prawda na innych dystrybucjach sytuacja może być kapkę trudniejsza, ale w takim razie wystarczy poszukać w googlach.</p>
+<h1>Wine?</h1>
+<p>Wine to warstwa kompatybilności między Linuxem a Windowsem pozwalająca na uruchamianie części programów Windowsowych na Linuxie. Winetricks zaś to przydatne narzędzie do instalacji różnych pakietów do Wine.</p>
+<h1>Instalacja</h1>
+<p>Instalacja poszła dość gładko - nieco wolniej niż na Windowsie, ale mimo wszystko dość gładko. Dalej, dalej i gotowe. Ważnym jest jednak, by na końcu odznaczyć checkbox oferujący uruchomienie gry. Na razie nie możemy tego zrobić. Teraz momencik. Gdzie w ogóle nasza gra się znajduje? Skrótu na pulpicie nie ma - jak ją uruchomić.</p>
+<h1>Lokalizacja</h1>
+<p>Domyślnie folder Wine znajdować się będzie w katalogu domowym użytkownika pod nazwą <code>.wine</code>, jednakże zazwyczaj nie jest on widoczny - należy się posłużyć magiczną kombinacją klawiszy <code>CTRL+H</code>, która to włączy wyświetlanie ukrytych folderów w naszym menadżerze plików. Tak przynajmniej jest, jeśli korzystacie z Thunara. W innych menadżerach sytuacja może wyglądać inaczej.</p>
+<p>Po przejściu do katalogu <code>.wine</code>, sprawa jest już prosta i tutaj chyba każdy poradzi sobie sam.</p>
+<h1>Pierwsze uruchomienie...</h1>
+<p>Gdy znajdziemy już katalog Gothica i zrobimy sobie do niego skrót, żeby następnym razem tyle nie klikać, to zabieramy się za odpalanie gry.</p>
+<h1>...i pierwsze problemy</h1>
+<p>Na początku powinien przywitać nas komunikat o zatrzymaniu się procesu <code>Vdfs32e.exe</code>. Nie ma co się tym jednak przejmować - gra mimo tego się uruchamia, mamy menu jest cacy.</p>
+<p>Problemy pojawiać się zaczną jednak po zaczęciu nowej gry - u mnie dosłownie chwilę po odpaleniu gra się crashowała. Winowajcą jest tu muzyka i moduł <code>directmusic</code>, którego to musimy doinstalować za pomocą <code>winetricks</code>, klepiąc:</p>
+<div class="codehilite"><pre><span></span><code>    winetricks directmusic
+</code></pre></div>
+
+<p>i próbując ponownie. Co to jednak? Znowu błąd. Tym razem gra się nawet nie uruchamia! To dlatego, że musimy zrobić jeszcze jedno, a mianowicie 'wyłączyć' jedną z zainstalowanych przed chwilą bibliotek. </p>
+<p>Otwieramy konsolę i wpisujemy:</p>
+<div class="codehilite"><pre><span></span><code>    winecfg 
+</code></pre></div>
+
+<p>następnie należy przejść do zakładki Libraries, gdzie należy usunąć moduł <code>dsound</code>, który to powoduje nasz błąd.</p>
+<p>Ewentualnie można jeszcze wyłączyć kompletnie muzykę i też problem zostanie rozwiązany - jak to zrobić?</p>
+<p>Przechodzimy do folderu Gothica, katalog <code>System</code>, otwieramy plik <code>gothic.ini</code> i edytujemy</p>
+<div class="codehilite"><pre><span></span><code>    musicEnabled=1
+</code></pre></div>
+
+<p>na</p>
+<div class="codehilite"><pre><span></span><code>    musicEnabled=0
+</code></pre></div>
+
+<p>myślę jednak, że lepiej już jednak tę muzykę mieć. Klimatyczna jest, nie ma co.</p>
+<p>Teraz już chyba wszystko gotowe? No nie. Jeszcze nie. </p>
+<h1>Wyższa rozdzielczość w Gothic 2</h1>
+<p>Jeśli tak jak ja korzystacie z ekranu o nieco większej rozdzielczości np. 1920x1080, to będziecie mieć problem - w menu Gothic podczas ustawiania obrazu, nie ma dostępnych wyższych rozdzielczości widescreen. Co teraz?</p>
+<p>Rozwiązanie jest proste.</p>
+<p>Ponownie przechodzimy do folderu, gdzie zainstalowaliśmy Gothica, wchodzimy do folderu System i otwieramy plik <code>gothic.ini</code>, następnie znajdujemy pozycję</p>
+<div class="codehilite"><pre><span></span><code>    extendedMenu=0
+</code></pre></div>
+
+<p>i zmieniamy na</p>
+<div class="codehilite"><pre><span></span><code>    extendedMenu=1
+</code></pre></div>
+
+<p>teraz możemy już cieszyć się Gothiciem z muzyką i w pełnej rozdzielczości naszego ekranu.</p>
+<p>To tyle. Gra działa dość stabilnie i płynnie - nie spotkałem się z jakimiś problemami do tej pory, a już sporo przegranych godzin zleciało, także polecam.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

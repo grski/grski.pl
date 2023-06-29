@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>Wydajność różnych metod łączenia stringów w Pythonie - dlaczego f-stringi są spoko - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Krótki wywód o tym dlaczego f-stringi to król konkatenacji jak sum jest król wód." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Krótki wywód o tym dlaczego f-stringi to król konkatenacji jak sum jest król wód.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2020-01-10T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2020-01-10</h3>
+                <h1 class="title"><a href="https://grski.pl/">Wydajność różnych metod łączenia stringów w Pythonie - dlaczego f-stringi są spoko</a></h1>
+                <div class="content">
+                    <p>Jestem dość dużym zwolennikiem f-stringów w Pythonie. Podobają mi się one, są eleganckie, czytelne i proste w użyciu. Ciekawiło mnie jednak, jak wypadają jeśli chodzi o wydajność pod spodem, gdyż cóż, ta elegancja pewnie musi mieć jakiś ukryty koszt. Nic w życiu nie ma za darmo, prawda? Postanowiłem to sprawdzić i zestawić ze sobą różne metody manipulacji stringów w Pythonie pod względem wydajności.</p>
+<p>W konkurencji znalazły się: f-stringi, konkatenacja (dodawanie) stringów, metoda join(), metoda format(), template string.
+W zestawieniu nie znalazł się operator %. Dlaczego? Nie przepadam za nim tak szczerze. Moja osobista preferancja. Uważam, że powinno się go raczej unikać z pewnych względów. Relikt przeszłości, mamy dziś lepsze rozwiązania.</p>
+<h2>Metodyka testowania</h2>
+<p>Testował będę za pomocą modułu timeit wbudowanego w Pythona, wywołując polecenia z terminala. Wszystkie zmienne wykorzystywane w modyfikowanym stringu, będą definiowane i ładowane zanim rozpocznie się mierzenie czasu.
+Każde polecenie będzie uruchamiane pętlach o 1000000 iteracjach, każda taka pętla będzie uruchomiona 3 razy. Z tejże pętli wyłoniony zostanie najkrótszy przebieg pojedynczej iteracji. Przejdźmy do samego testowania.</p>
+<h2>Porównanie.</h2>
+<p>Zaczynajmy zatem. Poniżej kod, jakiego użyłem. Wybaczcie prymitywne nazwy zmiennych, ale pisałem go kompletnie na kolanie.</p>
+<div class="codehilite"><pre><span></span><code>python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span><span class="w"> </span><span class="s2">&quot;f&#39;{x} {y}&#39;&quot;</span><span class="w"> </span><span class="c1"># f-string</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span><span class="w"> </span><span class="s2">&quot;x + &#39; &#39; + y&quot;</span><span class="w"> </span><span class="c1"># konkatenacja</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span><span class="w"> </span><span class="s2">&quot;&#39; &#39;.join((x,y))&quot;</span><span class="w"> </span><span class="c1"># join</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;; t = &#39; &#39;.join&quot;</span><span class="w"> </span><span class="s2">&quot;t((x,y))&quot;</span><span class="w"> </span><span class="c1"># join2</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span><span class="w"> </span><span class="s2">&quot;&#39;{} {}&#39;.format(x,y)&quot;</span><span class="w"> </span><span class="c1"># format</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;; t = &#39;{} {}&#39;.format&quot;</span><span class="w"> </span><span class="s2">&quot;t(x,y)&quot;</span><span class="w"> </span><span class="c1"># format2</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;from string import Template; x = &#39;f&#39;; y = &#39;z&#39;&quot;</span><span class="w"> </span><span class="s2">&quot;Template(&#39;</span><span class="nv">$x</span><span class="s2"> </span><span class="nv">$y</span><span class="s2">&#39;).substitute(x=x, y=y)&quot;</span><span class="w"> </span><span class="c1"># template string</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;from string import Template; x = &#39;f&#39;; y = &#39;z&#39;; t = Template(&#39;</span><span class="nv">$x</span><span class="s2"> </span><span class="nv">$y</span><span class="s2">&#39;)&quot;</span><span class="w"> </span><span class="s2">&quot;t.substitute(x=x, y=y)&quot;</span><span class="w"> </span><span class="c1"># template string2</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;from string import Template; x = &#39;f&#39;; y = &#39;z&#39;; t = Template(&#39;</span><span class="nv">$x</span><span class="s2"> </span><span class="nv">$y</span><span class="s2">&#39;).substitute&quot;</span><span class="w"> </span><span class="s2">&quot;t(x=x, y=y)&quot;</span><span class="w"> </span><span class="c1"># template string3</span>
+</code></pre></div>
+
+<p>Wszystko raczej proste. Template stringa rozważyłem w trzech opcjach: pierwsza to taka, w której inicjalizacja instancji następuje w czasie liczonym do wyniku, druga to taka, gdzie sama inicjalizacja będzie poza pętlą, mierzony będzie tylko czas wykonania metody substitute(), która zostanie znaleziona na instancji klasy za pomocą operatora ., ostatnia będzie opcja trzecia, gdzie znalezienie metody nastąpi w setupie, a w czasie mierzonym tylko i wyłącznie jej wywołanie.</p>
+<p>Co mam na myśli, kiedy mówię, że metoda zostanie znaleziona za pomocą operatora .? Otóż Python tam pod spodem robi sobie tak, że atrybuty danej klasy/nazwy metod i tak dalej, trzyma sobie zhashowane w słowniku. Zatem gdy piszemy obiekt.atrybut, pod spodem leci sobie szukanie w słowniku/dictionary lookup czy coś takiego jest w tej klasie. To oczywiście dodaje to czasu wykonania bo same instrukcje lookupu zajmują czas, co prawda niedużo, ale wciąż, do tego dochodzi jeszcze czas potrzebny na zaalokowanie pamięci i dodanie elementów do dicta pod spodem przy konstruowaniu instancji.</p>
+<p>Podobnie zrobiłem z joinem i formatem. Tu rozważyłem dwie opcje - normalne wywołanie z lookupem i to bez niego.</p>
+<p>A oto wyniki:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">f</span><span class="o">-</span><span class="nv">string</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">0791</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">konkatenacja</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">0985</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">join</span><span class="w"> </span><span class="nv">bez</span><span class="w"> </span><span class="nv">lookupu</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">112</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">join</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">144</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">format</span><span class="w"> </span><span class="nv">bez</span><span class="w"> </span><span class="nv">lookupu</span>:<span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">232</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">format</span>:<span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">264</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">template</span><span class="w"> </span><span class="nv">string3</span>:<span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">1</span>.<span class="mi">01</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">template</span><span class="w"> </span><span class="nv">string2</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">1</span>.<span class="mi">06</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">template</span><span class="w"> </span><span class="nv">string</span>:<span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">1</span>.<span class="mi">36</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+</code></pre></div>
+
+<h2>Zaskoczenie</h2>
+<p>Powiem szczerze, że nie spodziewałem się tego, że f-stringi są nie tylko eleganckim rozwiązaniem, ale i najszybszym! Bardzo mnie to cieszy.
+Na drugin miejscu uplasowała się konkatenacja, join bez lookupu, join, format bez lookupu, format, a na samym końcu template string. Z racji tego, że optymalizacja, którą poczyniłem, jest dość niepraktyczna i raczej w kodzie nikt takich potworów nie będzie tworzył poza pewnymi wyjątkami, które być może powinny być napisane w C a nie w Pythonie, to nie umieszczam wyników bez lookupów w rankingu, który wygląda tak:</p>
+<ol>
+<li>f-string</li>
+<li>Konkatenacja</li>
+<li>join()</li>
+<li>format()</li>
+<li>Template-string</li>
+</ol>
+<h2>Nieco bardziej skomplikowany przykład</h2>
+<p>Pokazałem prosty przykład - wstawienie dwóch zmiennych oddzielonych spacją. Co jeśli zmiennych mamy nieco więcej niż 2? Załóżmy przypadek z 13 zmiennymi, które chcemy połączyć spacją. Kod:</p>
+<div class="codehilite"><pre><span></span><code>python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;a, b, c, d, e, f, g, h, i, j, k, l, m = [str(s) for s in range(13)]&quot;</span><span class="w"> </span><span class="s2">&quot;f&#39;{a} {b} {c} {d} {e} {f} {g} {h} {i} {j} {k} {l} {m}&#39;&quot;</span><span class="w"> </span><span class="c1"># f-string</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;a, b, c, d, e, f, g, h, i, j, k, l, m = [str(s) for s in range(13)]&quot;</span><span class="w"> </span><span class="s2">&quot;a + &#39; &#39; + b + &#39; &#39; + c + &#39; &#39; + d + &#39; &#39; + e + &#39; &#39; + f + &#39; &#39; + g + &#39; &#39; + h + &#39; &#39; + i + &#39; &#39; + j + &#39; &#39; + k + &#39; &#39; + l + &#39; &#39; + m&quot;</span><span class="w"> </span><span class="c1"># konkatencja</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;a, b, c, d, e, f, g, h, i, j, k, l, m = [str(s) for s in range(13)]&quot;</span><span class="w"> </span><span class="s2">&quot;&#39; &#39;.join((a, b, c, d, e, f, g, h, i j, k, l, m))&quot;</span><span class="w"> </span><span class="c1"># join</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;a, b, c, d, e, f, g, h, i, j, k, l, m = [str(s) for s in range(13)]&quot;</span><span class="w"> </span><span class="s2">&quot;&#39;{} {} {} {} {} {} {} {} {} {} {} {} {}&#39;.format(a, b, c, d, e, f, g, h, i, j, k, l, m)&quot;</span><span class="w"> </span><span class="c1"># format</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;from string import Template; a, b, c, d, e, f, g, h, i, j, k, l, m = [str(s) for s in range(13)]&quot;</span><span class="w"> </span><span class="s2">&quot;Template(&#39;</span><span class="nv">$a</span><span class="s2"> </span><span class="nv">$b</span><span class="s2"> </span><span class="nv">$c</span><span class="s2"> </span><span class="nv">$d</span><span class="s2"> </span><span class="nv">$e</span><span class="s2"> </span><span class="nv">$f</span><span class="s2"> </span><span class="nv">$g</span><span class="s2"> </span><span class="nv">$h</span><span class="s2"> </span><span class="nv">$i</span><span class="s2"> </span><span class="nv">$j</span><span class="s2"> </span><span class="nv">$k</span><span class="s2"> </span><span class="nv">$l</span><span class="s2"> </span><span class="nv">$m</span><span class="s2">&#39;).substitute(a=a, b=b, c=c, d=d, e=e, f=f, g=g, h=h, i=i, j=j, k=k, l=l, m=m)&quot;</span><span class="w"> </span><span class="c1"># template string</span>
+</code></pre></div>
+
+<p>Ciekawi mnie jak tutaj sytuacja będzie wyglądała.</p>
+<p>Wyniki:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">join</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">0.352</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+<span class="n">f</span><span class="w"> </span><span class="n">string</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">0.399</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+<span class="n">format</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">0.872</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+<span class="n">concat</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">1.13</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+<span class="n">template</span><span class="w"> </span><span class="n">string</span><span class="o">:</span><span class="w"> </span><span class="mi">100000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">2.04</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+</code></pre></div>
+
+<p>Bazując na poprzednich wynikach, nie zdziwiły mnie one za bardzo. Dlaczego?
+Zacznijmy od tego, co się zmieniło. Join wskoczył z 3. miejsca na 1. Konkatenacja spadła z 2. na przedostatnie. Format na 3. z czwartego. W sumie dość zasadne, dlaczego.</p>
+<p>Pierwsze miejsce join w takiej sytuacji jest oczywiste - popatrzmy co tam robimy - joinujemy tak jakby ze sobą wiele stringów ze wspólnym stringiem, czyli dokładnie to, do czego join został stworzony. Jestem niemalże pewnym, iż pod spodem na poziomie implementacji metody czy nawet interpretera są zrobione pod to optymalizacje, dzięki czemu join świetnie poradzi sobie z dużą ilością argumentów. Cieszy mnie to - ponownie rozwiązanie, które w tym przypadku wygląda najbardziej elegancko, wypada pierwsze.</p>
+<p>Drugie miejsce f-string. Tutaj też się nie zdziwiłem. Dlaczego? Otóz f-stringi, pierwotnie co prawda były wolne, bardzo wolne, - w pierwszej implementacji były one "kompilowane" na nic innego jak zbiór odpowiednich joinów albo formatów, nie pamiętam. Niemniej jednak w kolejnej implementacji f-stringi doczekały się własnego, zoptymalizowanego OPCODE w CPythonie, co pozwoliło poczynić znaczne oszczędności i lepiej dostosować kod C, który jest pod spodem.</p>
+<p>Dlaczego format wyprzedził konkatenacje? Cóż, domyślam się. Wydaje mi się, iż chodzi o ewaluację. Być może Python, z racji tego, że stringi są niemutowalne w Pythonie, za każdym razem, kiedy wykonywał operacje dodania na dwóch stringach, musiał zaalokować nowy kawałek pamięci, który pomieści X znaków, gdzie X to suma długości dwóch stringów, potem je tam przekopiować, by otrzymać finalną wartość. Z racji doświadczenia tego, jak python działa, to założę się, że w naszym wypadku, kiedy mieliśmy kod w postacie a + ' ' + b + ..., Python wykonywał każdą operacje dodawania oddzielnie. To znaczy, prawdopodobnie instrukcje pod spodem wyglądały tak:</p>
+<ol>
+<li>Zaalokuj pamięć, która pomieści zmienną a oraz string ' '.</li>
+<li>Przekopiuj wartość a</li>
+<li>Przekopiuj wartość ' '</li>
+<li>Otrzymany wynik dodaj do zmiennej b.</li>
+<li>Zaalokuj pamięć, która pomieści poprzedni wynik oraz zmienną b.</li>
+<li>...</li>
+</ol>
+<p>I tak dalej. A to wszystko kosztuje czas - nowe alokacje, kopiowanie. Tak mi się przynajmniej wydaje, że to zadziałało w ten sposób, nie jestem jednak pewien, czy developerzy pythona nie poczynili jakiś optymalizacji na ten przypadek i może robią to inaczej? Nie wiem, aż tak głęboko nie zaglądałem, ale patrząc po wynikach, nie sądzę.</p>
+<p>Na końcu oczywiście nasza kobyłka, czyli template string.</p>
+<h2>Podsumowanie</h2>
+<p>W pythonie mechanizmy, które zdają się wyglądać elegancko w danej sytuacji, zazwyczaj są pod takową zoptymalizowane i przygotowane, stąd warto ich używać. Piękny ten wąż po prostu. Elegancki kod.</p>
+<p>Używajcie zatem f-stringów gdziekolwiek tylko możecie i cieszcie się z życia, tam gdzie dużo stringów do połączenia w przewidywalny sposób, join. Dzięki temu wasz kod będzie ładniejszy ale i szybszy!</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

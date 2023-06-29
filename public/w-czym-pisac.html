@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>W czym pisać kod na początku? - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="W czym pisać kod na początku? IDE/Edytor tekstu? PyCharm? Sublime? Odpowiedź jest ciekawa." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="W czym pisać kod na początku? IDE/Edytor tekstu? PyCharm? Sublime? Odpowiedź jest ciekawa.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2016-07-10T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2016-07-10</h3>
+                <h1 class="title"><a href="https://grski.pl/">W czym pisać kod na początku?</a></h1>
+                <div class="content">
+                    <p>W czym pisać kod na początku? IDE/Edytor tekstu? PyCharm? Sublime?</p>
+<p>Gdy pomyślę sobie o moich pierwszych dniach nauki programowania, jedną z wielu rzeczy, które ciągle mieszały mi w głowie i przyniosły sporo kłopotu w ich rozstrzygnięciu, był wybór środowiska, w którym będę pisał swoje pierwsze programy.</p>
+<p>Nie ma co się tu jednak co dziwić - teraz praktycznie do każdego języka istnieje co najmniej kilka darmowych IDE, do tego jeszcze dochodzą płatne, mamy jeszcze edytory tekstu i tak dalej. Łatwo można się zagubić. Ja tak przynajmniej zrobiłem i kilka dni, zamiast się uczyć programowania, siedziałem i zastanawiałem się nad wyborem środowiska.</p>
+<p>Teraz jednak troszkę orientuję się już w temacie, dlatego chciałbym opisać swoje doświadczenia i być może pomóc niektórym, podobnym mnie, adeptom sztuki mistrzów picia kawy, czy tam programowania, jak zwał tak zwał, w wyborze swego narzędzia.</p>
+<h1>IDE? Edytor tekstu?</h1>
+<p>No to jak to w końcu jest? IDE czy edytor tekstu? A czym w ogóle jest IDE? Tego dowiedz się sam - jako informatyk twoim podstawowym zadaniem jest przetwarzanie informacji. Wyszukaj sobie zatem w Internecie znaczenie tego skrótu, guglnij różnice między IDE a edytorem tekstu. Nie podam ci tego na tacy, bo umiejętność szukania informacji jest kluczową cechą, która składa się na dobrego informatyka/programistę, którą trzeba ćwiczyć na początku.</p>
+<p>Co zatem wybrać? Odpowiedź może cię zadziwić - brzmi ona: bez większego znaczenia.</p>
+<p>Dlaczego? Już tłumaczę.</p>
+<p>To, czy wybierzesz CodeBlocks, VisualStudio czy Atom'a, nie ma, moim zdaniem, większego znaczenia, gdyż to są tylko narzędzia. Narzędzia w rękach programisty i to od niego zależy, jak dobrze zostaną te narzędzia wykorzystane. Nic ci nie da nawet najlepsze IDE, skoro nie będziesz umieć go obsłużyć. Z drugiej strony, jeśli dobrze opanujesz obsługę pozornie prehistorycznych jak na dzisiejsze standardy programów jak np. Vim czy Emacs, możesz zdziałać cuda. Dlatego też zalecam, by nie przywiązywać zbytniej uwagi do tego, jakie środowisko się wybierze, bo praktycznie każde można przystosować i sprawić, by pracowało się w nim wyśmienicie.</p>
+<p>Mimo tego można jednak chyba nakreślić jedną ze ścieżek, które można obrać i która według mnie jest dość rozsądna. Mianowicie.</p>
+<h1>Podstawy</h1>
+<p>Niezależnie od tego, czy korzystamy z IDE, czy jakiegoś edytora tekstu dobrze jest wiedzieć, jak to tam wszystko działa za sceną. Żeby nie było tak, iż ktoś bez swojego IDE nie jest w stanie skompilować kawałka kodu C++ czy odpalić skryptu Pythona z poziomu konsoli. Takie podstawowe rzeczy należy poznać, bo pozwalają one lepiej zrozumieć jak tworzy się programy i jak to wszystko działa, są zwyczajnie w niektórych sytuacjach niezbędne.</p>
+<p>Poza tym, na początku auto complete powinno być wyłączone. Przepisując nazwy instrukcji, metod czy klas szybciej się ich nauczymy. Ja przynajmniej tak miałem. Korzystając z auto uzupełniania, często wystarczyło, żebym wpisał dwie trzy litery i pyk - gotowe. Problem pojawiał się, gdy auto uzupełniania zabrakło, bo np. musiałem napisać coś na szybko w zwykłym edytorze tekstu/skorzystać z nie swojego komputera. Wtedy nagle wszystko z głowy mi wyleciało i zapomniałem połowy poleceń, które podobno tak dobrze znałem. Dlatego też na samym początku jednak zrezygnowałem z automatycznego uzupełniania na rzecz ręcznego pisania. Później, kiedy już zapamiętałem dostatecznie słowa kluczowe, instrukcje, ponownie do niego wróciłem. Na sam początek jednak odradzałbym auto uzupełnianie.</p>
+<h1>Jak to u mnie wyglądało.</h1>
+<p>Jakie środowisko ja wybrałem?</p>
+<p>Powiem szczerze, że wiele różnych wypróbowałem, idąc mniej więcej taką ścieżką podczas nauki Pythona:</p>
+<p>Na początku pisałem w przeglądarce, robiąc kurs na jednej z interaktywnych akademii programowania - nie potrzeba mi było żadnego programu ściągać,
+Jednak później, gdy już chciałem zacząć pisać coś swojego na dysku, to zajrzałem w neta i znalazłem różne wątki, gdzie zazwyczaj polecano PyCharma i kilka innych popularnych IDE. Ściągnąłem je zatem. Na krótko jednak. Były one dla mnie zbyt przytłaczające - ogrom opcji, złożoność. Poza tym mój leciwy laptop słabo radził sobie z wymaganiami sprzętowymi takich IDE. Praca w nich była w sumie niezbyt możliwa.
+Przerzuciłem zatem się na SublimeTexta, gdzie zagościłem na troszkę dłużej, powoli oswajając się z konsolą i tym, że niektóre rzeczy muszę zrobić sam. Po pewnej chwili zaczęło mi czegoś w Sulimie brakować więc znów zacząłem poszukiwania - trafiłem na gvim'a i z niego dalej korzystam.</p>
+<p>Wspaniałe narzędzie. Szwajcarski scyzoryk - wszystko z nim można zrobić. Może być to lekki edytor tekstowy albo rozbudowane IDE w zasadzie, przy odpowiedniej ilości plug-inów. Przypadł mi on do gustu możliwością konfiguracji, magią, którą można w nim wyczyniać. Na początku było trudno, ale potem się już troszkę przyzwyczaiłem i teraz nawet nie śnię o zmianie na coś innego. Niemniej jednak gvim'a raczej odradzam jako pierwszy edytor tekstowy, jest on mimo wszystko troszkę inny w obsłudze niż standardowe programy.</p>
+<p>Czy ty też tak musisz? W żadnym wypadku - sam obierz swoją ścieżkę.</p>
+<h1>Podsumowanie</h1>
+<p>Domyślnie możesz jednak spróbować skorzystać z takich edytorów tekstu jak SublimeText czy Notepad++ z wyłączonym podpowiadaniem kodu, poznać działanie i proces tworzenia od podszewki, a później dopiero przerzucić się na coś większego - jakieś popularne IDE z większą ilością ficzerów, na które najprawdopodobniej natrafisz w pracy lub może coś kapkę trudniejszego jak np. vim. I taka by była moja finalna porada dla osób, które dopiero co zaczęły - wybierz cokolwiek (albo coś z tego, co podałem wyżej) i przez chwilę po prostu w tymi pisz, nie zmieniając swego środowiska, żeby je poznać. Nie skacz z kwiatka na kwiatek.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

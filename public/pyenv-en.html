@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Pyenv, poetry and other rascals - modern Python dependency and version management - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="On modern Python versions, environments and dependencies management." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="On modern Python versions, environments and dependencies management.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2022-12-01T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2022-12-01</h3>
+                <h1 class="title"><a href="https://grski.pl/">Pyenv, poetry and other rascals - modern Python dependency and version management</a></h1>
+                <div class="content">
+                    <p>On modern Python versions, environments and dependencies management.</p>
+<h2>PIP</h2>
+<p>Pip is a tool most of you should already know. It's used to install packages used in python development and since a couple of version already, is shipped with Python by default. But what does it exactly mean to install packages?</p>
+<p>In short pip just provides tooling around downloading packages from Python Package Index – PYPI. It's a default index of Python packages where almost anyone can add packages. Default is a good word, because pip allows us to use different indexes. So for example your company could have it's self-hosted version of packages and then use it as a private version of pypi. This allows for example better packages verification, only private network calls during CI/CD/development processes. It's quite interesting option especially given latest malicious attacks on popular Python open source packages. </p>
+<h3>Package index</h3>
+<p>What exactly is a <strong>Package Index?</strong></p>
+<p>Actually nothing complex. <strong>It's just a http server,</strong> let's say, that provides <strong>a list of bundles of Python code – packages</strong> and <strong>some metadata</strong> about them. Nothing more. </p>
+<p>Fun take-home assignment to experiment with something new: <strong>try to implement your own version of pypi and add there certain features like token-</strong><strong>protected package access or even more tokens with granular permission feature.</strong></p>
+<h3>Command overview</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">pip</span> <span class="n">install</span> <span class="n">package</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="s2">&quot;package&gt;=1.0&quot;</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">package</span><span class="o">==</span><span class="mf">1.0</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="err">–</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+
+<span class="n">pip</span> <span class="n">uninstall</span> <span class="n">package</span>
+
+<span class="n">pip</span> <span class="nb">list</span> <span class="c1">#  lists all packages globally</span>
+<span class="n">pip</span> <span class="nb">list</span> <span class="o">--</span><span class="n">outdated</span>
+
+<span class="n">pip</span> <span class="n">freeze</span>  <span class="c1">#  lists packages globally but without dependencies of pip and build stuff</span>
+<span class="n">pip</span> <span class="n">freeze</span> <span class="o">&gt;</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>  <span class="c1"># most naive way of dependency management =</span>
+
+<span class="n">pip</span> <span class="n">show</span> <span class="n">package</span>
+<span class="n">pip</span> <span class="n">search</span> <span class="s2">&quot;query&quot;</span>
+</code></pre></div>
+
+<h3>Default package installation</h3>
+<p>Usually the case is that we have one, maximum two backwards incompatible versions of Python installed on our machine. In the past it used to be Python2 &amp; Python3, Nowadays most of the time just Python3 is installed as Python2 reached EoL.</p>
+<p>Anyhow. This means that in the Dark Ages or by default one would install the packages globally, for the whole system. That’s is bad for multitude of reasons. As for what installing package means, in a very big summary, it’s nothing more than downloading a bundle of python code structured in a certain way, that gets downloaded and put in a given directory of python installation, with additional steps possible inbetween.</p>
+<p>What if project A requires package Z in version 1.0.0, but project B requires package Z in version 2.0.0? Would you reinstall this package every time you switch to different projects?</p>
+<h2>virtualenv</h2>
+<p>To combat the problem described in the previous paragraph -&gt; packages getting installed globally, <strong>virtualenv</strong> came around. In short, it’s something that allows us to "create" another, "instance" of <strong>installation</strong> <strong>of</strong> <strong>Python</strong>. Eg. For a given project only instead of system-wide.</p>
+<p>This way we can have various python package versions for various projects.</p>
+<p>Subset of virtualenv functionalities comes integrated with <strong>default</strong> <strong>CPython</strong> <strong>installation</strong> <strong>from version 3.3</strong> <strong>onwards</strong> as <code>venv</code> module.</p>
+<h2>Poetry</h2>
+<p>What if pip and virtualenv had a love child that was also doing steroids? Well, we'd obtain Poetry.</p>
+<p>The problem with pip is usually dependency version management.</p>
+<p>Even if we know, our project A, requires package Z in version 1.0.0, usually at the first glance, pip doesn’t tell us about the dependencies of this Z package.</p>
+<p>It introduces the possibility of problems when your project reaches a point where it has a little bit more packages installed. Because these packages also have dependencies and their dependencies also have them. </p>
+<p>Usually it’s not a dependency hell like in the JS worlds, but at some point it can also get a bit tricky if you only lock the dependencies at the top level.</p>
+<p>And at some point, when you reach corporate-level size of a project, it’s almost guaranteed to have problems with this. Also if the versions of these dependencies aren’t guaranteed by default what about debugging? </p>
+<p>I mean one build could have versions 1.2.3 of some dependency of a dependency, but another build, done 10 minutes earlier could have 1.2.2 if the versions aren’t resolved in a deterministic, guaranteed way. It enables nasty bugs to appear.</p>
+<p>This also is a security risk, because if you do not know what version of the dependency exactly you have, <strong>a</strong> <strong>malicious</strong> <strong>version</strong> <strong>might</strong> find their way in without our explicit knowledge, which is a <strong>vulerability</strong> <strong>introduction</strong> <strong>opportunity</strong>.</p>
+<p>We have something called <strong>dependency</strong> <strong>resolving</strong> and <strong>dependency</strong> <strong>locking</strong>*.</p>
+<p>Basically it’s just a proces of making sure that <strong>we</strong> <strong>know</strong> <strong>the</strong> <strong>dependencies</strong> <strong>of</strong> <strong>our</strong> <strong>dependencies</strong> <strong>and</strong> <strong>their</strong> <strong>dependencies</strong>.</p>
+<p>And also we have a clear account of their <strong>versions</strong>,<strong>usually</strong> <strong>signed</strong> <strong>with a</strong> <strong>hash</strong>*.</p>
+<p>This allows something called deterministic builds which is one of the keys of <strong>modern CI/</strong><strong>CDs</strong> and apps that adhere to <strong>the</strong> <strong>Twelve-factor</strong> <strong>app</strong> <strong>pattern</strong>.</p>
+<p>This is exactly what Poetry does and it does this well. </p>
+<p>Other than that, while we are at it, poetry <strong>also</strong> <strong>makes</strong> <strong>projecet</strong> <strong>management</strong> <strong>easier</strong>, takes care of <strong>creating</strong> <strong>and</strong> <strong>managing</strong> <strong>virtualenvs</strong> <strong>for</strong> <strong>you</strong> and enables easier, more <strong>centralised</strong> <strong>project</strong> <strong>configuration</strong> <strong>by</strong> <strong>introducing</strong> <strong>pyproject.toml</strong></p>
+<p><strong>pyproject.toml</strong> is usually the new standard python package config file.</p>
+<p>Oh also, it makes building the packages easier as <strong>it</strong> <strong>can</strong> <strong>bundle</strong> <strong>your</strong> <strong>python</strong> <strong>code</strong> <strong>and</strong> <strong>publish</strong> <strong>it</strong> <strong>to the</strong> <strong>package</strong> <strong>index of</strong> <strong>your</strong> <strong>choice.</strong></p>
+<p>Overall poetry is neat. Very neat.</p>
+<h3>Example pyproject.toml</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.poetry]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;django-boilerplate&quot;</span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0.1.0&quot;</span>
+<span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="n">authors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;Your Name &lt;you@example.com&gt;&quot;</span><span class="p">]</span>
+
+<span class="k">[tool.poetry.dependencies]</span>
+<span class="n">python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;^3.10&quot;</span>
+<span class="n">django</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;^4.0.6&quot;</span>
+<span class="n">psycopg2-binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;^2.9.3&quot;</span>
+<span class="n">celery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">extras</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;redis&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;^5.2.7&quot;</span><span class="p">}</span>
+
+
+<span class="k">[tool.poetry.dev-dependencies]</span>
+<span class="n">coverage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;^6.4.2&quot;</span>
+
+<span class="n">isort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;^5.10.1&quot;</span>
+<span class="n">flake8</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;^4.0.1&quot;</span>
+<span class="n">black</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;^22.6.0&quot;</span>
+
+<span class="k">[build-system]</span>
+<span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;poetry-core&gt;=1.0.0&quot;</span><span class="p">]</span>
+<span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;poetry.core.masonry.api&quot;</span>
+</code></pre></div>
+
+<h2>Pyenv</h2>
+<p>Python is a peculiar little animal that sheds its skin from time to time. Meaning Python itself, other than our dependencies, also has it’s own versions. Each version contains new features, various improvements. Some of them are sometimes even backwards incompatibile.</p>
+<p>By default it’s not trivial to install various python versions and have them working properly on the same machine. </p>
+<p>Why would you need that? Well, same as with dependencies. One project could depend on Python 3.10, the other on 2.7 and some other on 3.12. </p>
+<p>We need something like virtualenv, that would provide isolation, but instead of a project-level for python dependnecies, instead for the system on the python version level.</p>
+<p>How do we do that?</p>
+<p>With pyenv. Juiced up pyenv with a neat plugin that let’s us create virtualenvs from different python versions/interpreter implementations.</p>
+<p>Pyenv + pyenv-virtualenv is also nice in regard of integration with poetry.</p>
+<p>Anyhow. So we have pyenv-virtualenv which is a virtualenv-like wrapper for pyenv, which in turn is a a wrapper around python versions management, working on poetry which is a wrapper for pip and pip-tools, integrated with virtualenv which is also kind of a wrapper.</p>
+<p>So we have wrapper of a wrapper working on a wrapper of a wrapper. Wrapper-ception.</p>
+<p><a href="https://asciinema.org/a/pMssjDmLN79NuJT8rr2VQg6GW"><img alt="asciicast" src="https://asciinema.org/a/pMssjDmLN79NuJT8rr2VQg6GW.svg" /></a></p>
+<h3>Short how-to</h3>
+<ol>
+<li>Install pyenv from official repository <code>curl https://pyenv.run | bash</code></li>
+<li>After installation run <code>exec $SHELL</code> to restart shell and apply the changes</li>
+<li>Install desired version of python runtime (eg. 3.6.15) <code>pyenv install 3.6.15</code></li>
+<li>Go to the project's root directory</li>
+<li>Install <code>pyenv-virtualenv</code> plugin from <a href="https://github.com/pyenv/pyenv-virtualenv">repository</a> (in never versions it's included in pyenv.run script I think)</li>
+<li>Create virtualenv <code>pyenv virtualenv 3.6.15 your-cool-virtualenv-name</code></li>
+<li>Set virtual env as local (make sure you are in project root dir) <code>pyenv local your-cool-virtualenv-name</code> for automatic venv activation</li>
+</ol>
+<h2>Piptools</h2>
+<p>If your project is simple enough or you do not want to be bother will all of the previous things you can use pip-tools to pin your dependencies and all that. </p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

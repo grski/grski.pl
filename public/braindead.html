@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>How I created my own blogging system in less than 100 lines of code - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="How you can do so much with so little of Python code to create wonderful things." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="How you can do so much with so little of Python code to create wonderful things.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2020-04-12T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2020-04-12</h3>
+                <h1 class="title"><a href="https://grski.pl/">How I created my own blogging system in less than 100 lines of code</a></h1>
+                <div class="content">
+                    <p>Recently I started thinking about changing my blogging engine and the template that it used. It felt a bit too bloated for my tastes, outdated and messy. After a couple of months of waiting, I've finally spun into action to create <a href="https://github.com/grski/braindead">braindead</a> - a braindead simple static site generator with markdown and code highlighting support.</p>
+<p><img alt="Load time of grski.pl generated with braindead" src="https://grski.pl/static/articles/creating-braindead/standards2.jpg" /></p>
+<p>The first thing that I did was to look through available solutions for blogs, blogging engines and free templates. I had experience with Pelican and Jekyll. Both were quite okay, yet felt like they're too much, some processes there were too complicated for me. Same with Hugo, GatsbyJs and the rest.</p>
+<p>I won't even mention the templates that I've seen - most of them were just too heavy. Some candidates satisfied my visual senses. They had a problem though, most of the time they used React or Vue. While both of these are marvellous pieces of Software and there are plenty of places where you should use them, this was not such a place. Why?</p>
+<h2>Bloatware</h2>
+<p>I'm a minimalist that tries to live their life with as little as possible. I don't even own a bed as sleeping on the floor is comfortable enough. Minimalism allows me to focus on what truly matters. So when I'm facing current trends in Software Development, I'm lost. One, in particular, got under my skin - its name is BloatWare. I straight out hate it. For multiple reasons <a href="https://tonsky.me/blog/disenchantment/">check out this post - Software Disenchantment by tonsky</a>, be it the fact that most of it is slow, or the fact that through wasteful resource management, BloatWare uses way more electricity and hardware than it should. It's a small thing, but something that nonetheless adds up to environmental damage overall. Even such things do compound over time, giving a lot of impact in the end.</p>
+<p>I hate it when someone takes a simple static landing page and creates React App out of it with hundreds of js libs used and images that weight dozens of MBs. All of that while it has the same functionality as the old one. But you know, it's in react now, that's so cool, rightttt? me_crying_internally.jpg </p>
+<p>A lot of current websites could be easily made in pure HTML/CSS and maybe some JS. They'd be faster to develop and make for a better UX. Each tool has it's best uses. The problem lies in the fact that once we have a hammer, everything is a nail.</p>
+<p>Because of all that and how available solutions did not satisfy my needs completely, I've decided to create my blogging engine/static site generator. Just for the heck of it, just because I can. </p>
+<p><img alt="funny meme" src="https://grski.pl/static/articles/creating-braindead/standards.png" /></p>
+<h2>Let's do this</h2>
+<p>My assumptions when creating this were as follows:</p>
+<ol>
+<li>I decided to go with a stack I know - Python, Jinja, Markdown. It's crazy how much you can do just with these. </li>
+<li>Code shall be type hinted.</li>
+<li>I'll use git and GitHub to host my repo.</li>
+<li>The code will be opensource and on MIT license.</li>
+<li>I'll use black, isort, pyflakes and autopyflake for code formatting, bandit for some security scanning.</li>
+<li>poetry as dependency/packaging manager. No pipenv - it's dead.</li>
+<li>Automated builds and releases through GitHub actions.</li>
+<li>Versioning with bumpversion.</li>
+<li>Two branches: develop - bump patch, master - bump minor. Major - manual releases.</li>
+<li>Additional configuration of context/blog through TOML.</li>
+</ol>
+<p>The plan was: I'll write my posts in markdown files, render them to HTML and enrich with jinja. I'll keep all my posts in a directory called <code>posts</code> and index will be named index.md. While I'm at that I might as well add support for pages other than index.</p>
+<p>So the first piece of code I decided to create was about that - finding all the markdowns and rendering them.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">find_all_posts</span><span class="p">(</span><span class="n">directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;posts&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; All the md posts - both extensions .markdown and .md&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">find_all_markdown_and_md_files</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">find_all_pages</span><span class="p">(</span><span class="n">directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pages&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Similar to the one above, but searches for posts - another directory. Both .md and .markdown &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">find_all_markdown_and_md_files</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">find_all_markdown_and_md_files</span><span class="p">(</span><span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Base method that finds both .md and .markdown recursively in a given directory and it&#39;s children. &quot;&quot;&quot;</span>
+    <span class="n">md_files</span><span class="p">:</span> <span class="n">Generator</span> <span class="o">=</span> <span class="n">iglob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="s2">&quot;**&quot;</span><span class="p">,</span> <span class="s2">&quot;*.md&quot;</span><span class="p">),</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">markdown_files</span><span class="p">:</span> <span class="n">Generator</span> <span class="o">=</span> <span class="n">iglob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="s2">&quot;**&quot;</span><span class="p">,</span> <span class="s2">&quot;*.markdown&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">chain</span><span class="p">(</span><span class="n">md_files</span><span class="p">,</span> <span class="n">markdown_files</span><span class="p">)</span>
+</code></pre></div>
+
+<p>To find all the <code>.md</code> and <code>.markdown</code> files recursively, I've used <code>glob</code> packages and it's <code>iglob</code> function. <code>iglob</code> is a version of <code>glob</code> that instead of returning an in-memory list of found filenames, returns a generator.</p>
+<p>Back in the days, I used to work with big volumes of data. Until this day I'm a little bit skewed in this regard. It's probably not possible, but someone might decide to create way too many files. Reading them all at once to memory might use too much of it. Hence the iglob instead of <code>glob</code>.</p>
+<p>We have the filenames, now time for rendering the markdown.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">md</span><span class="p">:</span> <span class="n">Markdown</span> <span class="o">=</span> <span class="n">Markdown</span><span class="p">(</span><span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">,</span> <span class="s2">&quot;fenced_code&quot;</span><span class="p">,</span> <span class="s2">&quot;codehilite&quot;</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="s2">&quot;footnotes&quot;</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">render_markdown_to_html</span><span class="p">(</span><span class="n">md</span><span class="p">:</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Markdown to html. Important here is to keep the reset() method. &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">md</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</code></pre></div>
+
+<p>To do that I've used python-markdown package with a couple of extensions for more usability. Off to Jinja rendering we go.</p>
+<p>I came up with something like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">render_jinja_template</span><span class="p">(</span><span class="n">template</span><span class="p">:</span> <span class="n">Template</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Rendering jinja template with a context and global config. &quot;&quot;&quot;</span>
+    <span class="n">context_with_globals</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">CONFIG</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">context_with_globals</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Now time to take care of context building for jinja templates:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">build_meta_context</span><span class="p">(</span><span class="n">md</span><span class="p">:</span> <span class="n">Markdown</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This builds context that we get from Meta items from markdown like</span>
+<span class="sd">    post/page Title, Description and so on.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">md</span><span class="o">.</span><span class="n">Meta</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+
+<span class="k">def</span> <span class="nf">build_article_context</span><span class="p">(</span><span class="n">article_html</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">md</span><span class="p">:</span> <span class="n">Markdown</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Contant that&#39;ll be used to render template with jinja. &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">article_html</span><span class="p">,</span> <span class="o">**</span><span class="n">build_meta_context</span><span class="p">(</span><span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">)}</span>
+
+
+<span class="k">def</span> <span class="nf">add_url_to_context</span><span class="p">(</span><span class="n">jinja_context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">new_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Builds and adds url for a given page/post to jinja context. &quot;&quot;&quot;</span>
+    <span class="n">jinja_context</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}{</span><span class="n">new_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">DIST_DIR</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">jinja_context</span>
+</code></pre></div>
+
+<p>With that done it was time for saving the output. I decided to preserve the structures of the posts as default behaviour. Same with the names.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save_output</span><span class="p">(</span><span class="n">original_file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Saves a given output based on the original filename in the dist folder&quot;&quot;&quot;</span>
+    <span class="n">new_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DIST_DIR</span><span class="p">,</span> <span class="n">original_file_name</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.html&quot;</span>
+    <span class="n">new_directory</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">new_location</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">new_directory</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">new_directory</span><span class="p">)</span>
+    <span class="n">output_file</span><span class="p">:</span> <span class="n">TextIO</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">new_location</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_location</span>
+</code></pre></div>
+
+<p>Last thing: it'd be nice to have the statics gathered.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">gather_statics</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">template_statics</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TEMPLATE_DIR</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">template_statics</span><span class="p">):</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">template_statics</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DIST_DIR</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">),</span> <span class="n">dirs_exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Now, putting it all together</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">render_blog</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Renders both pages and posts for the blog and moves them to dist folder.&quot;&quot;&quot;</span>
+    <span class="n">posts</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">render_posts</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]))</span>
+    <span class="n">render_all_pages</span><span class="p">()</span>
+    <span class="n">render_index</span><span class="p">(</span><span class="n">posts</span><span class="o">=</span><span class="n">posts</span><span class="p">)</span>
+    <span class="n">gather_statics</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">render_all_pages</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Rendering of all the pages for the blog. markdown -&gt; html with jinja -&gt; html&quot;&quot;&quot;</span>
+    <span class="n">template</span><span class="p">:</span> <span class="n">Template</span> <span class="o">=</span> <span class="n">jinja_environment</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">find_all_pages</span><span class="p">():</span>
+        <span class="n">render_page</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">render_page</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">md</span><span class="p">:</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="n">Template</span><span class="p">,</span> <span class="n">additional_context</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="n">additional_context</span> <span class="o">=</span> <span class="n">additional_context</span> <span class="k">if</span> <span class="n">additional_context</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="n">page_html</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">render_markdown_to_html</span><span class="p">(</span><span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">jinja_context</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">page_html</span><span class="p">},</span> <span class="o">**</span><span class="n">additional_context</span><span class="p">}</span>
+    <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">render_jinja_template</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">jinja_context</span><span class="p">)</span>
+    <span class="n">save_output</span><span class="p">(</span><span class="n">original_file_name</span><span class="o">=</span><span class="n">jinja_context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;slug&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">render_posts</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="n">template</span><span class="p">:</span> <span class="n">Template</span> <span class="o">=</span> <span class="n">jinja_environment</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s2">&quot;detail.html&quot;</span><span class="p">,)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">render_and_save_post</span><span class="p">(</span><span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">)</span> <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">find_all_posts</span><span class="p">()]</span>
+
+
+<span class="k">def</span> <span class="nf">render_and_save_post</span><span class="p">(</span><span class="n">md</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Renders blog posts and saves the output as html. md -&gt; html with jinja -&gt; html&quot;&quot;&quot;</span>
+    <span class="n">article_html</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">render_markdown_to_html</span><span class="p">(</span><span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">jinja_context</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">build_article_context</span><span class="p">(</span><span class="n">article_html</span><span class="o">=</span><span class="n">article_html</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">)</span>
+    <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">render_jinja_template</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">jinja_context</span><span class="p">)</span>
+    <span class="n">new_filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">save_output</span><span class="p">(</span><span class="n">original_file_name</span><span class="o">=</span><span class="n">jinja_context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;slug&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">add_url_to_context</span><span class="p">(</span><span class="n">jinja_context</span><span class="o">=</span><span class="n">jinja_context</span><span class="p">,</span> <span class="n">new_filename</span><span class="o">=</span><span class="n">new_filename</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">render_markdown_to_html</span><span class="p">(</span><span class="n">md</span><span class="p">:</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Markdown to html. Important here is to keep the reset() method. &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">md</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">render_index</span><span class="p">(</span><span class="n">posts</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">md</span><span class="p">:</span> <span class="n">Markdown</span> <span class="o">=</span> <span class="n">Markdown</span><span class="p">(</span><span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tables&quot;</span><span class="p">,</span> <span class="s2">&quot;fenced_code&quot;</span><span class="p">,</span> <span class="s2">&quot;codehilite&quot;</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="s2">&quot;footnotes&quot;</span><span class="p">])</span>
+    <span class="n">template</span><span class="p">:</span> <span class="n">Template</span> <span class="o">=</span> <span class="n">jinja_environment</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">)</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;index.md&quot;</span>
+    <span class="n">additonal_context</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;articles&quot;</span><span class="p">:</span> <span class="n">posts</span><span class="p">}</span>
+    <span class="n">render_page</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">,</span> <span class="n">additional_context</span><span class="o">=</span><span class="n">additonal_context</span><span class="p">)</span>
+</code></pre></div>
+
+<p>This is the core of the app, as for the small details, I won't bother you with them.</p>
+<p>The original version that I wrote had less than 100 lines of code. Since then I've added a bit of documentation, some features and so on.  Right now with all the new features and comments, I'm up to... Hm, I don't know. Let's check.</p>
+<div class="codehilite"><pre><span></span><code><span class="o">(</span>braindead-th-wknNA-py3.8<span class="o">)</span><span class="w"> </span><span class="o">[</span>grski@grski<span class="w"> </span>braindead<span class="o">]</span>$<span class="w"> </span>find<span class="w"> </span>.<span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;*.py&quot;</span><span class="w"> </span>-exec<span class="w"> </span>cat<span class="w"> </span><span class="o">{}</span><span class="w"> </span>+<span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l
+<span class="m">168</span>
+</code></pre></div>
+
+<p>168 LoC, not bad. </p>
+<h2>Default template</h2>
+<p>I decided to base on <a href="https://github.com/ribice/kiss">kiss</a> template for Hugo, slightly modifying and simplyfing it. I've slimmed down the css, minified it, changed the html a bit, but overall the look and feel stayed the same. I'll need to slim down the css even more in the future.</p>
+<p>I like it though - it's very minimalistic yet elegant. However if you do not like it - you can create your own.</p>
+<h2>Usage</h2>
+<p>How to use braindead? Just create index.md, run <code>pip install braindead</code> and then <code>braindead</code>. That's it. This is the minimal requirement. Want more? Create <code>posts</code> and <code>pages</code> dir, put your content there.</p>
+<h2>CI/CD</h2>
+<p>I've added github actions to the repo that lint the code with all the linters, run tests (none written so far though) and create automatic PRs if everything is okay.</p>
+<p>If a PR got merged, it results in a new release on GH and <a href="https://pypi.org/project/braindead/">PyPi</a> of the project.</p>
+<h2>The result</h2>
+<p>Let's start with generation speed - it's quite imporant.</p>
+<p>My blog has about 50 pages now. To render it, <a href="https://github.com/grski/braindead">braindead</a> took: </p>
+<div class="codehilite"><pre><span></span><code>real    0m0,975s
+user    0m0,908s
+sys     0m0,060s
+</code></pre></div>
+
+<p>Below 1 second. I find that acceptable.</p>
+<p>Now on to the rendering of the page:</p>
+<p><img alt="Load time of grski.pl generated with braindead" src="https://grski.pl/static/articles/creating-braindead/load.png" /></p>
+<p>Google PageSpeed Insight:
+<img alt="Speed score on pagespeed insights" src="https://grski.pl/static/articles/creating-braindead/speedinsight.png" /></p>
+<p>This is how it looks like:
+<img alt="Default template of braindead" src="https://grski.pl/static/articles/creating-braindead/template.png" /></p>
+<p>You can see a live example on my blog - <a href="https://grski.pl">grski.pl</a></p>
+<h2>Summary</h2>
+<p>I'm quite satisfied with what I've created. It's simple, crude and that's the goal. If you want to learn more, I encourage you to visit the repo's site: <a href="https://github.com/grski/braindead">braindead</a>. Overall it was a good exercise to create something for fun, something that just works.</p>
+<p>Lastly, I'd like to ask something of you. Please use right tools for the right job. I might be crazy, but I think that going further along on the path of simple sites that take 20 seconds to load and eat up half of your RAM while driving the CPU crazy, is not a good idea. Let's write simple software that runs they way it should. </p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

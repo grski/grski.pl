@@ -1,0 +1,351 @@
+Title: 3 months in a remote, no-onion, distributed Product Team
+Date: 2019-08-29
+Authors: Olaf Górski
+Language: en
+Slug: three-months
+Description: First months of my work in quite an interesting company - Thirty3.
+
+## Introduction
+
+
+Curious title, right? I mean who does that these days? 
+
+Adhere to extreme programming principles in your work, do it in a remote and asynchronous way. And in a distributed manner.
+On top of that, hire juniors that not always are that fit for such kind of work. Sounds like recipe for a disaster? Wrong.
+
+
+Well, we do that. This article is my take on how that works for us and especially, for me. I'll write not only about work, but also life. 
+
+And my personal development, my growth as a person, what changed compared to my earlier jobs.
+
+
+Without further ado. Let's begin by saying couple of words about me to give you some context.
+
+
+## Who the heck even are you?
+
+
+So. This specimen that wrote this particular article goes by the name of Olaf. He's quite young, nearing his 20th year on this planet. A self-taught programmer. No IT diploma, or any diploma in fact, for that matter. Less than 2 years total of professional experience. I've gained it through working for 4 different companies. So even though limited sample size, I've seen my fair share of different approaches.
+
+
+And now, despite everything, I landed in an amazing team. I'm not afraid to say it is a rock-star team. Why and how? I have no clue nor do I care. I'm not anyone special, I'm not some kind of know-it-all senior developer. Nah. What I am instead is a poor junior trying to find his way in a field he loves. That's it.
+
+
+## Terminology
+
+
+### XP or Extreme Programming
+If you find yourself confused what is 'XP' or 'extreme programming', well, I don't blame you. It's a model of working in a certain way. A way that stresses focus on three things: customers, simple rules, ownership.
+
+
+If you want to know more about it, [read about it here](https://www.geeksforgeeks.org/software-engineering-extreme-programming-xp/) or better yet — get the book by the ever amazing Kent Beck, called [Extreme Programming.](https://www.amazon.com/Extreme-Programming-Explained-Embrace-Change/dp/0321278658)
+
+
+### No-onion
+And this 'no-onion' thing? Well, over here in Poland, but not only here, we often work with a so called 'onion' mindset. It's kind of leftover from the times when communists reigned in Poland. If I were to sum it up shortly: I'd say that it's the mindset where the only thing that matters is the price. Not quality. Not consumer satisfaction.
+
+
+WE NEED TO GO CHEAPER AND EARN. Broken shit.
+
+
+Onion project is a project that you can smell from a mile away. No tests. Spaghetti code. No documentation. Nothing works. If something does, no one knows why.
+Onion team is a team that's compromised only of juniors. Why? Because you can earn the highest provision on them and they are cheaper. Regardless of the pile of crap they might produce for the client.
+
+
+No-onion is the opposite of that and something we focus on.
+
+
+Terminology is clear, time to move further.
+
+
+What does working in such a team do to me?
+
+
+## It makes me grow.
+First thing that I have to talk about when it comes to my three months as a full time employee in this company is... well. It made me grow. A lot.
+
+
+Why? Well it's simple. I work with people who are way above me when it comes to skills, experience or knowledge. Way above.
+
+
+Of course I'm the youngest one. The Least experience. No degree.
+
+
+And you know what? None of that matters. You either catch up and work alongside the team, fulfilling your tasks, or you drown. That's it. And believe me, in XP team, that's quite supportive and helpful, growth happens, for all of you.
+
+
+Sometimes it's hard, it's very demanding. Every single day I have moments where I think — 'how could you have done that' and I just feel like a plain idiot. I do, really. It's normal. It's anticipated. [Good.](https://www.youtube.com/watch?v=IdTMDpizis8)
+
+
+What I've found though is that here I'm surrounded by people who actually *want* to see me grow. Who are ready to help me, invest into me you could say, because they see my potential. Or something. I don't know.
+
+
+Having a team that is passionate about their work, a team that cares about quality and stuff they make. Think about it. This is a proper place that encourages growth all the time. I love it. Our company is like that. We aren't big. We don't hire just about anyone. No. We carefully selects its people. Why? Every single employee affects the rest. Simple as that.
+
+
+If you have a rock-star team that has a good synergy, which supports each other... Well, then this produces a positive feedback loop. It spirals outta control and that, my dear, is something that creates amazing things. Not 10x engineers, not 100x engineers, but 1000x teams. It means such teams will deliver way, way, way more than normal teams.
+
+
+Above I already mentioned that I work with people smarter than me. It makes my coding skills improve a lot.
+
+
+You know what though? My coding skills are not what improved the most over this period. No. So what did?
+
+
+## New competences.
+After these 3 months one thing is certain. I have way broader outlook on IT world and software development process, than I did before. Why? Simple — in the model we work with, grabbing the tasks from Jira and doing them in a mindless manner doesn't work. Like... at all. You have to do more than that. Way more.
+
+
+So you have to learn. Learn how you can be independent. How you can make sure you deliver everything your customer needs, even if he doesn't know he needs it. So you start learning different things. Let's look at my case.
+
+
+I'm a simple backend developer. I know basics of Python I'd say. And Django. That's it for the most part. In previous jobs I often did only that — coding, some architectural work from time to time. Here, it's different.
+
+
+As of lately, I'd say that I do less and less coding. Because my simple self started getting involved in the whole process. From the beginning, where a client has a need, to the end where you test your implementation. Then I can see the satisfaction on customer's face. I can do all that instead of doing plain coding of another endpoint that someone decided we need. for whatever reason.
+
+
+Speaking of clients and my new competences...
+
+
+### Working with clients and contact with them -- communication skills.
+That's what I started doing. Before it rather wasn't the case. Now I have calls with our clients. I talk with them. Gather the requirements. Try to understand their needs, what they want, what they think they want and what they actually want. Sometimes what a client wants and what he needs are two different things.
+
+
+I love it — one of my traits is that I like working with people. The feeling of creating something and knowing it'll make someone's life easier. Solving their issue. Saves their time, money. It causes me to glow, always. Now I can see it with my own two eyes.
+
+
+This is making me a better programmer — why? Because when I talk with client, there comes a certain time. Time to show some empathy. Put myself in their shoes. Soak all their domain knowledge and understanding of their real problems. Then I can dig into it and know what and how I should implement.
+
+
+Believe me when I say one thing. Having domain knowledge of your client, seeing through his real problems, is priceless. That way you start gathering certain patterns in solving problems. In every business, there is a finite amount of business problems. In most cases that is.
+
+
+A LOT of them have common patterns. Seriously. When you start understanding the root of the problem, the pattern that you need to solve it, it stays with you. Next time you see a problem in a completely different field or even in your life outside of work, you understand it.
+
+
+It's mental models in the end. If you work with your client directly, you do one thing. You get his domain knowledge, his perspective and so on. It's far easier to pick up  these patterns then — if you reflect on it for a bit.
+
+
+Often, if you have someone being the middle man, you'll get a miscommunication issues along the way. Here, that possibility has a smaller limit. If you are at least decently intelligent human being I mean. Also you have to know basic skills in communication. it's way less possible — you talk directly to the client.
+
+
+While you are at it, you also learn a very, very crucial skill — communication. You have to learn it and do it way better with your client, than you can do with your teammates. Or you fail at your work.
+
+
+### Other branches of software development
+So I already told you I'm a backend developer, right?
+
+
+Well, if I want to satisfy my costumer in full and do it efficiently, I can't know only backend. Got to start branching out. What does that mean? In plain terms, know at least the basics of the whole process.
+
+
+Fronted, operations, creating tickets, managing jira and so on. I do not say I'm a front/fullstack/devops or whatever. 
+
+At the very least though, I understand what will needs doing on their part to deliver a given feature. I can estimate better then. Also it enables me to make their work easier. Because I can plan it for them by creating detailed and descriptive tasks. Tasks that tell them what exactly they need to do.
+
+The way I address myself in my thoughts has been changing lately. I've began moving from thinking about myself as a `django developer` to something else. Now, step by step, I'm beginning to see myself as a software engineer.
+
+Other than that though, other than changing my mindset, it does something else. It gives me...
+
+
+## Independence.
+
+
+All the above enables me to be independent. I don't need to wait for someone's decision. I don't give a damn about some manager's decision that looks stupid. I don't. I talk to the client, if it's within a certain scope, satisfy his need, that's it.
+
+
+Fully independent almost. Of course, there are certain cases, where you'll consult with a team. Why? Because the client suddenly wants to rebuild the whole app. There is a chance that's not needed, so let's talk it through first. In most cases though, I've been able to become more self-sufficient in my work.
+
+
+Before it wasn't always the case.
+
+
+Now on the other way, I'm kinda my own boss. Heck, even boss of my colleagues you'd say. If there's something that requires someone's expertise I tell them to do it. I create a task for that person, own it and then get them to do it.
+
+And most of the time, they do it without any hassle or complaint, why? Because if they help me with eager, I'll do the same in the future. Nice. Team work, yet quite independent of each other.
+
+
+But this independence means...
+
+
+## More responsibility - Extreme Ownership.
+A lot more. Now there are no excuses — *he* told me to do that. *She* did not deliver. No. You are responsible, you are the main person on a certain feature/task/whatever. Not anyone else. That brings me, to another point.
+
+
+One that is so, so, so important in the whole software development process, that I can't stress it enough. Yet it's so rarely seen.
+
+
+What I mean is...
+
+
+Own your shit. Simple. Everything you do — it's on you. Your actions — they are on you. Own up to your success, but also to your mistakes. If you are the one to break something, fix it, amend for your faults. Be an adult.
+
+
+More about that you can read in a great book by an ex navy seal [Jocko Willink — Extreme Ownership](https://www.amazon.com/Extreme-Ownership-U-S-Navy-SEALs-ebook/dp/B00VE4Y0Z2)
+
+
+Either way - this is what we do. We do extreme programming, and one of it's principles is that — extreme ownership. Own your tickets. Own your features. Own your code. Own your mistakes. Own your successes.
+
+
+It was hard for me to adjust to that.
+
+
+Very hard. Why? I had to take shove my pride into my pocket and then throw it away. It's never easy admitting you screwed up, sometimes in a very bad manner. And that I did on more occasions that once. Especially recently. It's like swallowing a very bitter pill. It's hard, but necessary. It's also something that is an opportunity. One way to handle failure and someone telling you that you did, is to take it personal, feel offended and quit. This is the 'snowflake generation' way. It's easy.
+
+
+What requires more effort is understanding that this is good. If you failed at something, if someone pointed out you did something wrong, you should be happy. Criticism, if not destructive is one of the best things that can happen to us. Why? Because then we can improve on that. If we improve on that, our vision clears a bit and maybe we grow, we get better. Then, perhaps, this will enable us to improve on our own. Why? Let's say you have a better vision of your work or of your skills and knowledge. Because you'll get there after improving on something about yourself. Something that someone told you is your flaw. You can now do that yourself. You can reflect and see some more faults. Because your vision will be less cloudy. Or at least it's more probable.
+
+
+That's why I think you should embrace criticism. Own up to your mistakes and use them as an opportunity to grow.
+
+
+Actually I'm both happy and a bit sad when I screw. Of course, I'm sad because I probably let someone down slightly. Fortunately it's mostly myself, but I'm also happy, as it means I can improve easily now. Especially if I meditate on it or someone else looks and gives me feedback.
+
+
+Which is good. It's amazing. Improvement is life. Who doesn't improve, dies. Who doesn't improve, regresses.
+
+
+Back in the days though...
+
+
+There was always some kind of excuse why this didn't work, why that feature was not delivered. Here? No more. I won't search for faults outside anymore. I am an adult, a young one, but an adult nonetheless. You are an adult. Handle your stuff.
+
+
+Does that mean you cannot fail at something? Hell no. But if you do, admit it. Be honest and honorable about it. It happens to everyone.
+
+
+## No bullshit - no useless meetings.
+
+
+Simple. We have a short daily, couple of minutes really, mostly to let others know what we work on, and maybe banter a little. Working remote kind of requires that.
+
+
+Other than that, we may do a planning once in a week, so like an hour or two. Then a retrospective from time to time.
+
+
+1to1 also happen.
+
+
+Other than that, that's it. If you need a meeting with someone, talk to that person. That's it.
+
+
+This is great. Believe me when I say it, that before I used to be in Meetings. Meeting with capital m. Because they were so important. It was time where the whole damn team was discussing what color should we make this one button. For an hour. I'm not joking.
+
+
+Such meetings, they were killing me inside. Literally and metaphorically. I was dying inside knowing I'm wasting my precious time on this planet. Also dying physically as usually you hold meetings in conference rooms. Conference rooms do not get that much air flow. In case there is a lot of people in such a room, oxygen gets used up quickly by you when you breathe. Oxygen levels in the air drop and carbon dioxide's rise. So you aren't oxygenated enough. Your brain works worse. Your heart too. All you muscles. Yeah. Serious stuff.
+
+
+## Feeling heard and in control, having impact
+It's amazing you know. I, a simple junior, have a real impact on how we work, how we do things, how the products turn out. Never once have I felt like no one listened to me. Many of my ideas have been approved and implemented. Others turned out to be not that good, so we didn't proceed with them.
+
+
+Can you imagine the great feeling when you can shape your reality at work? It's amazing. I love it.
+
+The same as I love the feedback culture we have.
+
+
+## Remote work
+We work remotely. At first one might say - FANTASTIC! Right?
+
+
+Well, not always.
+
+
+Humans are social creatures, whatever we like it or not. We need other human beings from time to time. It's way harder while doing remote work, but not that much. Why?
+
+
+It is simple. The time you'd spend on commuting, you can spend otherwise. On meetings with your friends, family or other activities. It's good. Ever since I started working remotely, I'd say that my relationships improved.
+
+
+Make no mistake though. I sometimes miss the office banter. Other things too. Lunches every day, working in a comfy and prestigious building. Yep I do. I miss the people from my former work at Synerise.
+
+
+It's worth it though. Especially considering how I save time on commuting and time is all I have in my life. Priceless.
+
+
+There's another point you should take into consideration though. When thinking about remote work you have to be familiar with one word. Discipline. You need discipline. So you can sit down and do the work. It's far easier to get distracted when you work at home. Your comfy chair and room, sitting in your pyjamas. On the other hand it's also harder to distract yourself. Why?
+
+
+If you actually sit down to the job, enter your flow or whatever, there's no one to interrupt you. In the office where you often share rooms with teammates or worse yet, work in the open space, it happens all the time. You have to deal with other people's shit. In case of remote work, you won't have to do that as much. So you might get more effective if you have some discipline.
+
+
+## Trust
+What mesmerized me was that phrase:
+
+
+> We trust each other, otherwise we wouldn't be working together. We do trust business.
+
+
+It did. One thing is to say it, another to implement it. During these 3 months, I was always trusted. That I'll do my tasks properly, that I'm not lying about my working hours (we don't track the time most of the time) and so on.
+
+
+And you know what? Having that trust put in me made me want to not fail it. I do not want to fail anyone that trusted me so much time and time again.
+
+
+This is way different from typical SH. Way, way different. And it's amazing. More companies should take example.
+
+
+## It's hard
+So far I've been saying how I love my work, it's good, makes my grow and so on, but you know what?
+
+
+It's goddamn hard.
+
+
+I'm constantly pushed out of my comfort zone. Have to do stuff that is new to me, that makes me uncomfortable at first. You have to learn how to live with it and the beginnings are not easy. Frikin hard. You can feel lost, unworthy and your impostor syndrome will flare up like crazy. Believe me.
+
+
+It at least did in my case. I had to push through it. Make it or break it. Grow or die.
+
+
+If that was not enough, some of my personal problems piled up during this time. Sometimes I really wanted to quit trying. At times, I did, but in the end I pulled back up, or, so I think.
+
+
+I could've easily switched to easier, cozy job. One where I wouldn't have to give a shit about anything. I could, you know, sit through from paycheck to paycheck and live comfortably.
+
+
+Knowing myself though, knowing how men are designed, I understood one thing. I'd be miserable in such a situation. I personally think that most people constantly need a challenge. They NEED to feel like they are on a mission. They have to conquer something. It's how we evolved.
+
+
+That's why in the end I pulled through, despite many of my mental hurdles.
+
+
+## Mindset switch
+It was tough. We try not to adhere to the traditional model of eg. software house where you bill your client by the hour. We go about that differently. How? Well, that's a matter for another article. About the brokenness of current software development model. I'll leave it at that let's say. Adding that switching from typical polish 'onion' mindset was and still is hard.
+
+
+## Its not for everyone
+
+
+Clearly, as you can see, XP, remote work, working in such a team, it's not for everyone. Simple as that.
+
+
+I bet you there are lots of people who'd fail at this job. Like I do at times. But I try to improve and repeat the process, and I'll try as long as necessary. Or till they get enough of me and fire my ass. XD. But even then I won't quit.
+
+
+As I said, it's hard and demanding, because it's way different.
+
+
+## ...Yet it's so refreshing
+It is. It simply is. XP model, remote work, no-onion, growth mindset and so on. All of that put together...
+
+
+...is actually the best model I've worked with so far.
+
+
+And this setting that we have is something I wouldn't trade for anything else.
+
+
+Believe me when I say that I took a risk when I came over here. At first, we did just some small part-time stuff, while I worked at Syne. Yet I decided to quit that job, which was good. LIKE REALLY. Synerise is a good company to work for. Heck, I didn't even know we'd make it this far. All I had was a guarantee that we have a budget for the next 3 months. What next? Who knows. We'll see.
+
+
+I knew the people though. I trust them. So I said goodbye to Synerise, with a heavy heart, but I did. It was a hard decision to make, but I do not regret it for even a second.
+
+
+This is what makes me think, such a work model will be the future. Companies that'll implement it, will flourish. Or they will die. That's it.
+
+
+How long will I stay over here? Who knows. For now though — I don't see myself anywhere else. Despite all the difficulties, I really enjoy my current work.
+
+What else to say. I don't know. This is my simple recount of the past three months I've spent here. Overall I hope that more companies will adopt such a model. And it'll make our industry flourish, our clients happy and developers glowing. That's it from me. Thanks for reading.

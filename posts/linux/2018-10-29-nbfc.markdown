@@ -1,0 +1,247 @@
+Title: Manjaro i Asus GL702ZC - konfiguracja chłodzenia Ryzen 7 1700 na Linuxie
+Date: 2018-10-29
+Authors: Olaf Górski
+Slug: nbfc-manjaro
+Description: Jak napisałem konfigurację chłodzenia dla Asusa Gl702ZC na linuxie. Magia Ryzen 7 1700 w laptopie.
+
+W tym roku wymieniłem swój stary, leciwy już laptop, chodzący na Pentiumie jeszcze, na nowiutkiego, 8 rdzeniowego potwora z Ryzenem 7 1700, 32 GB RAM i 256 GB SSD PCI-E M2 na pokładzie.
+
+Przeskok oczywiście niesamowity, niemniej jednak zaniepokoiło mnie coś, o czym pisałem już w innymi wpisie - [wysokie temperatury i ogólne problemy ze wsparciem sprzętu.](https://grski.pl/windows-linux.html)
+
+W skrócie - kernel jeszcze nie obsługiwał tej konkretnej konfiguracji zbyt dobrze, przez co laptop rozgrzewał się do temperatur o wiele wyższych, niż mógłbym sobie tego życzyć.
+
+Jednakże niedawno, mimo całego [zamieszania wokół świata Linuxa,](https://grski.pl/sjw.html#sjw) wyszła wersja 4.19 jądra. Przeglądając changelog natknąłem się tam na wzmiankę o czymś takim jak steronwnik k10temp, oraz rzekomo lepsze wsparcie dla pewnych procesorów z rodziny Ryzen/Threadripper. Zaświeciła mi się lampka.
+
+Nie zrozumcie mnie źle, Windows nie jest zły - jak pisałem, to tylko narzędzie, ale fajnie by jednak było móc siedzieć sobie na Linuxie jako hoście. Oj tak. 
+
+A więc postanowiłem się trochę pobawić i sprawdzić, czy faktycznie coś się zmieniło.
+
+# Manjaro to the rescue!
+
+Dystrybucje, które najszybciej adaptują nowe kernele bez większych problemów, to zazwyczaj te, które mają cykl wydawniczy Rolling Release - oznacza to tyle, że nia ma tam jakiś konkretnych wersji, które są wspierane przez X czasu, nasz system jest ciągle aktualizowany po prostu. 
+
+Jedną z takich dystrybucji jest dystrybucja Manjaro. Świetna sprawa, ogółem super system, polecam.
+
+W każdym razie. Zainstalowałem i zacząłem bój. I co?
+
+Otóż, wyobraźcie sobie, udało się. Niżej przedstawiam jakie kroki podjąłem - jeśli ktoś z was również korzysta z tej konfiguracji sprzętowej, to być może skorzysta.
+
+Pierwszą rzeczą, którą musiałem zrobić, to upewnienie się, czy posiadam zainstalowane dwie paczki tak w zasadzie - `lm_sensors` oraz `lib32-lm_sensors.`
+
+Jeśli takowe posiadamy, (ja miałem je zainstalowane domyślnie), to wskakujemy do kochanej konsoli i wpisujemy:
+
+`sudo sensors-detect`
+
+Po czym wszystko potwierdzamy. Na koniec moim oczom ukazała się taka oto wiadomość:
+
+    Driver `k10temp' (autoloaded):
+    
+    - Chip `AMD Family 17h thermal sensors' (confidence: 9)
+
+Wiedziałem, że jestem w domu. Po tem jeszcze wpisałem `sensors` , które faktycznie wydrukowało mi wskaźniki temperatur!
+
+Po chwili googlowania, wyczytałem, iż dobrze by było zainstalować jeszcze: `asus-fan-dkms-git`
+
+Kluczem do sukcesu okazała się jednak paczka `nbfc`
+
+Zainstalować ją można prosto z AUR'a, ale do wyboru są dwie paczki - `nbfc`  i `nbfc-git`
+
+Ja wybrałem tą drugą, gdyż może ona być kapkę nowsza czasem, a mi zależało na jak najświeższej wersji.
+
+Jak instalować z AURa? Potrzebny nam `yaourt`
+
+Notka: Jak słusznie zauważył [Aryman1983](https://4programmers.net/Profile/43216), zapomniałem doprecyzować tu jednej rzeczy: `yaourt` nie jest tu jedynym rozwiązaniem do instalacji pakietów z AUR, istnieje masa innych programów do tego służąych, lepszych i gorszych. `yaourt` nie jest jakimś standardem. 
+
+Czyli:
+
+    sudo pacman -Syu yaourt
+    yaourt nbfc-git
+
+W zależności od potrzeby, czasem do tego yaourta trzeba dorzucić sudo, ale z tym bym uważał, bo to paczki z AUR'a jednak, a potrafią być one niebezpieczne (bardzo, bardzo rzadko), ale jednak.
+
+Zgodnie z dokumentacją `nbfc` , odpalam serwis.
+
+    systemctl start nbfc.service
+
+Potem już tylko 
+
+    nbfc config -r
+
+które ma mi zasugerować jaki config powinienem wybrać dla mojego sprzętu. Niestety dla laptopa GL702ZC takowy nie istniał, ale dostałem rekomendację zbliżonego - GL702VM, który co prawda sprzętowo jest zupełnie inny, ale cóż... A może zadziała?
+
+Odpalam zatem następujące polecenie:
+
+    nbfc config -a "Asus ROG GL702VM"
+
+Niestety, rzuca mi błędem. Podobnież znany problem, wystarczyło wpisać:
+
+    mv /opt/nbfc/Plugins/StagWare.Plugins.ECSysLinux.dll /opt/nbfc/Plugins/StagWare.Plugins.ECSysLinux.dll.old
+
+I ponowić próbę.
+
+Chwila prawdy i.... Działa. Wiatrak zaczyna pracować inaczej. Sukces.
+
+Teraz tylko problem, bo dalej nie chodzi tak, jak chciałem - a to wiatrak od GPU się nie załącza kiedy trzeba, a to wiatrak od CPU za szybko i głośno chodzi. Coś ten config mi nie odpowiadał i to bardzo. Cóż miałem zatem zrobić, jak nie napisać swój. Biorę się do roboty zatem.
+
+Okazało się to nie za trudne - jedynie męczące było ustalenie odpowiednich rejestrów Embedded Controllera, które odpowiadają za kontrolowanie prędkości wiatraczków, niemniej jednak narzędzie  `ec-probe` przyszło mi z pomocą. Jak? A no albo rzucasz `ec-probe monitor —clearly` lub co jakiś czas `ec-probe dump` to wyświetla nam rejestry, tylko skąd wiedzieć, który jest odpowiedni? 
+
+Wybrałem prostą metodę - obciążając mocno CPU/GPU wymuszałem szybszą pracę wiatraków, wtedy też od razu zmieniały się wartości w rejestrze, co sugerowało, że to ten poszukiwany. Jak to zrobić? Do obciążania CPU/pamięci/dysku jest fajna paczka - `stress` , po jej instalacji wystarczy wpisać, w przypadku ryzena 7:
+
+    stress --cpu 16 --timeout 60
+
+I już przez 60 sekund nasze CPU będzie w 100% obciążone, co wymusi szybkie odpalenie się wiatraczków. Rejestr ustalony.
+
+Dla GPU analogicznie, tylko zamiast `stress`, korzystam z `glmark2` .
+
+Jak się okazuje, za wiatraczki odpowiadają rejestry spod adresów 0xA0 i 0xA6, czy też raczej 160, 166. No to wstawiam je do configu, metodą prób i błędów ustalam jakie prędkości będą dobre przy jakich temperaturach tak, żeby za głośno laptop nie chodził przypadkiem jeśli temperatura jest niska, ale i żeby na wyższych dobrze chłodził. Ostatecznie coś takiego mi wyszło:
+
+```
+<?xml version="1.0"?>
+<FanControlConfigV2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NotebookModel>GL702ZC</NotebookModel>
+  <Author>grski</Author>
+  <EcPollInterval>500</EcPollInterval>
+  <ReadWriteWords>false</ReadWriteWords>
+  <CriticalTemperature>90</CriticalTemperature>
+  <FanConfigurations>
+    <FanConfiguration>
+      <ReadRegister>151</ReadRegister>
+      <WriteRegister>151</WriteRegister>
+      <MinSpeedValue>0</MinSpeedValue>
+      <MaxSpeedValue>8</MaxSpeedValue>
+      <IndependentReadMinMaxValues>false</IndependentReadMinMaxValues>
+      <MinSpeedValueRead>0</MinSpeedValueRead>
+      <MaxSpeedValueRead>0</MaxSpeedValueRead>
+      <ResetRequired>true</ResetRequired>
+      <FanSpeedResetValue>8</FanSpeedResetValue>
+      <FanDisplayName>CPU</FanDisplayName>
+      <TemperatureThresholds>
+        <TemperatureThreshold>
+          <UpThreshold>30</UpThreshold>
+          <DownThreshold>0</DownThreshold>
+          <FanSpeed>0</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>45</UpThreshold>
+          <DownThreshold>40</DownThreshold>
+          <FanSpeed>12.5</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>65</UpThreshold>
+          <DownThreshold>50</DownThreshold>
+          <FanSpeed>37.5</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>70</UpThreshold>
+          <DownThreshold>60</DownThreshold>
+          <FanSpeed>50</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>75</UpThreshold>
+          <DownThreshold>65</DownThreshold>
+          <FanSpeed>75</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>79</UpThreshold>
+          <DownThreshold>72</DownThreshold>
+          <FanSpeed>100</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>85</UpThreshold>
+          <DownThreshold>75</DownThreshold>
+          <FanSpeed>100</FanSpeed>
+        </TemperatureThreshold>
+      </TemperatureThresholds>
+      <FanSpeedPercentageOverrides />
+    </FanConfiguration>
+    <FanConfiguration>
+      <ReadRegister>152</ReadRegister>
+      <WriteRegister>152</WriteRegister>
+      <MinSpeedValue>0</MinSpeedValue>
+      <MaxSpeedValue>8</MaxSpeedValue>
+      <IndependentReadMinMaxValues>false</IndependentReadMinMaxValues>
+      <MinSpeedValueRead>0</MinSpeedValueRead>
+      <MaxSpeedValueRead>0</MaxSpeedValueRead>
+      <ResetRequired>true</ResetRequired>
+      <FanSpeedResetValue>8</FanSpeedResetValue>
+      <FanDisplayName>GPU</FanDisplayName>
+      <TemperatureThresholds>
+        <TemperatureThreshold>
+          <UpThreshold>30</UpThreshold>
+          <DownThreshold>0</DownThreshold>
+          <FanSpeed>0</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>45</UpThreshold>
+          <DownThreshold>40</DownThreshold>
+          <FanSpeed>12.5</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>65</UpThreshold>
+          <DownThreshold>50</DownThreshold>
+          <FanSpeed>37.5</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>70</UpThreshold>
+          <DownThreshold>60</DownThreshold>
+          <FanSpeed>50</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>75</UpThreshold>
+          <DownThreshold>65</DownThreshold>
+          <FanSpeed>75</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>79</UpThreshold>
+          <DownThreshold>72</DownThreshold>
+          <FanSpeed>100</FanSpeed>
+        </TemperatureThreshold>
+        <TemperatureThreshold>
+          <UpThreshold>85</UpThreshold>
+          <DownThreshold>75</DownThreshold>
+          <FanSpeed>100</FanSpeed>
+        </TemperatureThreshold>
+      </TemperatureThresholds>
+      <FanSpeedPercentageOverrides />
+    </FanConfiguration>
+  </FanConfigurations>
+  <RegisterWriteConfigurations>
+    <RegisterWriteConfiguration>
+      <WriteMode>Set</WriteMode>
+      <WriteOccasion>OnWriteFanSpeed</WriteOccasion>
+      <Register>160</Register>
+      <Value>10</Value>
+      <ResetRequired>true</ResetRequired>
+      <ResetValue>10</ResetValue>
+      <ResetWriteMode>Set</ResetWriteMode>
+      <Description>CPU FAN</Description>
+    </RegisterWriteConfiguration>
+    <RegisterWriteConfiguration>
+      <WriteMode>Set</WriteMode>
+      <WriteOccasion>OnWriteFanSpeed</WriteOccasion>
+      <Register>166</Register>
+      <Value>10</Value>
+      <ResetRequired>true</ResetRequired>
+      <ResetValue>10</ResetValue>
+      <ResetWriteMode>Set</ResetWriteMode>
+      <Description>GPU FAN</Description>
+    </RegisterWriteConfiguration>
+  </RegisterWriteConfigurations>
+</FanControlConfigV2>
+
+```
+Teraz już tylko zapisanie tego pliku do `"/opt/nbfc/Configs/Asus ROG GL702ZC.xml"`
+
+oraz odpalenie
+
+    nbfc config -a "Asus ROG GL702ZC"
+
+Finito. Działa wszystko tak, jak chciałem. A jak działa, to czemu by się z kimś nie podzielić - zrobiłem zatem PR'kę do repo `nbfc` i czekam teraz na odpowiedź.
+
+Na koniec przydałoby się jednak jeszcze to, by ta usługa odpalała się automatycznie po uruchomieniu komputera, a więc jeszcze:
+
+    systemctl enable nbfc.service
+
+Teraz już serio gotowe.
+
+Męczący, to był dzień i wyzwanie, zajęło mi to kilka godzin, ale fajnie. Lubię takie przygody.

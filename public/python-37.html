@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>Właśnie wyszedł Python 3.7, co nowego wąż nam syczy? - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Krótki opis nowych funkcjonalności, które pojawią się w Pythonie 3.7." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Krótki opis nowych funkcjonalności, które pojawią się w Pythonie 3.7.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2018-06-28T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2018-06-28</h3>
+                <h1 class="title"><a href="https://grski.pl/">Właśnie wyszedł Python 3.7, co nowego wąż nam syczy?</a></h1>
+                <div class="content">
+                    <p>Hej! Ekscytujący dzień, wczoraj premierę miała miejsce nowa wersje Pythona o numerze 3.7, w której troszkę się dzieje, dlatego dziś po krotce opiszę, cóż nowego przyniosły nam kolejne PEPy.</p>
+<h1>Zacznijmy od czegoś, na co czekałem: async i await</h1>
+<p>Te dwa wyrazy są od teraz zarezerwowane jako słowa kluczowe, jest to zmiana łamiąca kompatybilność wsteczną, ale to nic!</p>
+<p>Te keywordy wprowadzają do Pythona piękne ułatwienie co do programowania asynchronicznego, dzięki którym kod wykonywany asynchronicznie można pisać praktycznie tak, jak kod wykonywany tradycyjnie.</p>
+<p>Rozwiązane znane, chociażby z Darta, gdzie robi piękną robotę, czy nawet JS'a. Cieszy mnie, że i w Pythonie teraz oficjalnie można z tych keywordów korzystać w samym języku.</p>
+<h1>PEP 563 - opóźniona ewaluacja adnotacji typów</h1>
+<p>Python jest językiem typowanym dynamicznie, niemniej jednak od jakiegoś czasu już, mamy w nim coś takiego jak adnotacje typów - możemy dać znać programiście, jaki typ dana metoda powinna zwracać. Zwrócenie innego co prawda nie spowoduje, że nam się program wysypie, co najwyżej jakieś ostrzeżenie, ale wciąż, to jakaś pomoc przy debugowaniu.</p>
+<p>Do tej pory adnotacje typów negatywnie wpływały na czas startu pythonowych skryptów - wydłużały go. Naprawiono ten błąd. To pierwsza sprawa.</p>
+<p>Druga, nie mniej ważna, to fakt, że do tej pory w adnotacjach typów można było używać jedynie istniejących w chwili deklaracji typów/nazw. Co to znaczy?</p>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nl">C</span><span class="p">:</span>
+<span class="nv">@classmethod</span>
+<span class="n">def</span><span class="w"> </span><span class="n">from_string</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="w"> </span><span class="nl">source</span><span class="p">:</span><span class="w"> </span><span class="nf">str</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nl">C</span><span class="p">:</span>
+<span class="w">    </span><span class="p">...</span>
+
+<span class="n">def</span><span class="w"> </span><span class="n">validate_b</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="nl">obj</span><span class="p">:</span><span class="w"> </span><span class="n">B</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nl">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="p">...</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nl">B</span><span class="p">:</span>
+<span class="w">    </span><span class="p">...</span>
+</code></pre></div>
+
+<p>Żeby ten kod kiedyś zadziałał, to musiałby wyglądać tak:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nl">B</span><span class="p">:</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="k">class</span><span class="w"> </span><span class="nl">C</span><span class="p">:</span>
+<span class="nv">@classmethod</span>
+<span class="n">def</span><span class="w"> </span><span class="n">from_string</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="w"> </span><span class="nl">source</span><span class="p">:</span><span class="w"> </span><span class="nf">str</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nl">C</span><span class="p">:</span>
+<span class="w">    </span><span class="p">...</span>
+
+<span class="n">def</span><span class="w"> </span><span class="n">validate_b</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="nl">obj</span><span class="p">:</span><span class="w"> </span><span class="n">B</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nl">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="p">...</span>
+</code></pre></div>
+
+<p>To tak jakby w Pythonie coś niżej miało powodować błąd.</p>
+<div class="codehilite"><pre><span></span><code>def f_a():
+    f_b()
+
+def f_b():
+    ...
+</code></pre></div>
+
+<p>Z racji tego, że powyższy zapis jest poprawny, bo metody mają opóźnioną ewaluację, to i do adnotacji typów trzeba było to dodać. Dokładniej, o co chodzi?</p>
+<p>Po prostu w adnotacjach typów dostępne były jedynie te nazwy, które są wbudowane, lub były dostępne już w lokalnym scope w 'linijce' dodawania adnotacji. Od teraz nie ma takiego problemu, gdyż ewaluacja adnotacji została opóźniona.</p>
+<p>Dodatkowo warto wspomnieć, że ten PEP został przygotowany przez Polaka - <a href="http://lukasz.langa.pl/?lang=pl">Łukasza Langa</a></p>
+<h1>PEP 538: poprawiona obsługa strategii 7-bitowego ASCII i tekstu na starych platformach</h1>
+<p>Python jako język jest starszy od Unicode. Nieźle, co? Przez to w jego pierwszej implementacji nie było domyślnego wsparcia dla Unicodu, a wszystko siedziało w ASCII. Obecnie jednak, w czasach globalizacji, nie jest to rozwiązanie możliwe do utrzymania, stąd obecnie zarówno Python2 jak i Python3 wspierają UTF-8, przy czym wersja nr 3 domyślnie używa utf'a. Python2 ze względów kompatybilności wciąż na ASCII głównie siedzi, ale to nic. Do 2020 przestanie być w końcu wspierany także fajnie : )</p>
+<h1>PEP 540: Wymuszanie tryby uruchomienia UTF-8</h1>
+<p>Używając argumentu -X utf8 czy też zmiennej środowiskowej PYTHONUTF8, można wymusić na CPythonie tryb UTF-8. Wtedy CPython ignoruje kompletnie lokalne ustawienia systemu i wali sobie wszystko w UTF-8.</p>
+<p>Wada: to wymuszanie nie ma wpływu na niektóre moduły (np. GNU readline), procesy potomne nie-Pythonwych appek i procesy potomne wywołujące starsze wersje Pythona.</p>
+<h1>PEP 553: Wbudowany breakpoint()</h1>
+<p>Nowa wbudowana metoda - breakpoint(). Łatwy i nowy sposób na to, jak sobie w danym fragmencie kodu przejść do debuggera.</p>
+<p>Robi on nic innego, jak wywołuje metodę 'sys.breakpointhook()', tyle, że ta metoda domyślnie importuje 'pdb' natomiast 'breakpoint()' może wywołać dowolnie wybrany przez nas debugger.</p>
+<p>Można wyłączyć poprzez ustawienie PYTHONBREAKPOINT w env variables na 0.</p>
+<h1>PEP 539: Nowe C API dla Thread-Local Storage</h1>
+<p>Cóż, tutaj za dużo się nie będę rozpisywał, tak jak mówi sam tytuł.</p>
+<h1>PEP 562: Zmieniony dostęp do atrybutów modułów</h1>
+<p>Mówiąc krótko - zmiana tego jak i gdzie można używać <strong>geattr</strong>() na modułach.</p>
+<h1>PEP 564: Nowe funkcje z dokładnością co do nanosekundy.</h1>
+<p>Jak wam kiedyś brakowało dokładności w mierzeniu czasu pythonem, to teraz już chyba nie.</p>
+<p>PEP 564 dodaje 6 nowych wariantów istniejących już funkcji z modułu 'time', które pozwalają operować na nanosekundach.</p>
+<div class="codehilite"><pre><span></span><code>time.clock_gettime_ns()
+time.clock_settime_ns()
+time.monotonic_ns()
+time.perf_counter_ns()
+time.process_time_ns()
+time.time_ns()
+</code></pre></div>
+
+<p>Na Windowsie i Linuxie dokładność tych funkcji jest ponad 3 razy lepsza niż np. time.time().</p>
+<h1>PEP 565: wyświetlanie DeprecationWarning w <code>__main__</code></h1>
+<p>Jeśli w naszym skrypcie znajdzie się jakiś kod, który jest już zdeprecjonowany, i będziemy go używać, chociażby w jakimś naszym skrypcie, w ciele <code>__main__</code>, od teraz będziemy widzieć powiadomienia o deprecjacji danego rozwiązania.</p>
+<p>Głównie chodzi tutaj o jakieś proste skrypty czy sytuacje gdy używamy Pythona interaktywnie.</p>
+<p>Ostrzeżenia wywołane przez zaimportowane moduły czy biblioteki wciąż pozostaną domyślnie ukryte.</p>
+<p>Wcześniej 'DeprecationWarning' było widoczne tylko podczas uruchamiania testów. Not anymore! I dobrze.</p>
+<p>Dlatego od teraz w Pythonie, a konkretniej w bibliotece standardowej, mamy trzy różne warning deprecation o różnych zachowaniach.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">FutureWarning</span><span class="o">:</span><span class="w"> </span><span class="n">domyślnie</span><span class="w"> </span><span class="n">zawsze</span><span class="w"> </span><span class="n">wyświetlany</span>
+<span class="n">DeprecationWarning</span><span class="o">:</span><span class="w"> </span><span class="n">domyślnie</span><span class="w"> </span><span class="n">wyświetlany</span><span class="p">,</span><span class="w"> </span><span class="n">tylko</span><span class="w"> </span><span class="n">jeśli</span><span class="w"> </span><span class="n">kod</span><span class="w"> </span><span class="n">uruchomiony</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="n n-Quoted">`__main__`</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="n">kiedy</span><span class="w"> </span><span class="n">uruchomimy</span><span class="w"> </span><span class="n">testy</span>
+<span class="n">PendingDeprecationWarning</span><span class="o">:</span><span class="w"> </span><span class="n">domyślnie</span><span class="w"> </span><span class="n">wyświetlany</span><span class="p">,</span><span class="w"> </span><span class="n">tylko</span><span class="w"> </span><span class="n">jeśli</span><span class="w"> </span><span class="n">kod</span><span class="w"> </span><span class="n">uruchomiony</span><span class="w"> </span><span class="n">jest</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="n">testach</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="n">mówi</span><span class="w"> </span><span class="n">nam</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">tym</span><span class="p">,</span><span class="w"> </span><span class="n">że</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="n">przyszłości</span><span class="w"> </span><span class="n">będzie</span><span class="w"> </span><span class="n">dane</span><span class="w"> </span><span class="n">zachowanie</span><span class="w"> </span><span class="n">zmienione</span>
+</code></pre></div>
+
+<h1>PEP 560: wsparcie core języka dla modułu typing i Generic Types</h1>
+<p>Nic dodać, nic ująć.</p>
+<h1>Nowy tryb runtime: -X dev</h1>
+<p>-X dev czy też zmienna środowiskowa PYTHONDEVMODE sprawia, że w CPythonie włączy się development mode, który zaś powoduje, że CPython wykonuje pewne dodatkowe operacje, sprawdzenia, podczas uruchomienia, które jednak zajmują za dużo czasu, więc by default są wyłączone.</p>
+<h1>PEP 552: pliki .pyc oparte na Hashu!</h1>
+<p>Wcześniej było tak, że python sprawdzał sobie to, czy bajtkod jest aktualny poprzez porównanie nagłówków zcachowanych plików (.pyc) do metadata plików źródłowych - data ostatniej modyfikacji i rozmiar. Był z tym problem, kiedy zmiany były na tyle blisko siebie w czasie lub na tyle małe, że Python ich 'nie widział', zatem nie kompilował sobie ponownie kodu źródłowego do bajtkodu, co mogło okazać się problematyczne, np. w odtwarzaniu bugów z produkcji czy coś.</p>
+<p>Od teraz sprawdzanie będzie po hashu zamiast po timestampie czy rozmiarze, jednakże nie jest to opcja domyślna - runtime Python dalej będzie używać timestampów, jednakże możemy wygenerować sobie .pyc walidujące po hashu za pomocą 'py_compile' czy 'compileall'.</p>
+<h1>Yield w comprehensions i generator expressions</h1>
+<p>Dostał deprecated. Na razie tylko DeprecationWarning, ale od 3.8 wyrzuci nam już SyntaxError, także uważajcie na nowy kod. Chodzi o to, by nie mieszać tam, gdzie nie trzeba i żeby lisit comprehensions zawsze zwracał jakąś listę a nie np. właśnie generator.</p>
+<h1>Nowe moduły</h1>
+<p>Kilka nowych modułów też wpadło, opisujemy!</p>
+<h2>contextvars</h2>
+<p>Wsparcie dla context variables - podobne są one dla zmiennych lokalnych dla danych wątków, jednakże w przeciwieństwie do nich, poprawnie obsługują one kod asynchroniczny. Kolejna zmiana, która mnie cieszy.</p>
+<p>'asyncio' i 'decimal' od teraz domyślnie używają i wspierają context variables.</p>
+<h2>dataclasses</h2>
+<p>Coś, co mi się podobało od dawna - dzięki temu dekoratorowi możemy zaoszczędzić sobie pisania sporej ilości bojlerkodu. Co prawda w Pythonie i tak jest go niedużo, ale wciąż.</p>
+<p>Ten dekorator generuje dość standardowy konstruktor, czy metody takie jak <code>__repr__()</code>, <code>__eq__()</code>, <code>__hash()__</code> za nas. Oczywiście sami możemy wybrać, co konkretnie wygeneruje a co nie.</p>
+<p><a href="https://www.python.org/dev/peps/pep-0557">Poczytajcie, bo ciekawy temat.</a></p>
+<h2>importlib.resources</h2>
+<p>Nowe APi i jedna nowa ABC (Abstract Base Class) do obsługi resourców z innych paczek.</p>
+<h1>Zmiany w modułach</h1>
+<h2>argparse</h2>
+<p>Nowa metoda 'ArgumentParser.parse_intermixed_args()' pozwala na mieszanie ze sobą w kolejności opcji i argumentów pozycyjnych.</p>
+<h2>asyncio</h2>
+<p>Tutaj sporo zmian, nowych ficzerków i upgrejd jeśli chodzi o wydajność.
+Jest ich tu na tyle dużo, że raczej zachęcam do zapoznania się z nimi samodzielnie.</p>
+<h2>fpectl został usunięty</h2>
+<h2>FreeBSD 9 i starszy już nie są oficjalnie wspieranymi platformami</h2>
+<h1>Pomniejsze zmiany</h1>
+<p>Od teraz w konsoli można przekazywać więcej niż 255 argumentów, podobnie funkcje mogą mieć również więcej niż 255 parametrów.</p>
+<p>'bytes.fromhex()' oraz 'bytearray.fromhex()' od teraz ignorują wszelakie whitespace z ASCII - nie tylko spacje.</p>
+<p>'str, bytes, bytearray' od teraz obsługują nową metodę 'isascii()', która sprawdza czy string albo bajty zawierają tylko znaki ASCII.</p>
+<p>od teraz 'object.<strong>format</strong>(x. '')' będzie znaczył to samo co 'str(x)' a nie tak jak wcześniej 'format(str(sefl), '')'</p>
+<p>sorted() i list.sort() jeszcze szybsze - dla pewnych określonych przypadków te metody działają nawet 40-75% szybciej.</p>
+<p>Podobnie dict.copy() - on jednak jest 5.5 raza szybszy obecnie.</p>
+<p>Zmieniono również sposób generacji bajtkodu, dzięki którym wywołania metod będą 20% szybsze!</p>
+<p>Czas uruchomienia Pythona na linuxie zmniejszono o 10% a na macu o 30%!</p>
+<p>OrderedDict został ogłoszony jako oficjalna część specyfikacji core Pythona!</p>
+<h1>Podsumowanie</h1>
+<p>W pythonie 3.7 zmieniło się to i wiele, wiele więcej, jednakże ja sam nie jestem w stanie tego wszystkie opisać. By dowiedzieć się więcej zachęcam do zajrzenia do <a href="https://docs.python.org/3.7/whatsnew/3.7.html">dokumentacji</a>.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

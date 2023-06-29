@@ -1,0 +1,13 @@
+div { padding: 0; margin: 0;}
+body { font-family: "JetBrains Mono", "Source Code Variable", monospace, sans-serif; padding:0; margin:0; background-color: #FFFF00;}
+.t3-logo {background: black; width: 150px; padding: 20px; top:0; left: 0;}
+body > section { margin: auto; width: 80%; }
+.row {display: flex; flex-wrap: wrap; margin: 0 auto; width: 100%; padding: 0;}
+h1 {text-align: center; font-size: 6.4rem;}
+h2 {font-size: 4rem;}
+h3 {font-size: 3rem;}
+.tableStats {text-align: right; margin-left: auto; padding: 15px;}
+.tableCommiters {text-align: center; margin: 0 auto; }
+button {background: none; border: none; font-size: 2rem; font-family: inherit; padding: 15px;}
+button:after { content: "|"} button:before { content: "|"} button:hover { text-decoration: underline;}
+.sectionHeader {margin-right: auto;}

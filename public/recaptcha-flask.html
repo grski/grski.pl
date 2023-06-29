@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>Dodawanie ReCaptcha do appki we Flasku - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Dziś kilka słów o tym, jak walczyć ze spamem prostym sposobem w aplikacjach korzystających z Flask" />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Dziś kilka słów o tym, jak walczyć ze spamem prostym sposobem w aplikacjach korzystających z Flask">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2017-09-28T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2017-09-28</h3>
+                <h1 class="title"><a href="https://grski.pl/">Dodawanie ReCaptcha do appki we Flasku</a></h1>
+                <div class="content">
+                    <p>Jeśli mamy aplikację, która udostępnia wysyłanie wiadomości, komentarzy czy czegokolwiek podobnego, istnieje szansa, że prędzej czy później zaczniemy mieć problemy ze spamerami. Jak sobie zatem z tym prosto poradzić?</p>
+<p>Na pomoc przychodzi nam Google i ReCaptcha - słynne 'Nie jestem robotem'.</p>
+<p>Jak dodać ochronę ReCaptcha do naszej aplikacji? W prosty sposób.</p>
+<p>Zacznijmy zabawę. Na początku musimy oczywiście zainstalować wymagany moduł.</p>
+<p>Fajnie jest, kiedy listę wymaganych zależności trzymamy sobie w przeznaczonym do tego pliku, najczęściej requirements.txt, gdzie wypisane są wszystkie potrzebne biblioteki czy innego programy. Jeśli takowy posiadasz, to dodaj do niego flask-recaptcha. Dlaczego warto go mieć? Cóż, łatwość instalacji i przenośność. Następnym razem, kiedy będziesz chciał uruchomić appkę gdzie indziej możesz po prostu wpisać pip install -r requirements.txt a pip sam sobie wszystko odczyta i
+zainstaluje. Chyba wygodniej niż ręcznie się z tym męczyć, czy klikać w IDE, prawda?
+Jeśli cie nie przekonałem, to po prostu doinstaluj sobie ten moduł za pomocą pipa</p>
+<div class="codehilite"><pre><span></span><code>pip install flask-recaptcha
+</code></pre></div>
+
+<p>Dobra, idziemy dalej.</p>
+<p>Teraz musimy dodać kilka linijek do pliku <code>view.py</code> lub <code>app.py</code> jak tam zwał tak zwał, zależy jak nazwałeś plik i jak skonstruowana jest twoja applikacja.</p>
+<p>app.py:</p>
+<div class="codehilite"><pre><span></span><code>    <span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+    <span class="kn">from</span> <span class="nn">flask_recaptcha</span> <span class="kn">import</span> <span class="n">ReCaptcha</span>
+
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="n">recaptcha</span> <span class="o">=</span> <span class="n">ReCaptcha</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Jeżeli już wcześniej zadeklarowałeś obiekt app, to raczej nie ma co tworzyć go od nowa.</p>
+<p>Teraz zmodyfikować musimy szablon formy, którą chcemy chronić.</p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="nt">&lt;form</span><span class="w"> </span><span class="na">method=</span><span class="s">&quot;post&quot;</span><span class="w"> </span><span class="na">action=</span><span class="s">&quot;/submit&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!--- tutaj powinny znajdować się twoje inputy itd. --&gt;</span>
+<span class="w">        </span><span class="cp">{{</span> <span class="nv">recaptcha</span> <span class="cp">}}</span>
+<span class="w">        </span><span class="cm">&lt;!--- tutaj submit button --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/form&gt;</span>
+</code></pre></div>
+
+<p>I gotowe.
+Teraz musimy jedynie zweryfikować czy captcha nam zwróciła poprawne zdanie testu.</p>
+<p>app.py/views.py or sth</p>
+<div class="codehilite"><pre><span></span><code>    <span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+    <span class="kn">from</span> <span class="nn">flask_recaptcha</span> <span class="kn">import</span> <span class="n">ReCaptcha</span>
+
+    <span class="n">recaptcha</span> <span class="o">=</span> <span class="n">Recaptcha</span><span class="p">()</span>
+    <span class="n">recaptcha</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="nd">@route</span><span class="p">(</span><span class="s2">&quot;/submit&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">submit</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">recaptcha</span><span class="o">.</span><span class="n">verify</span><span class="p">():</span>
+                <span class="c1"># co zrobić w razie poprawnej odpowiedzi</span>
+                <span class="c1"># najpewniej zapisać &lt;form&gt; do db lub wysłać wiadomość</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Niepoprawny captcha!&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Teraz musimy skonfigurować recaptche jedynie i wszystko będzie działało.
+Konfiguruje się ją przez standardowe API configu Flaska.</p>
+<p>Do skonfigurowania mamy następujące konieczne właściwości:</p>
+<div class="codehilite"><pre><span></span><code>RECAPTCHA_ENABLED - True albo False
+
+RECAPTCHA_SITE_KEY - klucz publiczny
+
+RECAPTCHA_SECRET_KEY - klucz prywatny
+</code></pre></div>
+
+<p>Ważna uwaga. Trzymanie kluczy prywatnych w takiej formie, zwłaszcza jeśli korzystasz w githuba, nie jest mądre. O tym jak bezpiecznie trzymać różne hasła/klucz w aplikacji flaska musisz sobie sam poczytać.
+Następujące pola są nieobowiązkowe:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">RECAPTCHA_THEME</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">kolorystyka</span><span class="w"> </span><span class="nv">foremki</span><span class="w"> </span><span class="s1">&#39;dark&#39;</span><span class="w"> </span><span class="nv">lub</span><span class="w"> </span><span class="s1">&#39;light&#39;</span>,<span class="w"> </span><span class="s1">&#39;light&#39;</span><span class="w"> </span><span class="nv">jest</span><span class="w"> </span><span class="nv">domy</span>ś<span class="nv">lne</span>
+
+<span class="nv">RECAPTCHA_TYPE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">rodzaj</span><span class="w"> </span><span class="nv">zabezpieczenia</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">mo</span>ż<span class="nv">e</span><span class="w"> </span><span class="nv">by</span>ć<span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="s1">&#39;image&#39;</span><span class="w"> </span><span class="nv">obrazek</span>,<span class="w"> </span><span class="nv">lub</span><span class="w"> </span><span class="s1">&#39;audio&#39;</span><span class="w"> </span><span class="nv">d</span>ź<span class="nv">wi</span>ę<span class="nv">k</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nv">ods</span>ł<span class="nv">uchania</span>,<span class="w"> </span><span class="nv">domy</span>ś<span class="nv">lnie</span><span class="w"> </span><span class="nv">jest</span><span class="w"> </span><span class="s1">&#39;image&#39;</span>
+
+<span class="nv">RECAPTCHA_SIZE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">rozmiar</span><span class="w"> </span><span class="nv">obrazka</span>,<span class="w"> </span><span class="s1">&#39;normal&#39;</span><span class="w"> </span><span class="nv">lub</span><span class="w"> </span><span class="s1">&#39;compact&#39;</span>,<span class="w"> </span><span class="nv">domy</span>ś<span class="nv">lnie</span><span class="w"> </span><span class="nv">normal</span>
+
+<span class="nv">RECAPTCHA_TABINDEX</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="ss">(</span><span class="nv">int</span><span class="ss">)</span><span class="w"> </span><span class="nv">dla</span><span class="w"> </span><span class="nv">tych</span>,<span class="w"> </span><span class="nv">kt</span>ó<span class="nv">rzy</span><span class="w"> </span><span class="nv">u</span>ż<span class="nv">ywaj</span>ą<span class="w"> </span><span class="nv">tabindexu</span>
+</code></pre></div>
+
+<p>Jak to wygląda w mojej appce?</p>
+<div class="codehilite"><pre><span></span><code>    RECAPTCHA_ENABLED = True
+    RECAPTCHA_SITE_KEY = &#39;twoj_klucz_publiczny_z_api_recaptcha&#39;
+    RECAPTCHA_SECRET_KEY = &#39;twoj_klucz_prywatny_z_api_recaptcha&#39;
+
+    app = Flask(__name__)
+    app.config.from_object(__name__)
+
+    recaptcha = ReCaptcha()
+    recaptcha.init_app(app)
+</code></pre></div>
+
+<p>Reszte przykładowego kodu możecie znaleźć chociażby <a href="https://gitlab.com/olafgorski/bloggo/blob/master/app.py">tu</a></p>
+<p>Skąd wziąć klucz publiczny i prywatny?</p>
+<p><a href="https://www.google.com/recaptcha/">Stąd</a>
+Obsługa tej strony jest raczej nieskomplikowana. 
+Mała uwaga: jeśli chcemy korzystać z recaptchy na naszym lokalnym środowisku developerskim, jako domenę wystarczy podać localhost.</p>
+<p>Warto wspomnieć, że jest możliwość wybrania 'niewidzialnej' weryfikacji, poczytajcie o tym, bo to sprawi, że wasze recaptcha w ogóle nie będzie widoczne dla użytkownika, nie wymagając od niego żadnej akcji, a i tak spełni swoją funkcję dzięki algorytmom Google rozpoznającym zachowanie usera.</p>
+<p>Tyle na dziś</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

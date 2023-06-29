@@ -1,0 +1,111 @@
+Title: Pierwszy miesiąc drobnego handlowania bitcoinem - małe podsumowanie z perspektywy świeżak
+Date: 2016-06-16
+Authors: Olaf Górski
+Slug: btc-miesiac
+Description: Hej ludziska, dziś troszkę wam opowiem o moim pierwszym miesiącu z handlem Bitcoinem i innymi kryptowalutami.
+
+Notka: ten artykuł przedstawia sytuację sprzed tygodnia. Ceny i stan faktyczny mogą się teraz zupełnie różnić.
+
+
+
+Miesiąc temu jeszcze zupełnie nic nie wiedziałem o kryptowalutach, blockchainie i całym tym świecie. Dziś dalej nie wiem zbyt dużo, praktycznie nic, ale przynajmniej wiem nieco więcej niż wcześniej - wcześniej byłem jedynie świadom, że coś takiego jak Bitcoin istnieje.
+
+Opiszę wam co zrobiłem podczas tego pierwszego miesiąca, starając się przy tym zachować obiektywizm. Uczcie się na moich błędach, co byście nie musieli na swoich.
+
+
+Zaczynajmy.
+
+# Początkowa inwestycja
+
+Z góry zaznaczę, że kwoty którymi operuje nie są znaczne. Jestem jeszcze biednym uczniakiem przez co mój kapitał jest mocno ograniczony.
+
+Tak wyglądały moje początkowe zakupy. ( Z racji tego, że bitcoina raczej rozliczamy w USD to w tej walucie będę też operował dla uproszczenia rachunków)
+
+DATE | USD | COIN | USD/COIN
+------------ | ------------- | ------------- | -------------
+2017-05-12 | $208 | 0.11403871 BTC | $1823
+2017-05-12 | $52 | 1.68310083 LTC | $31
+
+Jak widać na początek zainwestowałem około $260. Czyli +/- 1000 zł. Za 800 zł kupiłem Bitcoina, za resztę LTC. Nie miałem pojęcia po co dokładnie kupiłem LTC, ale akurat wtedy rosło tak jak i Bitcoin to pomyślałem, że czemu nie, hehe.
+
+Pierwsza lekcja: nie daj się ponieść emocjom.
+
+
+DATE | USD | COIN | USD/COIN
+------------ | ------------- | ------------- | -------------
+2017-05-22 | $132 | 0.06197560 BTC | $2129
+2017-05-22 | $260 | 0.11853572 BTC | $2193
+
+# Wzrosty
+
+Parę dni mija. Bitcoin rośnie jak szalony. Decyduję się wskoczyć w to głębiej. Poszły dwa przelewy. Jeden za 1000 zł drugi za 500 zł. Z racji pewnych komplikacji musiałem wysłać kwotę w dwóch przelewach. Pieniądze zaksięgowali mi w odstępach czasu w których bitcoin zdążył już podrożeć o około 250 zł. Kurka wodna.
+
+W tamtej chwili na LTC straciłem jakieś 20%. Lekcja wyciągnięta. Nie kupuj kiedy wykres przypomina wielkie zielone dildo.
+Ale i tak było spoko, bo BTC ostro szybował do góry.
+
+# Spadki
+
+Trochę mnie te spadki LTC przestraszyły, ale trudno.
+
+W międzyczasie douczyłem się troszkę więcej o kryptowalutach, blockchainie i tak dalej. Postanowiłem zabrnąć w ten światek głębiej.
+
+Wziałem zatem moje LTC i przesłałem je z giełdy na której je nabyłem - bitbay.net na nieco większą, zagraniczną giełdę - poloniex żeby się trochę pobawić. Sprzedałem moje 1.68310083 LTC, które nabyłem za 64$, za całe 43$ - spora obsuwa w cenie, ale niestety takie są efekty słuchania się swoich emocji. Jak widać dalej nie miałem pojęcia co robię.
+
+# STEEM
+
+Przez post @noisy na wypoku dowiedziałem się o Steemit i STEEM. Spodobała mi się idea serwisu więc postanowiłem dać mu szansę - założyłem konto i kupiłem trochę stimów za bitki, które miałem ze sprzedaży LTC. Kupiłem 39.135 STEEM za 43$. Mniej niż $1/STEEM. Jakie to teraz tanie w porównaniu, co?
+
+Już wtedy STEEM zaczął rosnąć. 3 czerwca zarobiłem już na nim około 15%, zatem sprzedałem ich 20 sztuk. Ale się cieszyłem, jak szczerbaty na suchary. Wtedy też postanowiłem zacząć handlować pozostałymi bitkojnami które posiadam.
+
+W międzyczasie przerzuciłem się z Poloniexa na Bittrexa. Na poloniexie support w ogóle nie ogarniał i tak dalej, a o bittrexie dobre rzeczy słyszałem, więc mimo wysokiego % od transakcji, przeszedłem do nich.
+
+# Głupich nie sieją, sami rosną
+
+No i się zaczęło. Mój debilizm przebił wszystkie granice. W ciągu tygodnia od przelania środków na Bittrex dokonałem dokładnie 97 transakcji.  Większość z nich tak po prostu w sumie losowa. Bo tak mi się wydawało. Żadnej analizy, niczego. Ot tak sobie decydowałem.
+
+Na początku miałem 0.29 BTC. W najlepszym momencie miałem 0.37 BTC, w najgorszym.... Lepiej nie mówić. Teraz znowu mi troszkę urosło i mam znowu dobiłem do 0.26 BTC. Uff. Trochę lipa, ale co tam.
+
+Przynajmniej się czegoś nauczyłem. Przestałem trejdować na pałę licząc na szczęście. Dołączyłem do takiej fajnej grupki gdzie ludzie się dzielą informacjami dotyczącymi altcoinów i tak dalej, sygnały te sprawy. Coinvestments się nazywa ta grupa. Polecam, dobre sygnały.
+
+W każym razie.
+
+# Małe podliczenie
+
+Zainwestowałem łącznie do tej pory 2500 zł. Mimo mojej głupoty i losowych trejdów i tak udało mi się zarobić 410 zł i powiększyć swój kapitał do 3010 zł.  16.5% zysku w miesiąc. Nie tak źle.
+
+Gdyby nie fakt, że parę razy się pomyliłem wiedziony zbytnią chciwością to zarobiłbym znacznie więcej - zamiast około 400 zł zarobiłbym ponad 1600 zł, bo miałem już aż 0.37 BTC w altcoinach, ale... Nie wyszło. No nic, nauczka wyciągnięta.
+
+Teraz jestem bardziej ostrożny z tym jak dysponuje swoimi bitkami i trzymam się pewnych zasad, słucham niektórych rad od bardziej doświadczonych osób z grupy.
+
+Wszystkie moje bitki są teraz ulokowane w BAT - Basic Attention Token - dość interesujący coin, który jest rozwijany przez między innymi gościa, który wymyślił JavaScripta czy współzałożyciela Mozilli. Naprawdę niezły projekt, tak przynajmniej wynika z mojej analizy. Wierzę, że prędzej czy później jego cena poszybuje do góry.
+
+
+DATE | COIN | BTC-BAT | BTC | USD
+------------ | ------------- | ------------- | ------------- | -------------
+2017-06-10 | 3338 BAT | 0.00007802 | 0.26 | $760
+
+# Przyszłość
+
+Jakie plany na teraz? Trzymać BAT. Dokupić STEEM, który, według mnie, również poszybuje do góry w przyszłości. Także tego.
+
+Podsumowując:
+1. Nie handluj pod wpływem emocji. Badź zimnym dziadem.
+2. Nie kupuj kiedy wykres przypomina zielone dildo. Najpewniej stracisz, bo cena spadnie.
+3. Bądź cierpliwy.
+4. Zrób research - nie kupuj na chybił trafił bo coś tam usłyszałeś. Popatrz na produkt który kupujesz, poczytaj o nim, przeanalizuj jego szanse na sukces. Jeśli w niego uwierzysz - śmiało kupuj.
+5. Warto inwestować w kryptowaluty nawet z małym kapitałem.
+6. Nie inwestuj pieniędzy których nie możesz stracić.
+
+Częste pytania, które mogą się nasunąć:
+
+1. Jak przechowywać bitki?
+Ja użyłem Cold Storage i Paper Wallet. Nie trzymaj bitków na giełdach. Koniec, kropka. Chyba, że na chwile albo jakieś kwoty do codziennych transakcji. Giełdy znacznie łatwiej mogą paść ofiarą kradzieży, także licz się z tym, że możesz na nich stracić swoje bitki.
+
+2. Z jakich giełd korzystałem?
+Najpierw za złotówki kupywałem na bitbayu - między innymi dlatego, że nie wymagają weryfikacji dla małych kwot. <15k
+Potem przelewam na bittrex. Dobre rzeczy słyszałem też o bitifinex. Złe o krakenie/poloniexie.
+
+3. Kiedy jest dobra pora, żeby sprzedać bitki?
+Zależy od ciebie. Dla mnie nigdy, bo wierzę w tę technologię. Będę trzymał i trzymał. Tobie może starcyzć, że zarobisz 10%, 25%, 50%, nie wiem.
+
+To by było na tyle. Do zobaczenia.

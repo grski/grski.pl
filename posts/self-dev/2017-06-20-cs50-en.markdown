@@ -1,0 +1,72 @@
+Title:  Best way to learn programming, or at least get started
+Date:   2017-06-20
+Authors: Olaf Górski
+Slug: start-cs50
+Language: en
+Description: What's the best way to learn programming these days? Let me enlighten you.
+
+Today I'd like to say a few words about this troubling topic that is learning Computer Science/Programming. And yes, there's distinction between the two. I mean programming is just programming. Computer Science is however much broader subject that covers not only programming, but also other fields that are not related to it whatsoever. And you should definitely strive to learn a bit more other than just how to program - if you have the basic overlook on how things work behind the scenes, you'll become a better programmer this way. Either way.  
+
+# So what's the best way to learn programming?
+
+The answer is simple - you do that through [CS50](https://www.edx.org/course/introduction-computer-science-harvardx-cs50x) - a MOOC done by Harvard. What is a MOOC? You can read about [it here - in my other post where I tell you how you can get education from MIT/Harvard and other Ivy League unis for free.](https://steemit.com/science/@grski/how-to-get-education-from-harvard-mit-for-free)
+
+In summary though, what is a MOOC though?
+
+> A massive open online course (MOOC /muːk/) is an online course aimed at unlimited participation and open access via the web
+
+Almost every top university of the world offers their courses online for free. They are called MOOCs.
+
+One of such is the topic of today's article. It's CS50 from Harvard that is being hosted on edX.
+
+Its introductory course to Computer Science. Topics that are covered here are broad, you learn not only about programming - structure of given language and it's use, but also about how things are designed, how they work behind the scenes and so on.
+
+But, let's take a break from my blabber for now and let the course's staff speak for a moment. David J. Malan is the course's main lecturer, he's a really brilliant and passionate person, who can teach you advanced topics in a very simple manner. Let's hear him speak!
+
+# What is CS50
+
+<div>
+
+<div class="videoWrapper"><iframe frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" src="https://www.youtube.com/embed/5dFxQRcsKpw" width="640" height="360"></iframe></div>
+
+</div>
+
+# Why CS50?
+
+There's multitude of reasons.
+
+1.  CS50 is very accessible for people who did not have any prior programming experience. The staff assumes that all you can do when you start the course is turning on your computer and using your browser. That's all. If you can do that, you are ready. What if you can do more? Well, then there are materials for those that are 'more comfortable' as to provide a bit of a challenge for you guys too!
+
+2.  It covers very broad range of topics. This gives you an overview of whole Computer Science, more or less. Thanks to that you might find what you are truly interested in. Also such an experience is priceless - thanks to that you become better programmer, as you have basic grasp of how things work in a broad perspective.
+
+3.  You'll learn basics of many languages there. Usually courses only teach you one language and that's all. Here however it's completely different. In CS50 you are taught that the tool you use is dependent on the task. I mean when you have a hammer everything seems like a nail, that's obvious. That's also why we see so many 'language wars' where fanboys of one try to prove that their language is better to the other. Completely pointless. Every language has its strong points and its weak points. It'd be stupid to use C as a back end for web app, same would be using PHP on embedded systems or to create an OS. Here you can learn that - to vary your tools depending on the task. That's very important. In this course you'll do taks with these languages: Python, C, HTML&CSS, JavaScript, even Scratch.
+
+4.  In CS50 you'll learn the basics of algorithms, data structures and so on. These topics may sound boring for some, but they are often useful, important and not as boring as they may seem. Basic knowledge in this field is a must for every programmer - basic search/sorting algorithms, data structures and so on. It's really important to know these
+
+5.  You'll learn how things work under the cover. Thanks to the fact that CS50 covers a bit of low-level stuff, you'll learn how your app works deep down. How your compiler works. What does it do. How your system manages memory and so on. Only knowing that your app will work if you click on it is not enough to become a good programmer. You gotta know more. Here you are provided with such a knowledge, at least overview of it, but that's all you need - basic grasp of things.
+
+6.  CS50 delivers its own environment. People are confused at the beginning. What IDE to use? Maybe some text editor? How to do things? Linux/Windows? MY GOD so many choices. Here however this is not a problem - the course offers you it's own environment. If you enroll you are provided with online env that you can use in your browser. Whole Linux system configured and ready to go just for you. No downloading anything, no installing anything. Just open your browser and you are ready to go. That environment is also noob friendly so that's another advantage.
+
+7.  You'll learn basics of Linux. I know, many companies don't use it, but it's important to know at least the basics of it - most of the web is run on linux servers. You should know how to navigate and do basic stuff in the console. In CS50 you'll also learn that because as I said, the course is run on Linux env. But here you don't have to bother with reinstalling your system or setting up a virtual machine. It's all in your browser already, buddy!
+
+8.  The course is split into around 10 weeks, each of which has it's own problem sets. These problem sets are always quite challenging and interesting, but doable. What's even though more important is the fact that they are graded - you can submit them and they'll tell you if you did a good job on them! That's quite cool, sin't it? Thanks to that you can monitor your progress and receive feedback concerning your code.
+
+9.  You'll dive a bit into the world of cryptography, hacking, reverse engineering, computer forensics and so on. As I said, the amount of topics covered is very broad.
+
+10.  You'll learn a bit about VCS called Git. What is it? You'll find that out in the course. What's important though is the fact that i's used in every major company around the world and is necessary for people working in IT-related fields. There's not even one serious project that doesn't use some kind of VCS, most of the time it's git. It's really a big advantage if you know it, your employer will be pleased.
+
+11.  This course has really big community. You can work with others, cooperate, get to know new people and so on. A lot of opportunities. Also if you encounter a problem, there's a 99% chance that you cna find help online.
+
+12.  The last argument for why you should go through cs50 is - it's just fun. All the lectures are fun and engaging, the problem sets are challenging but doable. It's amazing, really. The amount of things I learned from it astounds me even now. So does the amount of joy I got from it.
+
+Well in summary - CS50 is a really good course for every beginning programmer (and not only!) that wants to learn. It covers broad range of topics, is interesting and really worth getting into.
+
+Why not MIT 6.0.0 though? It's also introductory course for cs? Well, at least for me, it was a bit tougher. There many things you were assumed to know. It was also a bit more theoretical maybe. But well, you can check it out to if you want though. It's run on python mostly, so there's some common ground between the two. However, in my humble opinion, cs50 wins.
+
+So if you want to hop into programming world, here you go!
+
+# [CS50](https://www.edx.org/course/introduction-computer-science-harvardx-cs50x)
+
+And now it's time to do some work, good luck!
+
+If you liked my post, please upvote and follow me if you want to stay up to date with my posts - I plan on writing more about learning, programming, technology and education - how to get it for free on the Internet. Hope you enjoyed.

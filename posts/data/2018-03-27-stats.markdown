@@ -1,0 +1,78 @@
+Title: Internet w liczbach: Polska i świat
+Date: 2018-03-27
+Authors: Olaf Górski
+Slug: stats
+Description: Druga część wpisu o Internecie w liczbach. Dziś Polska i Świat.
+
+W nawiązaniu do poprzedniego posta [Internet w liczbach: czym jest CDN i dlaczego jest ważny](https://steemit.com/polish/@grski/internet-w-liczbach-czym-jest-cdn-i-dlaczego-jest-wazny) dziś napiszę trochę więcej o tych konkretnych liczbach właśnie.
+
+# Liczba użytkowników
+Zacznijmy od tego, ile osób korzysta z Internetu. Na podstawie badań firmy eMarketer, przeprowadzonych na początku 2016 roku, przedstawiono przewidywania, według których liczba użytkowników Internetu miała przekroczyć 4 miliardy dopiero gdzieś w 2019 roku, osiągając 4,17 miliarda w roku 2020. Dziś wiemy już, że te modele sprzed dwóch lat są mocno nieaktualne - prognozy na rok 2020 osiągnęliśmy już dziś.
+
+# Świat
+Obecnie użytkowników Internetu jest ponad 4 miliardy, a liczba ta została przekroczona już dawno temu, przynajmniej jak na standardy Internetu - bo aż kilka/kilkanaście tygodni minęło od tego wydarzenia. Porównując to do 1,73 miliarda użytkowników w roku 2009 czy równego miliarda z roku 2006, wyraźnie widać wzrost praktycznie wykładniczy.
+
+Oznacza to, że około 60% populacji w jakiś sposób jest użytkownikami Internetu. Jak sprawa ma się w Polsce?
+
+# Polska
+
+W Polsce sprawa ma się nieco lepiej - na 38 milionowy naród, aż 29,75 milionów naszych obywateli korzysta z Internetu, co daje wynik 78%. To dość sporo powyżej średniej a ten wskaźnik ciągle rośnie.
+
+Z tych prawie 30 milionów aż 17 milionów jest aktywnych na mediach społecznościowych, a 14 milionów korzysta ze społecznościówek za pomocą smartfonów i innych urządzeń mobilnych.
+
+Można też na to spojrzeć jednak z innej strony - żyje sobie gdzieś w Polsce 8 milionów ludzi, którzy nie mają styczności z Internetem, a obok nich kolejne 13 milionów tych, którzy z nich aktywnie nie korzystają, a mimo to są obecni w sieci.
+
+Oprócz tego warto wspomnieć, że mamy około 30 milionów użytkowników nowoczesnych telefonów. Łatwo można zauważyć tu pewną korelacje - liczba osób korzystających z komórek, jak i z Internetu jest podobna, nic dziwnego, gdyż z tych dwóch technologii nie korzystają już raczej tylko i wyłącznie osoby starsze, które po prostu są odcięte od postępu technologicznego.
+
+Sieci komórkowej zaś używa około 96%, jak widać, spora część osób wciąż broni się przed smartfonami, ale to raczej osoby starsze.
+
+# Urządzenia
+Około 70% osób ma smartfony, 80% laptopy lub pcty.
+
+Tablety co ciekawe, tylko 27%
+
+Przy tych urządzeniach spędzamy około 5h i 5mm minut dziennie, 1h i 42 minuty na mobilkach i około 3 godziy na tv, przy okazji słuchając muzyki online przez 50 minut.
+
+Spada również ilość posiadaczy TV - obecnie 88%, a wzrasta ilość osób posiadających smart TV.
+
+Warto dodać, że Polacy troszczą się o swoją prywatność, przynajmniej z założenia, a w sumie to i w praktyce - 90% uważa, że prywatność jest bardzo ważna, a ponad 40% korzysta z adblocka. Dotarliśmy też do momentu, gdzie już większość, bo 55%, woli załatwiać co tylko możliwe przez Internet - jak najmniej wychodzenia z piwnicy!
+
+Przy okazji mobilki jak zwykle dominują - prawie 60% ruchu na stronach generują już użytkownicy mobilni. Koniecznością jest liczyć się z nimi. W zasadzie obecnie strony powinno tworzyć się przede wszystkim z myślą o userach mobilnych.
+
+# Dane
+Obecnie dziennie przez sieć przalatuje około 51 miliardów GB dziennie, jest to jednak liczba zapewne znacznie niedoszacowana z racji tego, że nie uwzględnia pewnych czynników a jedynie sztywne skalowanie liniowe danych z roku 2016, a doskonale wiemy, że transfer dzienny rośnie w tempie wykładniczym, a nie liniowym. Niemniej daje to jednak jakiś pogląd.
+
+Jak już o mobilkach mowa - warto wspomnieć, że ilość danych komórkowych wykorzystywanych przez userów mobilnych potroiła się od 2014 roku, sięgając wielkości 8 exabajtów. Ile to jest? 8 miliardów gigabajtów. Troszkę mi się w głowie te liczby nie mieszczą, a wam?
+
+Szacuje się, że do 2025 ta liczba zwiększy się 10-krotnie i osiągnie około 500 miliardów GB/dzień. Jak to nie jest zachęta do zajrzenia w Big Data, Data Science, to nie wiem co jest - zapotrzebowanie na specjalistów z tej dziedziny znacząco wzrośnie - skąd ich jednak wziąć, skoro już obecnie ich brakuje?
+
+Wzrośnie też moim zdaniem liczba osób potrzebnych do zarządzania cała infrastrukturą - hardware, te sprawy. Będzie to coraz większym problemem by obsłużyć ciągle rosnącą sieć. Ciekawe wyzwania stoją przed nami.
+
+# Emaile
+W 2017 przez sieć przeleciało 270 miliardów wiadomości e-mail każdego dnia z których ponad połowa była spamem.
+
+Do 2021 tych wiadomości ma być 320 miliardów.
+
+# SMS
+Nie jest to może internet, ale też ciekawe.
+Dziennie wysyłamy tych smsów łącznie 22 miliardy. Porównując to, do 11 miliardów z roku 2014. Cóż. Trzy lata różnicy a liczba się podwoiła. Niesamowity wzrost.
+
+# Socjalki
+650 milionów tweetów na dzień. Ogarnijcie jakie serwery, jakich technologii trzeba użyć, żeby tyle syfu obsłużyć. Nie pojmuję.
+
+A co do reszty - to łącznie socjalki typu snapchat, fb, insta co minutę zyskują ponad 840 userów. 1200000 dziennie.
+
+Na fejsbuku co minutę pojawia się 510000 nowych komentarzy, 293000 nowe statusy i 136000 nowych zdjęć.
+
+W tym samym czasie google jest o coś pytany 3607080 razy.
+
+# Prędkość
+Średnia prędkość połączenia kablowego w Polsce wynosi 44 MBPS. Nieźle. Na mobilce wynik nieco mniejszy - 22 MBPS.
+
+Czuję tu trochę niedosyt, bo sam u siebie mam 10 na kablu i tyle samo na mobilce. : ( 
+
+# Podsumowanie
+Rzuciłem w was garścią statystyk, pora jednak wyciągnąć jakieś wnioski. Jakie?
+Mobilki rosną tak jak Internet. Nie powstrzymamy tego - trzeba skupiać się na responsywnych stronach mobile-friendly, ale nie zapominać wciąż o desktopach - ~40% to wciąż ogromna ilość. Do tego warto pomyśleć o karierze w Big Data czy generalnie rzeczach związanych z przetwarzaniem czy obsługą danych, bo tak naprawdę dane będą stawały się (a może już są) nową walutą, którą często płacisz, tylko nawet o tym nie wiesz.
+Źródło: badania firmy hootsuite,
+[1](https://blog.microfocus.com/how-much-data-is-created-on-the-internet-each-day/), [2](https://www.slideshare.net/wearesocial/digital-in-2018-in-eastern-europe-part-1-west-86864848)

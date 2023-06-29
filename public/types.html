@@ -1,0 +1,1022 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>Olaf Górski - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Opis podstawowych typów danych w Pythonie oraz najpopularniejszych operacji na nich." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Opis podstawowych typów danych w Pythonie oraz najpopularniejszych operacji na nich.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2023-01-27T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2023-01-27</h3>
+                <h1 class="title"><a href="https://grski.pl/"></a></h1>
+                <div class="content">
+                    <h1>Typy danych</h1>
+<p>W poprzednim rozdziale mówiliśmy sobie o zmiennych. Będąc przy tym, siłą rzeczy warto wspomnieć o typach danych jakie nasze zmienne mogą przechowywać w Pythonie. Porozmawiamy sobie o tym konkretnym języku, ale podobny podział występuje w większości języków.</p>
+<p>Jak już w poprzednich rozdziałach pisałem, Python nie wymaga od nas definiowania typów dla naszych zmiennych, nie ma w nim statycznego typowania. Przypomnij sobie co to oznaczało i odpowiedz na pytanie - co oznacza brak statycznego typowania? Czym jest dynamiczne typowanie? Jakie są tego wady/zalety. Poszukaj w książce, może w odpowiedziach do poprzednich rozdziałów. Zrób to teraz.</p>
+<p>Mimo tego dobrze wiedzieć, na jakie typy zazwyczaj dzielimy sobie różne zmienne. Dlaczego? Bo Python też ich używa, tylko sam niejako zgaduje jakiego typu użyliśmy. Zaleznie od typu na zmiennej można wykonywać różne operacje. Jak sobie o tym pomyślimy, to jest to logiczne, bo mimo tego, że pod spodem to wszystko to samo - kod binarny, to na pewnych fragmentach, które interpretujemy jako X, chcemy wykonywać tylko operacje ze zbioru Z, a gdy interpretujemy G, to tylko z F. Mówiąc prościej jak coś oznaczamy jako tekst, to inaczej to potraktujemy, czy inne modyfikacje bedziemy mogli zastosować, niż w sytuacji, gdy coś jest liczbą. Na liczbach możemy wykonywać operacje arytmetyczne dla odmiany a w tekście chociażby szukać swojego imienia. Zależnie od typu inne operacje. Logiczne, prawda?</p>
+<p>A więc w Pythonie wyróżniamy między innymi następujące podstawowe typy danych:</p>
+<ol>
+<li>Liczby</li>
+<li>Napisy</li>
+<li>Bajty</li>
+<li>Typ logiczny/boolowski</li>
+</ol>
+<p>Z bardziej złożonych mamy:</p>
+<ol>
+<li>Listy</li>
+<li>Krotki</li>
+<li>Słowniki</li>
+<li>Zbiory</li>
+</ol>
+<p>Zaraz je sobie wszystkie po kolei omówimy. Zacznijmy od liczb, bo będzie najdłużej prawdopodobnie.</p>
+<h2>Liczby</h2>
+<h3>Krótka charakterystyka</h3>
+<p>No to tak moi drodzy, w Pythonie wyróżniamy sobie trzy główne typy liczb: liczby całkowite, liczby zmiennoprzecinkowe i liczby złożone, czyli po kolei tak jakby inty, floaty, complex.</p>
+<p>Co to znaczy? </p>
+<h3>Liczby całkowite</h3>
+<p>Tu sprawa jest chyba prosta, prawda? <code>1, -1, 5, 0, 938, -24861</code> to przykłady liczb całkowitych, czyli po prostu <code>zwykłe</code> liczby bez żadnych przecinków, udziwnień i wynalazków. Więcej na ich temat rozpisywał się jakoś zbytnio nie będę bo i nie ma po co.</p>
+<p>Czy na pewno? </p>
+<p>Zwróć uwagę na to, że w przykładach wyżej pojawia nam się liczba ujemna, mniejsza od zera. W przypadku tekstu zapisać jest ją prosto, stawiamy minus przed i gotowe. Jako ludzie nauczeni jesteśmy, by interpretować to jako liczbę ujemną. Jak natomiast robi to komputer?</p>
+<h3>Przykładowy sposób reprezentacji liczb ujemnych</h3>
+<p>Przypomnijmy sobie poprzednie rozdziały i to, o czym tam mówiliśmy. Pokazywałem między innymi to, jak komputer zapisuje sobie liczby w pamięci i jak je reprezentuje, a mianowicie za pomocą systemu binarnego, bity, bajty, te sprawy. Teraz tak, pojawia się pytanie: jak w takim razie komputer oznacza, że dana liczba jest ujemna? Przecież <code>minusa</code> sobie nie postawi w pamięci w jakiś sposób. </p>
+<p>Otóż przedstawię wam, jak to wygląda, znowu, w C. Sposobów i pomysłów jak rozwiązać ten problem było wiele, dalej jest, ale my omówmy tylko jeden. Załóżmy, że operujemy sobie jakimś typem, który jest akurat wielkości 1 bajta. Znaczy to tyle, że ma 8 bitów długości. Ile w takim razie obsługuje maksymalnie wartości/liczb? Odpowiedz na to pytanie proszę, przelicz.</p>
+<p>Dobrze, mając 8 bitów, mamy do dyspozycji 8 zer i/lub jedynek. Czyli możemy maksymalnie przedstawić 256 wartości, prawda? Czyli na przykład liczby od 0, do 255. A no nie do końca! </p>
+<p>W domyślnym przypadku będziemy mieć do dyspozycji 256 wartości, prawda, ale z innego zakresu: od <strong>-127</strong> do <strong>127</strong>. Można to określić wzorem: $(+/-)2^7-1$</p>
+<p>Skąd ta zmiana? A no stąd, że zabieramy sobie jeden bajt by oznaczyć czy dana liczba jest dodatnia, czy ujemna, tak w dużym skrócie. W C, jeśli wiemy, że nie interesują nas wartości ujemne, możemy powiedzieć kompilatorowi, żeby przesunął zakres ujemny na dodatki. Zmienne ze znakiem vs zmienne bez. Signed variables vs unsigned variables. </p>
+<p>Swoją drogą jak już jesteśmy przy tym to dorzucę jeszcze jedną ciekawostkę. Wiesz, że nawet sposób zapisu kolejności bitów w pamięci jest umowny? Co to znaczy? Otóż niektórzy ludzie nie byli w stanie dogadać się co jest lepsze, zapisywanie bita o najwyższej wartości pierwszego czy ostatniego. Stąd też mamy dwa standardy: big endian (grubokońcowość) i little endian (cienkokońcowość). Co to znaczy i jak wygląda w praktyce? Prosta rzecz.</p>
+<p>Załóżmy, że r ozmawiamy o Big Endian. Chcemy pod adresem 100 wpisać wartość np. 0x4A3B2C1D. Wyglądałoby to tak.</p>
+<table>
+<thead>
+<tr>
+<th>100</th>
+<th>101</th>
+<th>102</th>
+<th>103</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4A</td>
+<td>3B</td>
+<td>2C</td>
+<td>1D</td>
+</tr>
+</tbody>
+</table>
+<p>A Little Endian?</p>
+<table>
+<thead>
+<tr>
+<th>100</th>
+<th>101</th>
+<th>102</th>
+<th>103</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1D</td>
+<td>2C</td>
+<td>3B</td>
+<td>4A</td>
+</tr>
+</tbody>
+</table>
+<p>Czyli odwrotnie. Chodzi generalnie o to, który zapisać gdzie. Robi nam to różnicę przy przeliczaniu/odczytywaniu tych wartości. Która lepsza? Łatwiejsze do ogarnięcia będzie pewnie Big Endian gdyż jest analogiczna do zapisu jakiego używamy na codzień w systemie dziesiętnym.</p>
+<p>Różne procesory mają różne konwencje, całe szczęście  ty nie musisz się tym martwić w swoim kodzie - interpreter Pythona zrobi to za ciebie.</p>
+<h3>Liczby zmiennoprzecinkowe i niedokładność ich reprezentacji</h3>
+<p>Z czym do czynienia mamy tutaj? Nic innego aniżeli liczby z <code>częścią po przecinku</code> mówiąc prostym językiem. I w zasadzie tyle. Jeśli widzimy gdzieś w Pythonie liczbę, gdzie występuje sobie kropeczka - np. <code>1.0</code>, to musimy wiedzieć, że mamy do czynienia z liczbą zmiennoprzecinkową. Dlaczego to ważna wiedza? Otóż...</p>
+<p>Tutaj, w przeciwieństwie do liczb całkowitych, udziwnienia są i to duże, ale pod spodem. Dłuższy temat, ale generalnie sprowadza się to do tak zwanej niedokładności reprezentacji liczb zmiennoprzecinkowych w systemie binarnym. Tak tak. Jasne, prawda? Powiem tylko tajemniczo, żebyście pamiętali zawsze i wszędzie, że używanie zwykłych floatów/doublów do dokładnych obliczeń czy przechowywania informacji o pieniądzach, to niezbyt dobry pomysł, gdyż czasami <code>0.1+0.2 != 0.3</code>. Dlaczego? Bo spróbuj za pomocą potęg dwójki dokładnie przedstawić np. 1/3. Ciężko, co? Ale o co mi w sumie chodzi?</p>
+<p>Rozważmy prosty program w C(sprawa dotyczy praktycznie każdego języka):</p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">example_float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">example_float</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0.1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Equal&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+</code></pre></div>
+
+<p>Prosty kod, prawda? Myślę, ża każdy powinien go zrozumieć, jeśli zna choćby podstawy programowania. Oczekiwanym przez sporą część wynikiem działania tego kodu byłoby wydrukowanie 'Equal' w konsoli, racja? Ja też oczywiście tak myślałem na początku. Sprawdźcie jednak sami, co się stanie gdy kod skompilujecie i uruchomicie.</p>
+<p>O dziwo "Equal" się nie wyświetliło. Dlaczego? Coś się pomyliło? Liczby pozornie te same, no bo i tu 0.1 i tu 0.1, co jest? Hm, może zmienną nam źle zapisało. Wypiszmy ją sobie i zobaczmy.</p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%f&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">example_float</span><span class="p">);</span>
+</code></pre></div>
+
+<p>Dodajcie sobie tę linijkę kodu po zakończonym ifie. Uruchomcie kod... I co? Oto wynik:</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">0.100000</span>
+</code></pre></div>
+
+<p>Chwila. Czyli jednak coś źle działa w naszym programie, prawda? No bo <code>example_float</code> jest przecież równy 0.1, prawda? A no nie.</p>
+<p>Tutaj tego nie widać, bo precyzja jest zbyt niska, ale poprawny to, zmuśmy funkcję <code>printf</code> do wyświetlenia naszego floata z większą dokładnością niż domyślna, bo jak widzicie, printf domyślnie wyświetla tylko 6 cyfr po przecinku.</p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">example_float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">example_float</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0.1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Equal&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%.16f&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">example_float</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+</code></pre></div>
+
+<p>Daje nam</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">0.1000000014901161</span>
+</code></pre></div>
+
+<p>Lekka modyfikacja naszego kodu i wszystko jasne. Nasz <code>example_float</code> nie jest równy dokładnie 0.1, tylko troszkę więcej. Dlaczego?</p>
+<p>Wszystko wynika stąd, że komputer 'operuje' na języku binarnym. Oznacza to, że przy tworzeniu liczb dostępne są jedynie potęgi dwójki, mnożone odpowiednio przez 1 lub 0, które można sumować(tak w dużym uproszczeniu, mówiliśmy o tym już). Nic zatem dziwnego, że nasz float tak wygląga. No bo spróbujcie z takich liczb <code>{..., 1/128, 1/64, 1/32, 1/16, 1/8, 1/4, 1/2, 0, 1, 2, 4, 8, 16, ...}</code> zbudować dokładnie 0.1. Nie da się tego zazwyczaj zrobić idealnie. Teoretycznie w wyimaginowanym świecie, gdzie mielibyśmy nieskończoną ilość pamięci do dyspozycji i nieskończoną ilość czasu, to moglibyśmy zbliżyć się nieskończenie blisko, nawet ją osiągnąć czasem, do dowolnej liczby. Ale o tym jak chcecie więcje, to o limitach sobie poczytajcie albo przypomnijcie z liceum i z matematyki.</p>
+<p>Stąd ta niedokładność - wynika ona jedynie z tego jak reprezentowane są liczby zmiennoprzecinkowe w pamięci komputera. O ile w większości przypadków, za pomocą skończonej ilości pamięci można uzyskać zadowalającą dokładność, tak są takie przypadki, gdzie niestety ta dokładność nie będzie wystarczająca.</p>
+<p>Do takich przypadków mamy specjalne biblioteki czy też może specjalne podejście, które inaczej zajmuje się tematem, niemniej jednak warto o tym wiedzieć. Dlatego też, jeśli piszemy jakiś program, który cokolwiek ma wspólnego z pieniędzmi, warto zastanowić się dwa razy zanim użyjemy floata czy doubla. Może lepiej złotówki trzymać w oddzielnym incie, a grosze w oddzielnym? Who knows.</p>
+<p>Rozwiązanie wielu problemów związanych z liczbami zmiennoprzecinkowymi znajdziemy w modułach <code>Decimal</code> i <code>Fraction</code>. </p>
+<p>Do poczytania: </p>
+<ol>
+<li>https://docs.python.org/3/library/decimal.html</li>
+<li>https://docs.python.org/3/library/fractions.html</li>
+</ol>
+<h3>Liczby złożone</h3>
+<p>Bardzo rzadko spotykane, ale czasem jak ktoś robi obliczenia naukowe jakieś albo inne dziwne rzeczy, to może mu się ta wiedza przydać - otóż są to liczby składające się z części rzeczywistej i urojonej. Matematyczne tematy. Jak nie wiesz o co chodzi, to nie przejmuj się.</p>
+<p>Definiujemy je tak: <code>test = 21 +3j</code> albo <code>some_complex_number = complex(32, 3)</code>. I możemy wykonywać na nich takie same operacje jak na liczbach - dzielenie, mnożenie, dodawanie i tak dalej. Czasami przydatne.</p>
+<p>I tyle. Na razie tyle potrzeba ci wiedzieć jeśli idzie o rzeczy, którymi kwalifikujemy jako liczby w Pythonie. Są jeszcze np. decimale czy rationalsy, ale o nich innych razem!</p>
+<h3>Operacje na liczbach</h3>
+<p>Jak wspomniałem przy okazji liczb złożonych, na liczbach możemy wykonywać wszelakie podstawowe operacje matematyczne i zadziałają one plus minus tak, jak byśmy tego oczekiwali. Mówię tutaj o dodawaniu, odejmowaniu, mnożeniu, dzieleniu, dzieleniu całkowitym, operacji modulo i innych podstawowych operacjach arytmetycznych.</p>
+<p>Operatory, jakie Python rozumie, to:</p>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Akcja</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td>Mnożenie</td>
+</tr>
+<tr>
+<td>**</td>
+<td>Potęgowanie, czyli 2 ** 3, znaczy dwa do potęgi trzeciej.</td>
+</tr>
+<tr>
+<td>/</td>
+<td>Zwykłe dzielenie zmiennoprzecinkowe</td>
+</tr>
+<tr>
+<td>+</td>
+<td>Dodawanie</td>
+</tr>
+<tr>
+<td>-</td>
+<td>Odejmowanie</td>
+</tr>
+<tr>
+<td>//</td>
+<td>Dzielenie bez reszty, czyli 5 // 2 równa się 2,  -11 //  3 równa się -4 (zwróć uwagę na negatywne liczby)</td>
+</tr>
+<tr>
+<td>%</td>
+<td>Reszta z, czyli np. 5 % 2, to nic innego jak reszta z dzielenia 5 przez 2, czyli 1</td>
+</tr>
+</tbody>
+</table>
+<p>Warto też pamiętać o tym, że jeśli w jednym wyrażeniu mamy kilka różnych typów liczb, to Python zrzuci wynik całego wyrażenia do najbardziej złożonego typu. Co to znaczy? Wynikiem <code>1.0 + 1</code> będzie nie <code>2</code> a <code>2.0</code>, wynikiem <code>1 + 1.0 + 3 +0j</code> będzie <code>5+0j</code>. Kolejność złożoności jest zatem taka:</p>
+<p>Całkowite -&gt; Zmiennoprzecinkowe -&gt; Złożone. </p>
+<p>Warto o tym pamiętać, gdyż niesie to za sobą pewne konsekwencje - po prostu uważaj na te kropeczki, bo czasami można się naciąć. </p>
+<p>Dodatkowo wspomnę jeszcze o lukrze składniowym, który pozwala nam na skrócenie zapisu popularnych operacji. Wygląda to tak:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">foo</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">+</span> <span class="mi">2</span> <span class="c1"># ta linijka będzie równoważna z tą niżej</span>
+<span class="n">foo</span> <span class="o">+=</span> <span class="mi">2</span>
+</code></pre></div>
+
+<h3>Konwersje liczbowe</h3>
+<p>Liczby można pomiędzy sobą 'konwertować', czy też dokonywać swego rodzaju <code>rzutowania typów</code> jakbyśmy powiedzieli w innych silnie typowanych statycznych językach. Jak? Niżej przykłady. Przeanalizuj je sobie kapkę sam.</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.3</span><span class="p">)</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.6</span><span class="p">)</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.9</span><span class="p">)</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.4444</span><span class="p">)</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;5&quot;</span><span class="p">)</span>
+<span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;52&quot;</span><span class="p">)</span>
+<span class="mi">52</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;-52&quot;</span><span class="p">)</span>
+<span class="o">-</span><span class="mi">52</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">float</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="mf">1.0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">float</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="mf">3.0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span>
+<span class="mf">2.0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">complex</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="mi">0</span><span class="n">j</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;1.3&quot;</span><span class="p">)</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">ValueError</span><span class="p">:</span> <span class="n">invalid</span> <span class="n">literal</span> <span class="k">for</span> <span class="nb">int</span><span class="p">()</span> <span class="k">with</span> <span class="n">base</span> <span class="mi">10</span><span class="p">:</span> <span class="s1">&#39;1.3&#39;</span>
+</code></pre></div>
+
+<p>Pobaw się funkcjami <code>int</code>, <code>float</code>, <code>complex</code>. Następnie opisz co każda z nich robi. Jakie przyjmuje wartości, co powoduje błędy. Ostatni przykład <code>int("1.3")</code> spowodował błąd. Przetłumacz go i spróbuj wyjaśnić co tu się stało.</p>
+<p>Warto zaznaczyć jedną ważną rzecz, którą Python dostarcza od ręki, a niekoniecznie każdy język tak ma. Otóż wszystkie te funkcje rozumieją, że <code>"1"</code> to 1. W innych językach bywa inaczej. Dlaczego. Otóż podczas rzutowania typów następuje operacja często bezpośrednio na wartości w pamięci. Przypomnijmy sobie ten fragment o tym, jak komputer przechowuje tekst w pamięci. ASCII, UTF-8, Unicode i tak dalej. Wróć do poprzednich rozdziałów jak potrzebujesz.</p>
+<p>No właśnie, zatem jak? Jako liczby odpowiednio później mapowane. A zatem, w innych językach bywa tak, że zamiast interpretować <code>"1"</code> jako 1, to często rzutuje się to do numerycznej wartości która kryje się za znakiem <code>1</code> w danym zestawie znaków/kodowaniu. W naszym przypadku <code>"1"</code>, czyli jedynka w tekście jest oznaczana nie jako <code>0b1</code> ale jako <code>49</code> czyli <code>0b110001</code> lub <code>0x31</code>.</p>
+<p>Przy okazji - mała notka. Do szybkiego przeliczania mogą zainteresować cię funkcje, które widać w kawałku niżej.</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+<span class="mi">49</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">bin</span><span class="p">(</span><span class="mi">49</span><span class="p">)</span>
+<span class="s1">&#39;0b110001&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="mi">49</span><span class="p">)</span>
+<span class="s1">&#39;0x31&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">oct</span><span class="p">(</span><span class="mi">49</span><span class="p">)</span>
+<span class="s1">&#39;061&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">chr</span><span class="p">(</span><span class="mi">49</span><span class="p">)</span>
+<span class="s1">&#39;1&#39;</span>
+</code></pre></div>
+
+<p>Czyli <code>ord</code>, <code>bin</code>, <code>hex</code>, <code>oct</code>, <code>chr</code>. Pobaw się i poczytaj. Gdzie? W dokumentacji <a href="https://docs.python.org/3/">Pythona(https://docs.python.org/3/)</a>. Najlepiej po angielsku. Swoje wnioski i efekty zabawy podsumuj pisząc artykuł, w którym opisujesz o co chodzi z którą funkcją, po krótce zcharakteryzujesz każdy z typów. Podasz przykłady dla których funkcje nie działają i domysły dlaczego. Ewentualnie skorzystaj z funkcji <code>help</code> np. <code>help(int)</code> </p>
+<p>Do tego pokażę ci mały trik:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">dir</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>  <span class="c1"># alternatywnie: dir(1.0)</span>
+<span class="p">[</span><span class="s1">&#39;__abs__&#39;</span><span class="p">,</span> <span class="s1">&#39;__add__&#39;</span><span class="p">,</span> <span class="s1">&#39;__class__&#39;</span><span class="p">,</span> <span class="s1">&#39;__coerce__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__delattr__&#39;</span><span class="p">,</span> <span class="s1">&#39;__div__&#39;</span><span class="p">,</span> <span class="s1">&#39;__divmod__&#39;</span><span class="p">,</span> <span class="s1">&#39;__doc__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__eq__&#39;</span><span class="p">,</span> <span class="s1">&#39;__float__&#39;</span><span class="p">,</span> <span class="s1">&#39;__floordiv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__format__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__ge__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getformat__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getnewargs__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__gt__&#39;</span><span class="p">,</span> <span class="s1">&#39;__hash__&#39;</span><span class="p">,</span> <span class="s1">&#39;__init__&#39;</span><span class="p">,</span> <span class="s1">&#39;__int__&#39;</span><span class="p">,</span> <span class="s1">&#39;__le__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__long__&#39;</span><span class="p">,</span> <span class="s1">&#39;__lt__&#39;</span><span class="p">,</span> <span class="s1">&#39;__mod__&#39;</span><span class="p">,</span> <span class="s1">&#39;__mul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__ne__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__neg__&#39;</span><span class="p">,</span> <span class="s1">&#39;__new__&#39;</span><span class="p">,</span> <span class="s1">&#39;__nonzero__&#39;</span><span class="p">,</span> <span class="s1">&#39;__pos__&#39;</span><span class="p">,</span> <span class="s1">&#39;__pow__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__radd__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rdiv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rdivmod__&#39;</span><span class="p">,</span> <span class="s1">&#39;__reduce__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__reduce_ex__&#39;</span><span class="p">,</span> <span class="s1">&#39;__repr__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rfloordiv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rmod__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rmul__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__rpow__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rsub__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rtruediv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__setattr__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__setformat__&#39;</span><span class="p">,</span> <span class="s1">&#39;__sizeof__&#39;</span><span class="p">,</span> <span class="s1">&#39;__str__&#39;</span><span class="p">,</span> <span class="s1">&#39;__sub__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__subclasshook__&#39;</span><span class="p">,</span> <span class="s1">&#39;__truediv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__trunc__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;as_integer_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;conjugate&#39;</span><span class="p">,</span> <span class="s1">&#39;fromhex&#39;</span><span class="p">,</span> <span class="s1">&#39;hex&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;imag&#39;</span><span class="p">,</span> <span class="s1">&#39;is_integer&#39;</span><span class="p">,</span> <span class="s1">&#39;real&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">dir</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>  <span class="c1"># alternatywnie: dir(&quot;text&quot;)</span>
+<span class="p">[</span><span class="s1">&#39;__add__&#39;</span><span class="p">,</span> <span class="s1">&#39;__class__&#39;</span><span class="p">,</span> <span class="s1">&#39;__contains__&#39;</span><span class="p">,</span> <span class="s1">&#39;__delattr__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__doc__&#39;</span><span class="p">,</span> <span class="s1">&#39;__eq__&#39;</span><span class="p">,</span> <span class="s1">&#39;__format__&#39;</span><span class="p">,</span> <span class="s1">&#39;__ge__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__getitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getnewargs__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getslice__&#39;</span><span class="p">,</span> <span class="s1">&#39;__gt__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__hash__&#39;</span><span class="p">,</span> <span class="s1">&#39;__init__&#39;</span><span class="p">,</span> <span class="s1">&#39;__le__&#39;</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">,</span> <span class="s1">&#39;__lt__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__mod__&#39;</span><span class="p">,</span> <span class="s1">&#39;__mul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__ne__&#39;</span><span class="p">,</span> <span class="s1">&#39;__new__&#39;</span><span class="p">,</span> <span class="s1">&#39;__reduce__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__reduce_ex__&#39;</span><span class="p">,</span> <span class="s1">&#39;__repr__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rmod__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rmul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__setattr__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__sizeof__&#39;</span><span class="p">,</span> <span class="s1">&#39;__str__&#39;</span><span class="p">,</span> <span class="s1">&#39;__subclasshook__&#39;</span><span class="p">,</span> <span class="s1">&#39;_formatter_field_name_split&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;_formatter_parser&#39;</span><span class="p">,</span> <span class="s1">&#39;capitalize&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;decode&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;encode&#39;</span><span class="p">,</span> <span class="s1">&#39;endswith&#39;</span><span class="p">,</span> <span class="s1">&#39;expandtabs&#39;</span><span class="p">,</span> <span class="s1">&#39;find&#39;</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;isalnum&#39;</span><span class="p">,</span> <span class="s1">&#39;isalpha&#39;</span><span class="p">,</span> <span class="s1">&#39;isdigit&#39;</span><span class="p">,</span> <span class="s1">&#39;islower&#39;</span><span class="p">,</span> <span class="s1">&#39;isspace&#39;</span><span class="p">,</span> <span class="s1">&#39;istitle&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;isupper&#39;</span><span class="p">,</span> <span class="s1">&#39;join&#39;</span><span class="p">,</span> <span class="s1">&#39;ljust&#39;</span><span class="p">,</span> <span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="s1">&#39;lstrip&#39;</span><span class="p">,</span> <span class="s1">&#39;partition&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="s1">&#39;rfind&#39;</span><span class="p">,</span> <span class="s1">&#39;rindex&#39;</span><span class="p">,</span> <span class="s1">&#39;rjust&#39;</span><span class="p">,</span> <span class="s1">&#39;rpartition&#39;</span><span class="p">,</span> <span class="s1">&#39;rsplit&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;rstrip&#39;</span><span class="p">,</span> <span class="s1">&#39;split&#39;</span><span class="p">,</span> <span class="s1">&#39;splitlines&#39;</span><span class="p">,</span> <span class="s1">&#39;startswith&#39;</span><span class="p">,</span> <span class="s1">&#39;strip&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;swapcase&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;translate&#39;</span><span class="p">,</span> <span class="s1">&#39;upper&#39;</span><span class="p">,</span> <span class="s1">&#39;zfill&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+<p>Otóż funkcję <code>dir</code>. Funkcja dir to funkcja, która zwraca wszystkie dostępne metody/atrybuty danego obiektu. </p>
+<p>Póki co nie zajmuj się tymi, które zaczynają się od <code>__</code> czy <code>_</code> a skup na tych, które zaczynają się od normalnych liter. Czym jednak one są? Metody zaczynające się od <code>__</code> to tak zwane Python Magic Methods/Dunder Methods/Metody Magiczne. To coś o czym porozmawiamy później, ale to takie specjalne rodzaje metod/funkcji danego obiektu, które mają spełniać określone role. Te, które zaczynają się od pojedyńczego podkreślenia <code>_</code>, są metodami prywatnymi.</p>
+<p>W Pythonie nie ma enkapsulacji, co znaczy, że generalnie jak dodamy jakis atrybut/metodę do klasy/obiektu, to nie możemy jakoś bardzo skutecznie zabronić innym wołać, nawet jeśli chcemy by użyszkodnik nie miał mozliwości tego zrobić, gdyż np. dana metoda jest tylko pomocnicza, <strong>prywatna</strong>. Konwencja zatem mówi, byśmy dawali podkreślenie przed prywatnymi zmiennymi, metodami a my jako programiści nie powinniśmy używać takowych o ile nie jest to wewnątrz defnicji. Porozmawiamy o tym jeszcze później. W międzyczasie możesz sobie pogooglować o tej całej enkapsulacji.</p>
+<p>Podsumowując: za pomocą <code>dir</code> możesz sprawdzić, co na danym obiekcie można robić, jakie ma metody/funkcje etc. Przydatne.</p>
+<p>Pobaw się tym teraz znanych ci typach.</p>
+<h3>Przykłady podstawowych operacji na liczbach</h3>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">integer</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">second_integer</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">first_float</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">second_float</span> <span class="o">=</span> <span class="mf">6.0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">help</span><span class="p">(</span><span class="n">integer</span><span class="o">.</span><span class="n">conjugate</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">help</span><span class="p">(</span><span class="n">integer</span><span class="o">.</span><span class="n">numerator</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">integer</span><span class="o">.</span><span class="n">numerator</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">integer</span><span class="o">.</span><span class="n">numerator</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">integer</span><span class="o">.</span><span class="n">as_integer_ratio</span>
+<span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">as_integer_ratio</span> <span class="n">of</span> <span class="nb">int</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f5443904150</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">integer</span><span class="o">.</span><span class="n">as_integer_ratio</span><span class="p">()</span>
+<span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">integer</span><span class="o">.</span><span class="n">bit_count</span><span class="p">()</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">integer</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span>
+<span class="mi">3</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">integer</span><span class="o">.</span><span class="n">imag</span>
+<span class="mi">0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">integer</span><span class="o">.</span><span class="n">real</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="mi">8</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">4</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="mi">16</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">4</span> <span class="o">//</span> <span class="mi">3</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">4</span> <span class="o">/</span> <span class="mi">3</span>
+<span class="mf">1.3333333333333333</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">5</span> <span class="o">//</span> <span class="mi">3</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">5</span> <span class="o">%</span> <span class="mi">3</span>
+<span class="mi">2</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">first_float</span><span class="o">.</span><span class="n">is_integer</span><span class="p">()</span>
+<span class="kc">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">first_float</span><span class="o">.</span><span class="n">as_integer_ratio</span><span class="p">()</span>
+<span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+
+<h2>Łańcuch znaków</h2>
+<h3>Krótka charakterystyka</h3>
+<p>Napisy/tekst, łańcuch znaków, czyli tak zwane stringi. To po prostu tekst. Zazwyczaj przynajmniej, bo mogą to też być jakieś tam zbiory bajtów tak jakby, ale o tym też przy innej okazji.</p>
+<p>W Pythonie3 dla zwykłych stringów króluje UNICODE i zazwyczaj utf-8. Oczywiście można używać innych kodowań korzystając z odpowiednich metod, ale póki co chyba nie mamy się co tym martwić. W Pythonie 2 było nieco inaczej, więc tylko i wyłącznie dla wiedzy historycznej o tym wspomnę i nie będę się zbytnio rozwodził nad tym jak proces tam wyglądał, gdyż jest to już nieco archaiczne podejście a wszystkie nowoczesne języki programowania zakładają wykorzystanie UNICODE i utf-8. </p>
+<p>Stringi w pythonie deklarujemy w następujący sposób </p>
+<div class="codehilite"><pre><span></span><code><span class="n">some_text</span> <span class="o">=</span> <span class="s2">&quot;foo&quot;</span>  <span class="c1"># pierwszy sposób</span>
+<span class="n">another_text</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span>  <span class="c1"># drugi sposób z użyciem &#39; zamiast &quot;</span>
+<span class="n">longer_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;hahah</span>
+<span class="s2">another line &quot;&quot;&quot;</span>
+</code></pre></div>
+
+<p>A zatem jest to po prostu tekst otoczony <code>"</code> lub <code>'</code>. Python zezwala na użycie zarówno podwójnego jak i pojedynczego 'ciapka'. Moją praktyką jest, by preferować <code>"</code>. Technicznie rzecz ujmując standard pozwala na to by używać zarówno jednego jak i drugiego, byle nie mieszać ich ze sobą w jednym projekcie. Co to znaczy?</p>
+<p>Jeśli mamy już jakiś codebase/kod/projekt, i postanowimy używać <code>'</code> zamiast <code>"</code> to okej, niechże tak będzie, chociaż nie jest to moja preferencja, ale nie mieszajmy stylów. Konwencją jest, by trzymać się jednego i mieć ujednolicony styl w całym kodzie. To znaczy, że jak gdzieś zaczniemy używać pojedynczych ciapków, to używajmy ich już wszędzie w danym projekcie. Jak podwójnych to podwójnych. Wspominałem już, że preferuje podwójnę i uważam je za lepsze? Tak samo uważają twórcy narzędzia do formatowania kodu - <code>black</code> plus obiektywnie podwójne ciapki mają swoje zalety typu lepsza czytelność czy też łatwiejsze używanie razem z językiem angielskim gdzie mamy sporo znaków <code>'</code> w tekście. Nie trzeba dodawać znaku ucieczki.</p>
+<p>A no właśnie, znak ucieczki. Porozmawiajmy sobie o znakach specjalnych. Co jeśli w naszym tekście, który zdefiniowaliśmy za pomocą <code>"</code>, będziemy potrzebowali użyć też tego znaku? Spróbujmy.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">quote</span> <span class="o">=</span> <span class="s2">&quot;chciałbym tutaj zacytować &quot;</span><span class="n">paula</span> <span class="n">coelho</span><span class="s2">&quot; ale nie wiem czy moge&quot;</span>
+</code></pre></div>
+
+<p>Podany kod nie zadziała. Dlaczego? Python nie potrafi domyśleć się, że chcesz akurat tutaj cytować i ten znak powinien traktowany być specjalnie a nie tak jak zwykle. Trzeba mu o tym powiedzieć. Jak? Prosta rzecz.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">quote</span> <span class="o">=</span> <span class="s2">&quot;chciałbym tutaj zacytować </span><span class="se">\&quot;</span><span class="s2">paula coelho</span><span class="se">\&quot;</span><span class="s2"> i wiem, że mogę&quot;</span>
+</code></pre></div>
+
+<p>Zwyczajnie starczy dodać <code>\</code> przed danym znakiem, który chcemy traktować w specjalny sposób. Teraz może ci kapkę zaświtać dlaczego <code>"</code> &gt; <code>'</code>. Otóż w języku angielskim często występuje pojedynczy ciapek. Jeśli używamy go do definiowania stringów to pojawia się problem w postaci tego, że musimy często stosować znak ucieczki. Jak użyjemy podwójnego to już rzadziej. A zatem powodem jest lenistwo i czytelność kodu, czyli w sumie też lenistwo. Yay!</p>
+<p>Anyway, wróćmy do głównego tematu.</p>
+<p>Tak definiowane stringi muszą się mieścić w jednej linijce. Jeśli chcemy, by nasz tekst był wielolinijkowy w kodzie, to musimy użyć Potrójnego znaku - zatem albo <code>"""</code> albo <code>'''</code> zamiast jednego. To spowoduje, ze python będzie czytał nie tylko do końca linii ale aż do znalezienia znaku zamykającego, który może być już w innej linii.</p>
+<p>Warto też zaznaczyć, że do komentowania w kodzie używamy do jednolinijkowych komentarzy używamy <code>#</code> a wielolinijkowych stringów jako wielolinijkowych komentarzy.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">RedirectMixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin that is used for the purpose of...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</code></pre></div>
+
+<p>Przykład tego wyżej.</p>
+<p>Pamiętaj o tym, by użyć <code>dir</code> na stringach i przejrzeć sobie podstawowe metody jakie Python posiada w bibliotece standardowej, które pozwalają nam manipulować stringami.</p>
+<h3>Pojedyncze znaki</h3>
+<p>Hm, skoro stringi to łańcuchy znaków to co z pojedynczymi ogniwami tychże łańcuchów? Otóż wyobraź sobie, że po łańcuchach tekstów można iterować jak po liście, plus mamy dostęp do jej poszczególnych elementów, do slicingu etc. NEAT!</p>
+<h3>Zmienne w tekście</h3>
+<p>Oprócz prostych stringów, którep o prostu zawierają hardcodowany tekst, czyli dla przykładu:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Aryo&quot;</span>
+</code></pre></div>
+
+<p>Istnieje możliwośc przeprowadzania operacji na stringach, które umożliwiają nam wstawianie do tekstu zmiennych, dodawania stringów etc. Istnieje kilka sposobów by to osiągnąć. Zamiast się rozpisywać, po prostu zaprezentuję.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">age</span> <span class="o">=</span> <span class="mi">23</span>
+<span class="n">name_and_age</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Olaf </span><span class="si">{</span><span class="n">age</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">name_and_age</span> <span class="o">=</span> <span class="s2">&quot;Olaf </span><span class="si">{age}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+<span class="n">name_and_age</span> <span class="o">=</span> <span class="s2">&quot;Olaf &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Pierwszy sposób nazywami f-stringami. Są eleganckie. Piękne. Kozackie. Prawilne.</p>
+<p>Druga opcja, to funkcja format.</p>
+<p>Trzecia zaś to tak zwana konkatenacja. </p>
+<p>Którego używać i kiedy? F-stringi ftw. Format spoko, jak nie można inaczej to konkatenacja.</p>
+<h3>Używanie zmiennych w tekście - wydajność</h3>
+<p>Jestem dość dużym zwolennikiem f-stringów w Pythonie. Podobają mi się one, są eleganckie, czytelne i proste w użyciu. Ciekawiło mnie jednak, jak wypadają jeśli chodzi o wydajność pod spodem, gdyż cóż, ta elegancja pewnie musi mieć jakiś ukryty koszt. Nic w życiu nie ma za darmo, prawda? Postanowiłem to sprawdzić i zestawić ze sobą różne metody manipulacji stringów w Pythonie pod względem wydajności.</p>
+<p>W konkurencji znalazły się: f-stringi, konkatenacja (dodawanie) stringów, metoda join(), metoda format(). W zestawieniu nie znalazł się operator %. Dlaczego? Nie przepadam za nim tak szczerze. Moja osobista preferencja. Uważam, że powinno się go raczej unikać z pewnych względów. Relikt przeszłości, mamy dziś lepsze rozwiązania.</p>
+<h4>Metodyka testowania</h4>
+<p>Testował będę za pomocą modułu timeit wbudowanego w Pythona, wywołując polecenia z terminala. Wszystkie zmienne wykorzystywane w modyfikowanym stringu, będą definiowane i ładowane zanim rozpocznie się mierzenie czasu.
+Każde polecenie będzie uruchamiane pętlach o 1000000 iteracjach, każda taka pętla będzie uruchomiona 3 razy. Z tejże pętli wyłoniony zostanie najkrótszy przebieg pojedynczej iteracji. Przejdźmy do samego testowania.</p>
+<h4>Porównanie.</h4>
+<p>Zaczynajmy zatem. Poniżej kod, jakiego użyłem. Wybaczcie prymitywne nazwy zmiennych, ale pisałem go kompletnie na kolanie.</p>
+<div class="codehilite"><pre><span></span><code>python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span><span class="w"> </span><span class="s2">&quot;f&#39;{x} {y}&#39;&quot;</span><span class="w"> </span><span class="c1"># f-string</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span><span class="w"> </span><span class="s2">&quot;x + &#39; &#39; + y&quot;</span><span class="w"> </span><span class="c1"># konkatenacja</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span><span class="w"> </span><span class="s2">&quot;&#39; &#39;.join((x,y))&quot;</span><span class="w"> </span><span class="c1"># join</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;; t = &#39; &#39;.join&quot;</span><span class="w"> </span><span class="s2">&quot;t((x,y))&quot;</span><span class="w"> </span><span class="c1"># join2</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span><span class="w"> </span><span class="s2">&quot;&#39;{} {}&#39;.format(x,y)&quot;</span><span class="w"> </span><span class="c1"># format</span>
+python3<span class="w"> </span>-m<span class="w"> </span>timeit<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;; t = &#39;{} {}&#39;.format&quot;</span><span class="w"> </span><span class="s2">&quot;t(x,y)&quot;</span><span class="w"> </span><span class="c1"># format2</span>
+</code></pre></div>
+
+<p>Wszystko raczej proste. Rozważyłem dwie opcje, jedną standardową drugą taką, gdzie znalezienie metody nastąpi w setupie, a w czasie mierzonym tylko i wyłącznie jej wywołanie.</p>
+<p>Co mam na myśli, kiedy mówię, że metoda zostanie znaleziona za pomocą operatora .? Otóż Python tam pod spodem robi sobie tak, że atrybuty danej klasy/nazwy metod i tak dalej, trzyma sobie zhashowane w słowniku. Zatem gdy piszemy <code>obiekt.atrybut</code>, pod spodem leci sobie szukanie w słowniku/dictionary lookup czy coś takiego jest w tej klasie. To oczywiście dodaje to czasu wykonania bo same instrukcje lookupu zajmują czas, co prawda niedużo, prawie nic, ale wciąż, do tego dochodzi jeszcze czas potrzebny na zaalokowanie pamięci i dodanie elementów do dicta pod spodem przy konstruowaniu instancji. Dla pewności zatem przebadałem różne przypadki. Zaznaczę jednak, że w przypadku produkcyjnego kodu raczej wzbraniaj się przed tego typu optymalizacjami, dobrze? Na juniorskim poziomie to raczej rzadko zdarzy się, iż będziesz przetwarzał tak duże zbiory danych i twój kod będzie wymagał takiej wydajności, by takowe rzeczy odwalać. Tak ku przestrodze. Anyway.</p>
+<p>Podobnie zrobiłem z joinem i formatem. Tu rozważyłem dwie opcje - normalne wywołanie z lookupem i to bez niego.</p>
+<p>A oto wyniki:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">f</span><span class="o">-</span><span class="nv">string</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">0791</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">konkatenacja</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">0985</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">join</span><span class="w"> </span><span class="nv">bez</span><span class="w"> </span><span class="nv">lookupu</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">112</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">join</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">144</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">format</span><span class="w"> </span><span class="nv">bez</span><span class="w"> </span><span class="nv">lookupu</span>:<span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">232</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">format</span>:<span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">264</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+</code></pre></div>
+
+<h4>Zaskoczenie</h4>
+<p>Powiem szczerze, że nie spodziewałem się tego, że f-stringi są nie tylko eleganckim rozwiązaniem, ale i najszybszym! Bardzo mnie to cieszy.
+Na drugin miejscu uplasowała się konkatenacja, join bez lookupu, join, format bez lookupu, format, a na samym końcu template string. Z racji tego, że optymalizacja, którą poczyniłem, jest dość niepraktyczna i raczej w kodzie nikt takich potworów nie będzie tworzył poza pewnymi wyjątkami, które być może powinny być napisane w C a nie w Pythonie, to nie umieszczam wyników bez lookupów w rankingu, który wygląda tak:</p>
+<ol>
+<li>f-string</li>
+<li>Konkatenacja</li>
+<li>join()</li>
+<li>format()</li>
+</ol>
+<h4>Nieco bardziej skomplikowany przykład</h4>
+<p>Pokazałem prosty przykład - wstawienie dwóch zmiennych oddzielonych spacją. Co jeśli zmiennych mamy nieco więcej niż 2? Załóżmy przypadek z 13 zmiennymi, które chcemy połączyć spacją. Kod:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">13</span><span class="p">)]</span>
+<span class="c1"># f-string</span>
+<span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">h</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">l</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot;</span> 
+<span class="c1"># konkatenacja</span>
+<span class="s2">&quot;a + &#39; &#39; + b + &#39; &#39; + c + &#39; &#39; + d + &#39; &#39; + e + &#39; &#39; + f + </span><span class="se">\</span>
+<span class="s2">&#39; &#39; + g + &#39; &#39; + h + &#39; &#39; + i + &#39; &#39; + j + &#39; &#39; + k + &#39; &#39; + l + &#39; &#39; + m&quot;</span>
+<span class="c1"># format</span>
+<span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span>
+<span class="p">)</span>
+<span class="c1"># join</span>
+<span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">i</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
+</code></pre></div>
+
+<p>Kod wyżej uruchomiłem analogicznie do poprzedniego razu.</p>
+<p>Ciekawi mnie jak tutaj sytuacja będzie wyglądała.</p>
+<p>Wyniki:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">join</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">0.352</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+<span class="n">f</span><span class="w"> </span><span class="n">string</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">0.399</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+<span class="n">format</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">0.872</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+<span class="n">concat</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">1.13</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+</code></pre></div>
+
+<p>Bazując na poprzednich wynikach, nie zdziwiły mnie one za bardzo. Dlaczego?
+Zacznijmy od tego, co się zmieniło. Join wskoczył z 3. miejsca na 1. Konkatenacja spadła z 2. na przedostatnie. Format na 3. z czwartego. W sumie dość zasadne, dlaczego.</p>
+<p>Pierwsze miejsce join w takiej sytuacji jest oczywiste - popatrzmy co tam robimy - joinujemy tak jakby ze sobą wiele stringów ze wspólnym stringiem, czyli dokładnie to, do czego join został stworzony. Jestem niemalże pewnym, iż pod spodem na poziomie implementacji metody czy nawet interpretera są zrobione pod to optymalizacje, dzięki czemu join świetnie poradzi sobie z dużą ilością argumentów. Cieszy mnie to - ponownie rozwiązanie, które w tym przypadku wygląda najbardziej elegancko, wypada pierwsze.</p>
+<p>Drugie miejsce f-string. Tutaj też się nie zdziwiłem. Dlaczego? Otóz f-stringi, pierwotnie co prawda były wolne, bardzo wolne, - w pierwszej implementacji były one "kompilowane" na nic innego jak zbiór odpowiednich joinów albo formatów, nie pamiętam. Niemniej jednak w kolejnej implementacji f-stringi doczekały się własnego, zoptymalizowanego OPCODE w CPythonie, co pozwoliło poczynić znaczne oszczędności i lepiej dostosować kod C, który jest pod spodem.</p>
+<p>Dlaczego format wyprzedził konkatenacje? Cóż, domyślam się. Wydaje mi się, iż chodzi o ewaluację. Być może Python, z racji tego, że stringi są niemutowalne w Pythonie, za każdym razem, kiedy wykonywał operacje dodania na dwóch stringach, musiał zaalokować nowy kawałek pamięci, który pomieści X znaków, gdzie X to suma długości dwóch stringów, potem je tam przekopiować, by otrzymać finalną wartość. Z racji doświadczenia tego, jak python działa, to założę się, że w naszym wypadku, kiedy mieliśmy kod w postacie a + ' ' + b + ..., Python wykonywał każdą operacje dodawania oddzielnie. To znaczy, prawdopodobnie instrukcje pod spodem wyglądały tak:</p>
+<ol>
+<li>Zaalokuj pamięć, która pomieści zmienną a oraz string ' '.</li>
+<li>Przekopiuj wartość a</li>
+<li>Przekopiuj wartość ' '</li>
+<li>Otrzymany wynik dodaj do zmiennej b.</li>
+<li>Zaalokuj pamięć, która pomieści poprzedni wynik oraz zmienną b.</li>
+<li>...</li>
+</ol>
+<p>I tak dalej. A to wszystko kosztuje czas - nowe alokacje, kopiowanie. Tak mi się przynajmniej wydaje, że to zadziałało w ten sposób, nie jestem jednak pewien, czy developerzy pythona nie poczynili jakiś optymalizacji na ten przypadek i może robią to inaczej? Nie wiem, aż tak głęboko nie zaglądałem, ale patrząc po wynikach, nie sądzę.</p>
+<h4>Podsumowanie - o wydajności</h4>
+<p>W pythonie mechanizmy, które zdają się wyglądać elegancko w danej sytuacji, zazwyczaj są pod takową zoptymalizowane i przygotowane, stąd warto ich używać. Piękny ten wąż po prostu. Elegancki kod.</p>
+<p>Używajcie zatem f-stringów gdziekolwiek tylko możecie i cieszcie się z życia, tam gdzie dużo stringów do połączenia w przewidywalny sposób, join. Dzięki temu wasz kod będzie ładniejszy ale i szybszy!</p>
+<h3>Przykłady podstawowych operacji na stringach</h3>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">dir</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;__add__&#39;</span><span class="p">,</span> <span class="s1">&#39;__class__&#39;</span><span class="p">,</span> <span class="s1">&#39;__contains__&#39;</span><span class="p">,</span> <span class="s1">&#39;__delattr__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__doc__&#39;</span><span class="p">,</span> <span class="s1">&#39;__eq__&#39;</span><span class="p">,</span> <span class="s1">&#39;__format__&#39;</span><span class="p">,</span> <span class="s1">&#39;__ge__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__getitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getnewargs__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getslice__&#39;</span><span class="p">,</span> <span class="s1">&#39;__gt__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__hash__&#39;</span><span class="p">,</span> <span class="s1">&#39;__init__&#39;</span><span class="p">,</span> <span class="s1">&#39;__le__&#39;</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">,</span> <span class="s1">&#39;__lt__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__mod__&#39;</span><span class="p">,</span> <span class="s1">&#39;__mul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__ne__&#39;</span><span class="p">,</span> <span class="s1">&#39;__new__&#39;</span><span class="p">,</span> <span class="s1">&#39;__reduce__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__reduce_ex__&#39;</span><span class="p">,</span> <span class="s1">&#39;__repr__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rmod__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rmul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__setattr__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__sizeof__&#39;</span><span class="p">,</span> <span class="s1">&#39;__str__&#39;</span><span class="p">,</span> <span class="s1">&#39;__subclasshook__&#39;</span><span class="p">,</span> <span class="s1">&#39;_formatter_field_name_split&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;_formatter_parser&#39;</span><span class="p">,</span> <span class="s1">&#39;capitalize&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;decode&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;encode&#39;</span><span class="p">,</span> <span class="s1">&#39;endswith&#39;</span><span class="p">,</span> <span class="s1">&#39;expandtabs&#39;</span><span class="p">,</span> <span class="s1">&#39;find&#39;</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;isalnum&#39;</span><span class="p">,</span> <span class="s1">&#39;isalpha&#39;</span><span class="p">,</span> <span class="s1">&#39;isdigit&#39;</span><span class="p">,</span> <span class="s1">&#39;islower&#39;</span><span class="p">,</span> <span class="s1">&#39;isspace&#39;</span><span class="p">,</span> <span class="s1">&#39;istitle&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;isupper&#39;</span><span class="p">,</span> <span class="s1">&#39;join&#39;</span><span class="p">,</span> <span class="s1">&#39;ljust&#39;</span><span class="p">,</span> <span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="s1">&#39;lstrip&#39;</span><span class="p">,</span> <span class="s1">&#39;partition&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="s1">&#39;rfind&#39;</span><span class="p">,</span> <span class="s1">&#39;rindex&#39;</span><span class="p">,</span> <span class="s1">&#39;rjust&#39;</span><span class="p">,</span> <span class="s1">&#39;rpartition&#39;</span><span class="p">,</span> <span class="s1">&#39;rsplit&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;rstrip&#39;</span><span class="p">,</span> <span class="s1">&#39;split&#39;</span><span class="p">,</span> <span class="s1">&#39;splitlines&#39;</span><span class="p">,</span> <span class="s1">&#39;startswith&#39;</span><span class="p">,</span> <span class="s1">&#39;strip&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;swapcase&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;translate&#39;</span><span class="p">,</span> <span class="s1">&#39;upper&#39;</span><span class="p">,</span> <span class="s1">&#39;zfill&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;some text&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">text</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+<span class="s1">&#39;Some text&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+<span class="mi">2</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">)</span>
+<span class="s1">&#39;some fexf&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">coolest_org</span> <span class="o">=</span> <span class="s2">&quot;NAFO&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">coolest_org</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="s1">&#39;nafo&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">coolest_org_lower</span> <span class="o">=</span> <span class="n">coolest_org</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">coolest_org</span> <span class="o">+</span> <span class="n">coolest_org_lower</span>
+<span class="s1">&#39;NAFOnafo&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;RuSSia&quot;</span> <span class="o">+</span> <span class="s2">&quot;HATE&quot;</span> <span class="s2">&quot;CLUB&quot;</span>
+<span class="s1">&#39;RuSSiaHATECLUB&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;test&#39;</span> <span class="o">*</span> <span class="mi">10</span>
+<span class="s1">&#39;testtesttesttesttesttesttesttesttesttest&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">coolest_org</span> <span class="o">=</span> <span class="s2">&quot;nafo&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">coolest_org</span> <span class="o">=</span> <span class="n">coolest_org</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">coolest_org</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;NAFO&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">coolest_org</span><span class="o">.</span><span class="n">swapcase</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;nafo&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">coolest_org</span><span class="o">.</span><span class="n">isalpha</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kc">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">coolest_org</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">2</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;AaBbCcDd&quot;</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;ABCD&#39;</span>
+</code></pre></div>
+
+<p>Zauważ, że stringi są niemutowalne. Znaczy, to, że nie możemy ich modyfikować a każda modyfikacja powoduje, że w efekcie powstaje nowy string. Pomówimy o mutowalności jeszcze nieco później kiedy będziemy omawiać listy i krotki.</p>
+<h2>Bajty</h2>
+<h3>Krótka charakterystyka</h3>
+<p>Hmmm, bajty. To owszem, podstawowy i prosty typ w Pythonie, to po prostu ciąg bajtów jak sama nazwa wskazuje. Przydatne przy operacjach na plikach. Poczytaj samodzielnie.</p>
+<h2>Typ logiczny/Boolowski</h2>
+<h3>Krótka charakterystyka</h3>
+<p>Tutaj sprawa wygląda prosto - typ logiczny to tak zwany bool - albo prawda, albo fałsz. Typ o długości 1 bita. Albo 0 albo 1, albo <code>True</code> albo <code>False</code>.</p>
+<h3>Wartości prawdziwe vs wartości fałszywe</h3>
+<p>Zazwyczaj używany przy warunkach, ustawianiu jakiś flag i tak dalej. Warto zaznaczyć, że w Pythonie typ logiczny jest nieco rozszerzony. To znaczy, że cokolwiek co można zewaluować do pewnych rzeczy, będzie traktowane jak typ logiczny. Mówiąc prościej, Fałsz jest zerem lub czymś pustym. Prawda jest zaś dowolną liczbą inną niż zero lub czymś niepustym. Pusty string to Fałsz, jakiś tekst to Prawda. Pusta lista to Fałsz. Niepusta przeciwnie.</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">bool</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">bool</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="kc">False</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">bool</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">bool</span><span class="p">([])</span>
+<span class="kc">False</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">bool</span><span class="p">([</span><span class="s2">&quot;f&quot;</span><span class="p">])</span>
+<span class="kc">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">bool</span><span class="p">(</span><span class="s2">&quot;String&quot;</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">bool</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="kc">False</span>
+</code></pre></div>
+
+<p>Mała notka. Funkcja <code>bool</code> to w Pythonie coś, co próbuje 'przekonertować' zadaną wartość do <code>booleana</code> czyli typu logicznego/boolowskiego. Zasady Przedstawiłem ci wyżej. Inne typy również mają swoje odpowiedniki, pobaw się nimi.</p>
+<h3>Przykłady podstawowych operacji na typie boolowskim</h3>
+<h2>Listy</h2>
+<h3>Krótka charakterystyka</h3>
+<p>Czym jest lista? Lista to nic innego jak mutowalny zbiór elementów. Swego rodzaju 'tablica'. Możesz sobie pomyśleć o tym w kategoriach stringa. Dlaczego? A bo czymże jest string, aniżeli listą znaków? To po prostu pewien obszar w pamięci, który jest mutowalny. Co to znaczy? Otóż oznacza to, że lista jest zbiorem elementów, który po zadeklarowaniu można dowolnie modyfikować. Listę można zmniejszać, kasować z niej elementy. Można dodawać do niej elementy. Można znowu je usunąć. Rozmiar listy można zmienić. Poszczególne elementy można nadpisać. Co chcesz, to masz.</p>
+<p>Lista może składać się z praktycznie dowolnych elementów, oznacza to, że do listy można włożyć prawie każdy obiekt z Pythona. Nie zawsze tak jest. W innych językach programowania czesto jest tak, że jak definiujemy tablicę, to po pierwsze z góry znana jest jej długość, chyba, że używamy tablic dynamicznych, dwa, jej elementy często są ograniczone do jednego tylko typu z różnych powodów. Dlaczego?</p>
+<h3>Lista od strony niskopoziomowej</h3>
+<p>Jednym z powodów będzie coś, co nawiązuje do samego poczatku tej książki, gdzie opisywaliśmy sobie zagadnienie związane z tym, kiedy program wie, gdzie przestać czytać pamięc w przypadku odczytu zmiennej spod danego adresu.</p>
+<p>Otóż tutaj zastosowanie ma podobna analogia. Np. w C deklarując tablicę/listę, podajesz jej długość i typ. Po co? Po to by kompilator/program mógł sobie ogarnąć ile pamięci zaalokować i jak poradzić sobie z adresami, gdzie przestać czytać etc. </p>
+<p>Zatem 10 elementowa tablica charów zaalokuje nam w C pamięć o rozmiarze <code>10 * size(char)</code>. Komputer będzie wiedział gdzie, i co, i jak czytać, kiedy skończyć.</p>
+<p>Załóżmy, że nasza tablica znajduje się pod adresem <code>0x1</code> i w jej środku znajdują się 4 elementy, kazdy z nich o wielkości jednego bajta:</p>
+<table>
+<thead>
+<tr>
+<th>Bit (hex)</th>
+<th>0x01</th>
+<th>0x10</th>
+<th>0x18</th>
+<th>0x20</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Wartość</strong></td>
+<td>A</td>
+<td>B</td>
+<td>C</td>
+<td>D</td>
+</tr>
+</tbody>
+</table>
+<p>Tutaj przypomnij sobie jak wygląda pamięc, ile bitów używamy standardowo do zapisu pojedyńczego znaku, załóżmy ASCII w tym wypadku i jak liczyć z szesnastkowego na dziesiętny/binarny.</p>
+<p>Mamy już zobrazowane nieco jak to wygląda w przypadku np. C i tablicy/listy o jednakowym typie i znanej długości. Co w przypadku Pythona?</p>
+<h3>Referencje i wartości</h3>
+<p>W Pythonie jest nieco inaczej, ale podobnie. Otóż można  by się zapytać: to skąd Pythonie wie kiedy przestać czytać dany adres, skoro tam pod spodem to też najcześciej jest C, w przypadku CPythona przynajmniej? Otóż lista w pythonie tak naprawdę nie jest listą wartości z danymi typami a listą referencji niejako. Cóż to takie? Otóż Python tak naprawdę, kiedy tworzymy listę, to przechowuje on sobie zbiór referencji do danych wartości a nie same wartości. Zatem wracając do naszej wcześniejszej analogii i porównania z C, gdzie musieliśmy zadeklarować typ wartości w tablicy, nagle wszystko ma sens. Okazuje się, że w Pythonie, tam pod spodem, też mamy w pewnym sensie jeden rodzaj wartości - referencje. Referencje to, w uproszczeniu, odniesienia do jakiś obiektów. Obiekt może być np. inną listą czy instancją jakiejś klasy.</p>
+<p>Czyli w Pythonie, w pamięci nasza tablica będzie wyglądała +/- w taki sposób:</p>
+<table>
+<thead>
+<tr>
+<th>Bit (hex)</th>
+<th>0x01</th>
+<th>0x10</th>
+<th>0x18</th>
+<th>0x20</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Wartość</strong></td>
+<td>Referencja1</td>
+<td>Referencja3</td>
+<td>Referencja2</td>
+<td>Referencja4</td>
+</tr>
+</tbody>
+</table>
+<p>Kolejność losowa.  Teraz kiedy odczytujemy sobie wartość z listy python przejdzie sobie do tego co skrywa np. <code>Referencja1</code> i weźmie sobie co potrzebuje, niezależnie od typu. Takim oto sposobem pozornie różne typy mogą być w pythonie w jednej liście i nie powoduje to problemów.</p>
+<p>Jedna zawiłość wyjaśniona. Pora na drugą -&gt; dynamiczny rozmiar.</p>
+<h3>Dynamiczny rozmiar list</h3>
+<p>Okej, pora wyjaśnić jak to się magicznie dzieje, że w listy w Pythonie mają dynamiczny rozmiar, mimo tego, że np. w C, póki co, pisałem o tym, że wypada podać  rozmiar. Otóż sprawa ma się tak, że w Pythonie, pod spodem, jest tak samo. Interpreter Pythona patrzy na to z iloma elementami utworzyliśmy listę i następnie sam się 'domyśla' ile elementową tablicę zaalokować. </p>
+<p>Co się dzieje gdy zmieniamy rozmiar listy/dodajemy nowe elementy?</p>
+<h3>Alokowanie ponad potrzeby - chciwy i przebiegły wąż</h3>
+<p>Generalnie przypadek tutaj mamy taki, że Python podczas deklaracji jakiejś listy alokuje więcej pamięci niż nam potrzeba! CZO?! JAK TO? </p>
+<p>Ano tak. Generalnie zazwyczaj jest to około $2n$ zakładając, że $2n&gt;=2$ gdzie n to liczba elementów. Zatem nawet kiedy inicjalizujemy pustą listę Python pod spodem alokuje sobie miejsce na przynajmniej dwa elementy, albo więcej. Nie pamiętam już nawet. Po co? A no po to, że interpreter spodziewa się tego, iż będziemy dodawać kolejne elementy. Jeśli osiągniemy zadaną wielkość i spróbujemy dodać kolejny element nastąpi wtedy alokacja nowej pamięci, znowu zachodzi proces opisany przed chwilą i nadalokacja pamięci po czym wartości ze starego miejsca w pamięci/starej listy są kopiowane w nowe miejsce gdzie mamy zaalokowany większy fragment pamięci a całość jest dynamicznie podmieniana gdzie trzeba w taki sposób, że my, jako programista/użytkownik końcowy, nawet nie zauważymy.</p>
+<p>Jak widzisz Python robi za nas wiele rzeczy byśmy nie musieli się tym martwić. Oczywiście, ma to swój koszt w postaci wydajności czy to komputacyjnej czy pamięciowej, ale niestety, coś za coś. Python szybki nie jest, ale jest wystarczająco szybki, ale tę rozprawkę już czytałeś - w rozdziale o wadach i zaletach Pythona.</p>
+<p>Opisuję tutaj cały proces w bardzo dużym uproszczeniu, ale plus minus tak to wygląda.</p>
+<h3>Dostęp do elementów listy</h3>
+<p>Dostęp do elementów listy zachodzi za pomocą podania indeksu elementu jaki chcemy dosięgnąć. Z racji tego, że znamy rozmiar referencji to wiemy o ile zrobić offset w pamięci. Mówiliśmy już o tym. W kodzie wygląda to tak:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">war_crimes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Russia on Ukraine&quot;</span><span class="p">,</span> <span class="s2">&quot;Israel on Palestine&quot;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">war_crimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="s1">&#39;Russia on Ukraine&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">war_crimes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="s1">&#39;Israel on Palestine&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">war_crimes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">IndexError</span><span class="p">:</span> <span class="nb">list</span> <span class="n">index</span> <span class="n">out</span> <span class="n">of</span> <span class="nb">range</span>
+</code></pre></div>
+
+<p>Dosyć logiczne. Przekroczenie długości tablicy spowoduje błąd. Jedna ważna notatka. W programowaniu zazwyczaj indeksujemy od zera. Dlaczego? Podstawy odpowiedzi znajdziesz w rozdziale 4. i 5., ale dla pewności wytłumaczę. Oczywiście są wyjątki od reguły, niektóre języki indeksują od 1, bo tak i cześć, ale my o prawilnych językach rozmawiamy jak C, Python czy Rust.</p>
+<h3>Negatywne indeksy</h3>
+<p>O ile zazwyczaj w innych językach niekoniecznie istnieje taka instytucja jak negatywne indeksy w przypadku list, tak w przypadku Pythona jak najbardziej tak. Używanie negatywnych indeksów powoduje, że Python zaczyna liczyć od końca listy w górę. Dość prosty koncept.</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<span class="mi">3</span>
+</code></pre></div>
+
+<h3>Cięcie list</h3>
+<p>Czyli tak zwany slicing. O cóż chodzi? A no mając sobie jakąś listę może najść nas potrzeba, by operować na jej kawałku czy coś. Kto wie, dziwne potrzeby ludzie mają. No i cóż teraz? Kopiować, iterować samemu po danej liście? Absolutnie nie. Python posiada, jak zawsze, wbudowane rozwiązanie, które pozwala nam w prosty i przyjemny sposób osiągnąć tenże efekt. Slicing się to po angielskiemu nazywa. Jak działa?</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="c1"># od pierwszego do piątek</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="c1"># od czwartego do końca</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> 
+<span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="c1"># od pierwszego do ostatniego</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[::]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="c1"># od pierwszego elementu listy, zaznaczając co drugi element -&gt; 2n+1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>  
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="c1"># od drugiego elementu listy, zaznaczając potem co drugi element -&gt; 2n </span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>  
+<span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+ <span class="c1"># od ostatniego elementu listy do końca zaznaczając po tem co drugi element</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+ <span class="c1"># od ostatniego elementu listy do końca czyli po prostu ostatni element</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> 
+<span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span>
+<span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># łatwy sposób odwrócenia listy</span>
+<span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</code></pre></div>
+
+<p>Slicing ma następującą składnię</p>
+<div class="codehilite"><pre><span></span><code><span class="n">zadana_lista</span><span class="p">[</span><span class="n">początkowy_element</span><span class="p">:</span><span class="n">końcowy_element</span><span class="p">:</span><span class="n">skok</span><span class="p">]</span>
+</code></pre></div>
+
+<p>Początkowy czy końcowy element to raczej znany koncept. Skok to po prostu informacja, co który element mamy zabierać.</p>
+<p>Ważna informacja: slicing tworzy kopie listy, świezutką nowiutką kopię listy. Jest to jednak płytka kopia a nie głęboka. Co to znaczy, opiszę nieco dalej. Dowód:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">numbers</span> <span class="ow">is</span> <span class="n">numbers</span><span class="p">[:]</span>
+<span class="kc">False</span>
+</code></pre></div>
+
+<p>Jak widać slicing powoduje skopiowanie i utworzenie nowej listy pod spodem. Albo inaczej. Pamięć zostanie skopiowana w drugie miejsce i zduplikowana w ten sposób, natomiast referencje w środku będę te same. Jeśli lista zawiera referencje do obiektu, który jest pass-by-reference, to modyfikacja tego obiektu spowoduje zmianę wartości w obu listach, tej skopiowanej też, natomiast jeśli coś jest pass-by-value (niemutowalne typy w większości przypadków), to modyfikacja będzie dotyczyła tylko tej listy której element modyfikowaliśmy. </p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">new_pass_by_reference</span> <span class="o">=</span> <span class="n">pass_by_reference</span><span class="p">[:]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span>
+<span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">new_pass_by_reference</span>
+<span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span> <span class="ow">is</span> <span class="n">new_pass_by_reference</span>  <span class="c1"># dwie różne listy</span>
+<span class="kc">False</span>
+<span class="c1"># pierwszym elementem listy jest inna lista</span>
+<span class="c1"># listy są mutowalne i przekazujemy je przez referencje</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="c1"># modyfikujemy tutaj drugi element tej wewnętrznej listy z orginału</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="c1"># jakimś sposobem lista w kopii też uległa zmianie</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">new_pass_by_reference</span>
+<span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">new_pass_by_reference</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</code></pre></div>
+
+<p>Pomyśl o tym. Pogadamy pewnie jeszcze na ten temat przy omawianiu kluczy w słownikach.</p>
+<h3>Dlaczego indeksujemy od zera</h3>
+<p>Stwierdziłem kiedyś gdzieś, że indeksowanie od zera jest logiczne i ma swoje powody, to naturalne i jest tak, jak w RHC przykazali. Padł jednak komentarz, że jest w zasadzie na odwrót a my, programiści, indeksujemy sobie od 0 tak po prostu, bo się przyzywczailiśmy.</p>
+<p>Otóż nie. <a href="https://4programmers.net/Mikroblogi/View/8661#entry-8661">Mimo tego, że sam kiedyś podobnie myślałem</a>, to indeksowanie od 0 jest logiczne i ma swoją zasadność. Jaką?</p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">numbers</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">};</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;numbers in general: %p -- %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">numbers</span><span class="p">,</span><span class="w"> </span><span class="n">numbers</span><span class="o">+</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="n">numbers</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;number no. %i: %p -- %p -- value: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">numbers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">numbers</span><span class="o">+</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">numbers</span><span class="o">+</span><span class="n">i</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;int size: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Kod wyżej skompilowany i uruchomiony da nam:</p>
+<div class="codehilite"><pre><span></span><code>numbers<span class="w"> </span><span class="k">in</span><span class="w"> </span>general:<span class="w"> </span>0x7ffc9f728f20<span class="w"> </span>--<span class="w"> </span>0x7ffc9f728f20
+number<span class="w"> </span>no.<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>0x7ffc9f728f20<span class="w"> </span>--<span class="w"> </span>0x7ffc9f728f20<span class="w"> </span>--<span class="w"> </span>value:<span class="w"> </span><span class="m">1</span>
+number<span class="w"> </span>no.<span class="w"> </span><span class="m">1</span>:<span class="w"> </span>0x7ffc9f728f24<span class="w"> </span>--<span class="w"> </span>0x7ffc9f728f24<span class="w"> </span>--<span class="w"> </span>value:<span class="w"> </span><span class="m">2</span>
+number<span class="w"> </span>no.<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>0x7ffc9f728f28<span class="w"> </span>--<span class="w"> </span>0x7ffc9f728f28<span class="w"> </span>--<span class="w"> </span>value:<span class="w"> </span><span class="m">3</span>
+number<span class="w"> </span>no.<span class="w"> </span><span class="m">3</span>:<span class="w"> </span>0x7ffc9f728f2c<span class="w"> </span>--<span class="w"> </span>0x7ffc9f728f2c<span class="w"> </span>--<span class="w"> </span>value:<span class="w"> </span><span class="m">4</span>
+int<span class="w"> </span>size:<span class="w"> </span><span class="m">4</span>
+</code></pre></div>
+
+<p>Przeanalizujmy troszkę o cóż tu chodzi.</p>
+<p>Zanim to zrobimy, zaznaczę tylko, że Ty, jeśli uruchomiłeś ten kod u siebie, mogłeś dostać nieco inne wyniki. To normalne.</p>
+<p>Dla większości osób nieznajomych z C/C++ ten kod może wydawać się nieco kryptyczny, ale w gruncie rzeczy jest dość prosty.</p>
+<p>Zacznijmy może od linijki</p>
+<div class="codehilite"><pre><span></span><code><span class="n">printf</span><span class="p">(</span><span class="s">&quot;numbers in general: %p -- %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">numbers</span><span class="p">,</span><span class="w"> </span><span class="n">numbers</span><span class="o">+</span><span class="mi">0</span><span class="p">);</span>
+</code></pre></div>
+
+<p>Zakładam, że pierwsza część printa jest zrozumiała dla każdego, może poza <code>%p</code> - to po prostu nam mówi, że argument do wyprintowania będzie specyficznym typem danych.</p>
+<p>A co to to całe <code>&amp;numbers</code> - operator &amp; mówi, że chcę otrzymać adres danej zmiennej - czyli jej lokację w pamięci. Bo jak dobrze wiemy, zmienne alokowane są w pamięci, w pewnym miejscu wybranym przez komputer. Ponownie - mówiliśmy już o tym w rozdziałach 4. i 5. </p>
+<p>To miejsce zazwyczaj opisuje się jako 'adres' - czyli liczba bajtów/bitów od 'poczatku' pamięci, którą procesor musi 'przeskoczyć', by dotrzeć do danej zmiennej.</p>
+<p>Nasza tablica (czyli taka jakby lista z Pythona, ale nie do końca), znajduje się pod adresem: 0x7ffc9f728f20 (zapis szesnastkowy), i jest to tym samym adres naszego pierwszego elementu.</p>
+<p>Kompilator musi musi jednak wiedzieć, pod jakim adresem znajduje się następny element naszej tablicy. Skąd? To już wyjaśniałem i liczę na twoją odpowiedź. Moją znajdziesz poniżej.</p>
+<p>Zadeklarowaliśmy, że elementy naszej tablicy będą typu <code>int</code>. Typ <code>int</code> na komputerze, z którego korzystam, jest akurat 4 bajtowy, czyli 32 bitowy. Jest to w zasadzie standard (chociaż oficjalnie standard mówi o tym, że int ma być po prostu przynajmniej 16 bitowy, nie specyfikuje jego rozmiaru dokładnie), ale czasami są odstępstwa od reguły, zależnie od architektury, stąd też ten <code>sizeof(int)</code> w kodzie - zwraca on rozmiar danego typu w obecnym środowisku.</p>
+<p>Dlatego też, jeśli 0x7ffc9f728f20 jest adresem pierwszego elementu, który zajmuje w pamięci 4 bajty o adresach: </p>
+<ul>
+<li><code>0x7ffc9f728f20</code>, </li>
+<li><code>0x7ffc9f728f21</code>, </li>
+<li><code>0x7ffc9f728f22</code>, </li>
+<li><code>0x7ffc9f728f23</code>, </li>
+</ul>
+<p>to możemy wnioskować, że następny element tej tablicy będzie po nim, pod adresem <code>0x7ffc9f728f24</code>, czyli 4 bajty dalej. Następny znowu kolejne 4 bajty i tak dalej, aż do ostatniego elementu. Można stąd wyekstrahować prosty wzór zatem.</p>
+<p>Adres konkretnego elementu tablicy można określić wzorem:</p>
+<p>$adres_pierwszego_elementu+(index*rozmiar_typu)$. </p>
+<p>*Z takiego też wzoru korzysta komputer - za każdym razem, gdy piszesz <code>numbers[index]</code> kompilator tłumaczy to sobie wewnętrznie na *</p>
+<p>$(numbers+(index*rozmiar_typu))$. </p>
+<p>Co znaczy dla kompilatora <code>*</code>? Nic innego, jak 'idź pod dany adres i weź wartość znajdującą się pod tym adresem.'</p>
+<p>Zatem gdy napiszemy numbers[0], to nasz kompilator przetłumaczy to na </p>
+<p>$(0x7ffc9f728f20+0)$=$(0x7ffc9f728f20)$,</p>
+<p>co z kolei znaczy: weź wartość z tego adresu i wstaw ją tutaj.</p>
+<p>W przypadku np. numbers[1], będzie to </p>
+<p>$0x7ffc9f728f20+(1<em>sizeof(int))$ = $0x7ffc9f728f20+(1</em>4)$</p>
+<p>$0x7ffc9f728f20+(1*4)$ = $0x7ffc9f728f20+4$</p>
+<p>czyli </p>
+<p><code>0x7ffc9f728f24</code>. </p>
+<p>Jasne? Jak dla mnie tak. Jeśli masz problem ze zrozumieniem tego konceptu, nie przejmuj się, wiele osób nie do końca rozumie wskaźniki, adres i pamięć. Ja też miałem z tym problem. Przynajmniej na początku.</p>
+<p>Możesz wspomóc się <a href="https://www.youtube.com/watch?v=bewTJaboGIw">filmikami Gynvaela - Gynvael's Code: Pointery #1</a> czy <a href="https://www.youtube.com/watch?v=PYJYiBlto5M">wykładami z CS50 - kursu z Harvardu</a> oni, jako osoby o znacznie większej wiedzy, tłumaczą całe zagadnienie znacznie lepiej niż ja.</p>
+<h3>Jakby to wyglądało, gdybyśmy indeksowali od 1?</h3>
+<p>Załóżmy, że indeksujemy od 1. Wtedy wzór musiałby ulec modyfikacji - i wyglądałby on tak:</p>
+<p>$adres_pierwszego_elementu+((index-1)*rozmiar_typu)$</p>
+<p>Innym rozwiązaniem byłoby przesunięcie lokacji pierwszego elementu tablicy o 4 bajty do przodu względem adresu samej tablicy, ale wtedy nasza tablica zajmowała by dodatkowe miejsce w pamięci i to niepotrzebnie, gdyż te pierwsze x bajtów, gdzie x to rozmiar danego typu danych, byłoby po prostu puste. To raz, dwa, że trzeba by pamiętać, że adres tablicy nie jest adresem pierwszego jej elementu.</p>
+<p>Oba te rozwiązania są bezsensowne, bo o ile nie jest to niby dużo - kilka bajtów na każdej tablicy, czy jedna operacja odejmowania, to gdy pomnożymy to sobie przez ilość takich zmiennych, które mamy w pamięci, to już wyjdzie całkiem pokaźna sumka bajtów/operacji, które w istocie rzeczy, są zbędnie zajmowane.</p>
+<p>Dodatkowo ileż kodu bazuje już na indeksowaniu od 0. Niemożliwym by było to wszystko zmienić.</p>
+<p>Oczywiście, są również inne argumenty, by indeksować czy liczyć elementy od zera, jak chociażby <a href="https://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html">te, głoszone przez Dijsktrę - Why numbering should start at zero</a>. To taki raczej znany i ważny Pan, dla tych, którzy nie kojarzą ;)</p>
+<p>Ogółem użyłem tutaj trochę uproszczeń i skrótów myślowych, ale generalny koncept przekazany.</p>
+<h3>Przykłady podstawowych operacji na listach</h3>
+<h2>Krotki/Tuple</h2>
+<h3>Krótka charakterystyka</h3>
+<p>Krotka to tak naprawdę nic innego niż niemutowalna lista. Co to znaczy? Mniej więcej tyle, że po zadeklarowaniu krotki nie można już modyfikować. Deklarujemy raz i koniec. Niesie to ze sobą wiele konsekwencji o których zaraz opowiem. </p>
+<p>Jedyne co z krotką można zrobić to odczytać ją, skopiować czy też ponownie zadeklarować zmienną o danej nazwie. Przykłady niżej.</p>
+<p>Po co nam te krotki/tuple? Ogółem niemutowalnośc danych często sprawia, że z pewnymi rzeczami trudniej sobie strzelić w stopę. Do tego jest to podejście bardziej podobne do programowania funkcyjnego, powiedzmy. Niemutowalność jest całkiem spoko.</p>
+<p>Oprócz tego mamy tutaj jeszcze jedną zaletę. Wydajność.</p>
+<h3>Wydajna bestia</h3>
+<p>Otóż jeśli jest to niemutowalna struktura danych to interpreter pythona wie dokładnie ile pamięci zaalokować plus z pewnych względów proces ten zachodzi szybciej. Czyli tutaj alokacja ponad potrzeby nie ma miejsca plus do tego instrukcja wykonuje się niejako szybciej, python wie jakie typy są użyte, zna konkretne dane które wykorzystaliśmy etc.</p>
+<p>Jako anegdotkę przytocze historię, gdy zastosowanie tupli zmniejszyło nam zużycie pamięci z 4 GB do ~2.1 GB w pewnej niedużej webappce. W innych wypadkach redukcja bywała nawet bardziej drastyczna.</p>
+<h3>Przykłady podstawowych operacji na krotkach</h3>
+<div class="codehilite"><pre><span></span><code><span class="nb">dir</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;__add__&#39;</span><span class="p">,</span> <span class="s1">&#39;__class__&#39;</span><span class="p">,</span> <span class="s1">&#39;__contains__&#39;</span><span class="p">,</span> <span class="s1">&#39;__delattr__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__doc__&#39;</span><span class="p">,</span> <span class="s1">&#39;__eq__&#39;</span><span class="p">,</span> <span class="s1">&#39;__format__&#39;</span><span class="p">,</span> <span class="s1">&#39;__ge__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__getattribute__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getnewargs__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__getslice__&#39;</span><span class="p">,</span> <span class="s1">&#39;__gt__&#39;</span><span class="p">,</span> <span class="s1">&#39;__hash__&#39;</span><span class="p">,</span> <span class="s1">&#39;__init__&#39;</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;__le__&#39;</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">,</span> <span class="s1">&#39;__lt__&#39;</span><span class="p">,</span> <span class="s1">&#39;__mul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__ne__&#39;</span><span class="p">,</span> <span class="s1">&#39;__new__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__reduce__&#39;</span><span class="p">,</span> <span class="s1">&#39;__reduce_ex__&#39;</span><span class="p">,</span> <span class="s1">&#39;__repr__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rmul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__setattr__&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;__sizeof__&#39;</span><span class="p">,</span> <span class="s1">&#39;__str__&#39;</span><span class="p">,</span> <span class="s1">&#39;__subclasshook__&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">]</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="n">some_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">some_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="mi">1</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">11</span><span class="p">]:</span> <span class="n">some_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="n">some_tuple</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="mi">1</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="n">some_tuple</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="mi">1</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="n">some_tuple</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="mi">0</span>
+</code></pre></div>
+
+<h2>Słowniki</h2>
+<h3>Krótka charakterystyka</h3>
+<p>Czymże jest magicznie brzmiący słownik zwany także Dictem/HashMapą? Otóż jest to nic innego jak swego rodzaju słownik/mapowanie. Tak jak w zwykłym słowniku mamy pewnego rodzaju mapowanie <strong>kluczy</strong> do <strong>wartości</strong> w postaci słowa i jego znaczenia, tak podobnie jest w pythonowym słowniku/hashmapie.</p>
+<p>Do rzeczy.</p>
+<p>Słownik w Pythonie to struktura danych, która pozwala nam przechowywać dowolne wartości pod określonymi kluczami. Wyobraź sobie listę, ale zamiast indeksu w postaci liczbowej masz indeks w postaci określonego klucza.</p>
+<p>W praktyce wygląda to tak:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">test_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;test&quot;</span><span class="p">:</span> <span class="s2">&quot;some_string&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;hehe&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">test_dict</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">]</span>
+<span class="s1">&#39;some_string&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">test_dict</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="s1">&#39;hehe&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">test_dict</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="mi">3</span>
+</code></pre></div>
+
+<p>Przewidywalne. Reszta działa również podobnie jak w liście.</p>
+<p>Co jest różnego od działania listy jest to, że o ile w liście zapewniona jest gwarancja tego, że elementy zawsze będą w tej kolejności w jakiej je do listy włożyliśmy. Tak hashmapa z definicji takiego czegoś nie przewiduje. Obecna implementacja CPythona, od wersji bodajże 3.8, mimo wszystko zapewnia coś takiego dodatkowo, czyli ze zwykłego <code>Dicta</code> zrobił nam się <code>OrderedDict</code>, natomiast lepiej się nie nastawiać na to, gdyż wersje pythona typu 3.6 czy 3.7 są dość całkiem nowe i jest mnóstwo projektów w nich napisanych. Co z tego? A no to, że kod, który będziesz pisał prawdopodobnie może być odpalany na wersji Pythona, która nie bierze pod uwagę i nie gwarantuje zachowania kolejności insercji elementów, zatem lepiej na tym zbytnio nie polegać, bo w większości przypadków ta kolejność będzie zachowana mimo wszystko, ale nie jest ona gwarantowana implementacyjnie, czyli zawsze znajdzie się ten 1%, gdzie jednak coś pójdzie nie tak. Potem weź takiego buga dostań do inwestygacji.</p>
+<p>Oczywiście jeśli jesteś świadom i wiesz co robisz, plus masz gwarancje tego, na jakich wersjach pythona twój kod będzie banglał, to śmiało. Natomiast pamiętaj, W najnowszej wersji pythona -&gt; spoko, poniżej 3.8 albo 3.7 juz niekoniecznie. Sprawdź dokładnie w której wersji wprowadzono <code>OrderedDict</code> jako domyślny.</p>
+<h3>Jak przebiega proces dodawania elementów do dicta?</h3>
+<p>Otóż generalnie tak jak w przypadku listy mieliśmy numeryczny indeks, za pomocą którego Python liczył sobie offset w pamięci, tak wp rzypadku dicta mamy coś takiego jak funkcja hashująca. Ta funkcja bierze sobie za argument klucz jakiego używamy i na jego podstawie próbuje generować w miarę unikalny hash. Potem na podstawie hashu, zazwyczaj poprzez operacje modolu, ogarniamy sobie adres/offset gdzie trzymana jest dana wartość.</p>
+<p>Logiczne? Czyli tak, za każdym razem jak ktoś wpisuje <code>some_dict["key"]</code> to pod spodem dzieje się coś takiego, że interpreter Pythona, by uzyskać adres z jakiego odczytać ma wartość dla danego klucza, bierze tenże klucz, wrzuca go w funkcję hashującą, nie wiem, załóżmy <code>hash("key")</code>, ta funkcja zaś zwraca nam jakiś tam możliwie unikalny hash wygenerowany/obliczony na podstawie danego klucza. Z hasha wyczarowujemy sobie adres/offset. Jakoś tak.</p>
+<p>Dlaczego w miarę unikalny?</p>
+<h3>Kolizja hashy</h3>
+<p>Hash collision to coś co się czasami zdarza. Dlaczego? Otóż funkcja hashująca nie może byc kompletnie losowa. Musi być stabilna i powtarzalna. To znaczy, dla zadanego argumentu musi zawsze zwracać to samo, generacja hashu musi odbywać się w sposób przewidywalny. Dlaczego? Otóż gdyby było inacej a dla jednego klucza dało by się wygenerować kilka hashy, to powstałby problem w postaci takiej, że nigdy nie moglibyśmy, albo czasem byśmy nie mogli, trafić do dokładnego adresu, gdzie pierwotnie przypisaliśmy wartość. Co to oznacza?</p>
+<p>Brak kompletnej losowości sprawia to, że algorytmy hashujące są w jakimś tam stopniu ograniczone. Ograniczone są też wydajnością i czasem jaki komputer może poświęcić na hashowanie, które dzieje się dość często jednak, bez kosztów dla użytkownika. Trzeba było zatem znaleźć kompromis pomiędzy skomplikowaniem funkcji hashującej i jej zasobożernością, czasem wykonywania a unikalnością dostarczanych hashy dla różnych kluczy.</p>
+<p>Obecnie mądre głowy jakiś złoty środek wymyśliły, natomiast w dzisiejszych czasach zdarza się operować na zbiorach danych tak dużych, że kolizja haszhu się zdarza i funkcja haszhująca wygeneruje taki sam hash dla dwóch różnych kluczy, przez co jeden klucz nadpisze drugi. Bardzo, bardzo rzadki przypadek. Natomiast jeśli masz do przetworzenia milion trylionów rekordów, to nagle bardzo rzadkie przypadki mają jakieś 100% szansy się pojawić. </p>
+<h3>Co może być kluczem?</h3>
+<p>Kluczem w słowniku może być dowolna wartość/zmienna/obiekt, który jest hashowalny. Co to znaczy? A no to, że w swojej definicji zawiera implementację metody <code>__hash__</code>. Tak w dużym skrócie. Czyli te obiekty, dla których zaimplementowana została funkcja hashująca, mogą być kluczami. W sumie logiczne, bo jeśli nie mamy metody hashującej dany obiekt to nie policzymy hashu. Nie policzymy hashu z klucza to nie ogarniemy adresu/offsetu. Bez tego niewiadomo gdzie w pamięci przechować wartość. A zatem musimy mieć tę metodę zaimplementowaną. Logiczne.</p>
+<h3>Pass by value &amp; Pass by reference</h3>
+<p>O co tutaj chodzi? O przekazywanie zawartości poprzez referencje lub poprzez wartość. Dokładniej mówiąc chodzi o to, że niektóre obiekty Python skopiuje, tak jak ma to miejsce w przypadku slicingu listy i otrzymania jej kopii w sposób, który wewnętrzne elementy tegoż obiektu uwspólni dla kopii jak i dla orginału. Troszkę rozpisywałem się już o tym podczas pisania o listach. </p>
+<p>Wydaje mi się, że zostało to tam w miarę jasno wytłumaczone. Teraz tak - dlaczego wspominam o tym w kontekście dictów? Otóż mutowalne typy danych często przekazywane są przez referencje, czyli zamiast samego obiektu, dostajemy referencję doń. Z tego też powodu np. lista nie może być kluczem w słowniku - jest ona mutowalna, przekazywana przez referencję a z tego też powodu nie implementuje metody <code>__hash__</code> przez co jest niehashowalna a zatem implementacja słownika w pythonie, przy próbie ustanowienia nowego klucza będącego listą, wyrzuci błąd.</p>
+<p>Przypomnijmy sobie kod, którym ilustrowałem przekazywanie przez referencje vs przez wartość.</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">new_pass_by_reference</span> <span class="o">=</span> <span class="n">pass_by_reference</span><span class="p">[:]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span>
+<span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">new_pass_by_reference</span>
+<span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span> <span class="ow">is</span> <span class="n">new_pass_by_reference</span>  <span class="c1"># dwie różne listy</span>
+<span class="kc">False</span>
+<span class="c1"># pierwszym elementem listy jest inna lista</span>
+<span class="c1"># listy są mutowalne i przekazujemy je przez referencje</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="c1"># modyfikujemy tutaj drugi element tej wewnętrznej listy z orginału</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pass_by_reference</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="c1"># jakimś sposobem lista w kopii też uległa zmianie</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">new_pass_by_reference</span>
+<span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">new_pass_by_reference</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</code></pre></div>
+
+<p>Warto na to uważać, zwłaszcza przy np. wybieraniu argumentów dla funkcji czy ustanawianiu wartości domyślnych. Pass by reference -&gt; zwracamy adres i tam następuje modyfikacja danego obiektu. Pass by value -&gt; zwracamy samą wartość i następuje jej 'skopiowanie' na świeżo zamiast modyfikować zmienną pod danym adresem, otrzymujemy nową. Kolejny przykład:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">student</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Putler&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">student</span><span class="p">):</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Wołodia&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;CzłowiekMałpa&quot;</span><span class="p">:</span> <span class="mi">21</span><span class="p">}</span>
+    <span class="n">student</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wewnątrz funkcji&quot;</span><span class="p">,</span> <span class="n">student</span><span class="p">)</span>
+<span class="n">test</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Poza funkcją:&quot;</span><span class="p">,</span> <span class="n">student</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Jak widać wyżej dict przekazywany jest poprzez referencje, czyli adres tak jakby. Python zatem idzie pod dany adres i modyfikuje obiekt przez co zmiany są rozpowszechnione w miejscach, gdzie niewprawiony programista mógłby się niespodziewać. W przypadku przekazania wartości sprawa ma się inaczej. Orginalny obiekt nie jest modyfikowany, jedynie jego kopia.</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">student_name</span> <span class="o">=</span> <span class="s2">&quot;NAFO&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">name_name</span><span class="p">):</span>
+<span class="o">...</span>     <span class="n">student_name</span> <span class="o">=</span> <span class="n">name_name</span> <span class="o">+</span> <span class="s2">&quot; &lt;3&quot;</span>
+<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wewnątrz: &quot;</span><span class="p">,</span> <span class="n">student_name</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">student_name</span>
+<span class="s1">&#39;NAFO&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">test</span><span class="p">(</span><span class="n">student_name</span><span class="p">)</span>
+<span class="p">(</span><span class="s1">&#39;Wewnątrz: &#39;</span><span class="p">,</span> <span class="s1">&#39;NAFO &lt;3&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">student_name</span>
+<span class="s1">&#39;NAFO&#39;</span>
+</code></pre></div>
+
+<p>Nie wiem, czy ma to sens, może wrócimy do tego jeszcze. Przeanalizuj i poszukaj troszeczkę w necie samodzielnie na ten temat by dodatkowo rozjaśnić sytuację.</p>
+<h3>Kopia płytka i kopia głęboka a klucze w słowniku</h3>
+<p>Mamy te całe przekazywanie referencji, wartości etc. Pomówmy teraz zatem o kopiach płytkich i głebokich. Krótko bo krótko, ale warto wspomnieć.</p>
+<p>Kiedy użyliśmy slicingu jako metody kopiowania listy, otrzymaliśmy tak zwaną płytką kopię tejże listy. Co to znaczy płytką? Mianowicie skopiowany został tylko początkowy obiekt, obiekt z samej góry. Wszystko co w środku a co było przekazywane przez referencje, nie zostało zduplikowane. Skopiowane zostały jedynie referencje. To jest płytka kopia.</p>
+<p>Głęboka kopia to kopia, gdzie interpreter 'wchodzi' do obiektu, który kopiujemy i kopiuje wszystko przez wartość, nie przez referencje. Sprawia to, że otrzymujemy faktyczny, samodzielny i niezależny duplikat danego obiektu a nie tylko jego 'top levelu' jak w przypadku kopii płytkiej.</p>
+<p>Czasami potrzebne. Warto wiedzieć, gdyż w niektórych przypadkach myslimy, że mamy dwa różne obiekty po skopiowaniu używając kopii płytkiej, modyfikujemy jeden obiekt a tu bam, zmiany w obu. Potrafi to spowodować naprawdę brzydkie do debugowania błędy. Niepolecam.</p>
+<h3>dict.values() keys() items()</h3>
+<p>Zwróć uwagę na te trzy metody. Pobaw się nimi i podsumuj swoje wnioski. Ja zwrócę tylko uwagę na jedną rzecz.</p>
+<p>Jakiego typu obiekty zwracają funkcje dict.keys(), dict.values(), dict.items()? dict.items() - oczywiste. Lista tupli. Ale tak nie do końca. Bo jak się bliżej przyjrzeć to jest to klasa dict_items, która nie do końca jest listą – trochę to taka rozszerzona klasa, bo umożliwia nam wykonywanie na niej operacji takich, jak na setach. Podobnie z keys() i values(). Czyli na obiektach zwracanych przez te funkcje można wykonywać operacje sumy, różnicy czy części wspólnej ze zbiorów. Tldr – te funkcje zwracają iterable set-like object.</p>
+<h3>Przykłady podstawowych operacji na słownikach</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="nb">dir</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">17</span><span class="p">]:</span>
+<span class="p">[(</span><span class="o">...</span><span class="p">)</span>
+ <span class="s1">&#39;clear&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;copy&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;fromkeys&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;get&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;items&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;keys&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;pop&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;popitem&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;setdefault&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;update&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;values&#39;</span><span class="p">]</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">some_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;NAFO&quot;</span><span class="p">:</span> <span class="s2">&quot;OK&quot;</span><span class="p">,</span> <span class="s2">&quot;SS&quot;</span><span class="p">:</span> <span class="s2">&quot;NOT OK&quot;</span><span class="p">}</span>
+<span class="sd">&quot;&quot;&quot; dict_values to set-like obiekt, na którym</span>
+<span class="sd">mozna  wykonywać takie operacja jak na zbiorach&quot;&quot;&quot;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="n">some_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>  
+<span class="n">Out</span><span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="n">dict_values</span><span class="p">([</span><span class="s1">&#39;OK&#39;</span><span class="p">,</span> <span class="s1">&#39;NOT OK&#39;</span><span class="p">])</span>
+<span class="c1"># dict_keys podobnie</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">20</span><span class="p">]:</span> <span class="n">some_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">20</span><span class="p">]:</span> <span class="n">dict_keys</span><span class="p">([</span><span class="s1">&#39;NAFO&#39;</span><span class="p">,</span> <span class="s1">&#39;SS&#39;</span><span class="p">])</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">21</span><span class="p">]:</span> <span class="n">some_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">21</span><span class="p">]:</span> <span class="n">dict_items</span><span class="p">([(</span><span class="s1">&#39;NAFO&#39;</span><span class="p">,</span> <span class="s1">&#39;OK&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;SS&#39;</span><span class="p">,</span> <span class="s1">&#39;NOT OK&#39;</span><span class="p">)])</span>
+</code></pre></div>
+
+<h2>Zbiory</h2>
+<h3>Krótka charakterystyka</h3>
+<p>Czym są zbiory? Analogicznie jak w matematyce. To taka jakby lista, ale bez powtórzeń. Przynajmniej pozornie. Pod spodem jest nieco inaczej, bo pod spodem zbiorom/setom bliżej do hash mapy. W sumie to jest niejako hashmapa. Po co na co i dlaczego? Otóż zadajmy sobie pytanie, jakie są atrybuty zbiorów. Każdy element występuje tylko raz. Niekoniecznie zachowana kolejność insercji. Zaczyna brzmieć znajomo? Yup. Sety to tak jakby hashmapy gdzie wartości są tez i kluczami niejako.</p>
+<p>Jaka jest zaleta zbioru? Pierwsze to deduplikacja elementów -&gt; każdy występuje dokładnie raz. Możemy wyciągnąc 'statystyki' z danego elementu, ile razy został dodany do seta, ale w samym secie pojawi się on tylko raz. Druga jest wydajnościowa. </p>
+<h3>Przeszukanie szybsze niż na warszawskiej Woli</h3>
+<p>Wyszukiwanie/przeszukiwanie w zbiorze ma złożoność obliczeniową na poziomie O(1) - czas stały. Co to znaczy? Niezależnie od rozmiaru zbioru by sprawdzić przynależność danego elementu do zbioru wykonujemy operację, która cechuje się stałym czasem wykonania niezależnym od rozmiaru. Czyli nawet dla bardzo bardzo dużych zbiorów, jeśli zmieszczą się w pamięci, mega szybko możemy stwierdzić, czy znajdują się one w danym zbiorze. </p>
+<p>W przypadku listy nie ma aż tak łatwo, zwłaszcza jeśli dane są nieposortowane.</p>
+<p>Dlaczego tak jest? Otóż przez to, że pod spodem jest niejako hashmapa, by sprawdzić czy element przynależy do zbioru wystarczy jedynie policzyć hash tegoż elementu a potem sprawdzić czy wszystko się zgadza. Stąd O(1) niezależnie od wielkości zbioru.</p>
+<p>To zaś wymusza nam ograniczenia odnośnie tego, co możemy do zbioru wrzucić. Jakie? Takie same jak przy kluczach w słownikach.</p>
+<p>Do tego zbiór pythonowy obsługuje też podobne operacje jak zbiór matematyczny. Koniunkcje, alternatywę, różnicę. Zwykła lista nie wszystko z tego potrafi ogarnąć. </p>
+<h3>Przykłady podstawowych operacji na zbiorach</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">In</span> <span class="p">[</span><span class="mi">22</span><span class="p">]:</span> <span class="n">some_set</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">}</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="n">another_set</span> <span class="o">=</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">}</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="n">some_set</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">}</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="n">some_set</span> <span class="o">|</span> <span class="n">another_set</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">}</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="n">some_set</span> <span class="o">&amp;</span> <span class="n">another_set</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">}</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">27</span><span class="p">]:</span> <span class="n">some_set</span> <span class="o">-</span> <span class="n">another_set</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">27</span><span class="p">]:</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">30</span><span class="p">]:</span> <span class="nb">dir</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">30</span><span class="p">]:</span>
+<span class="p">[(</span><span class="o">...</span><span class="p">),</span>
+ <span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="s1">&#39;clear&#39;</span><span class="p">,</span> <span class="s1">&#39;copy&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;difference&#39;</span><span class="p">,</span> <span class="s1">&#39;difference_update&#39;</span><span class="p">,</span> <span class="s1">&#39;discard&#39;</span><span class="p">,</span> <span class="s1">&#39;intersection&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;intersection_update&#39;</span><span class="p">,</span> <span class="s1">&#39;isdisjoint&#39;</span><span class="p">,</span> <span class="s1">&#39;issubset&#39;</span><span class="p">,</span> <span class="s1">&#39;issuperset&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;pop&#39;</span><span class="p">,</span> <span class="s1">&#39;remove&#39;</span><span class="p">,</span> <span class="s1">&#39;symmetric_difference&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;symmetric_difference_update&#39;</span><span class="p">,</span> <span class="s1">&#39;union&#39;</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">]</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">31</span><span class="p">]:</span> <span class="n">some_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">32</span><span class="p">]:</span> <span class="n">some_set</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">32</span><span class="p">]:</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">}</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">33</span><span class="p">]:</span> <span class="n">some_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">34</span><span class="p">]:</span> <span class="n">some_set</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">34</span><span class="p">]:</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">}</span>
+</code></pre></div>
+
+<h2>Podsumowanie</h2>
+<p>Uf, nareszcie. Kawał tekstu, co? A to tylko wybrane z Pythonowych typów.</p>
+<p>Warto je dobrze znać, pobawić się z nimi i oswoić. Dlaczego? Otóż w standardowej bibliotece Pythona jest już tyle cudeniek, tyle różnych rzeczy, które ułatwiają życie, że głowa mała. Szkoda wymyślać koło na nowo i implementować coś samemu, skoro język udostępnia swoją wersję.</p>
+<p>Mało tego, implementacja od zera jest często też bezsensowna z pewnego bardzo ważnego względu. Otóż twoja własna implementacja może być dziurawa, bo sprawdzasz ją ty, może ludzie na Code Review i tyle. Natomiast jeśli idzie o kod, który znajduje się w standardowej bibliotece Pythona i implementacje kontrybutorów, to sprawa ma się tak, że jest to kod przetestowany i przejrzany przez tysiące osób. Wpadki się zdarzają, to prawda. Natomiast gdzie prędzej znajdziemy buga? W kodzie, który przejrzało tysiące osób, który jest przetestowany w milionach produkcyjnych aplikacji jak i pokryty wieloma testami? Czy w kodzie, który przejrzałeś ty i być może twój zespół? Nie ma porównania. </p>
+<p>Do tego dam sobie rękę uciąć, wierząc w to, że dzięki wysiłkowi tysięcy kontrybutorów kod z biblioteki standardowej Pythona będzie lepiej zoptymalizowany. Korzystaj z tego, co zbudowano i nie wynajduj koła na nowo tworząc własne naiwne implementacje algorytmu sortowania czy coś. Czasami zdarza się taka potrzeba, prawda, ale wątpię, byś ty takowe miewał jako junior wannabe. </p>
+<p>Dlatego koniecznością jest dobra znajomość biblioteki standardowej Pythona. Własne implementacje zostaw na cele związane z nauką czy zabawą, by zrozumieć jak coś działa. W kodzie produkcyjnym starajmy się tego unikac zaś na rzecz sprawdzonych rozwiązań z biblioteki standardowej.</p>
+<p>To nie tylko ułatwia zadanie, ale sprawia, że kod  będzie solidniejszy, bardziej zoptymalizowany i prawdopodobnie szybciej dostarczony. Łatwiej poskładać coś z gotowych klocków niż samemu budować dom zaczynając od wydobycia gliny i wypalenia cegieł. </p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

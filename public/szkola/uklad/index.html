@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pl">
+<head>
+    <!-- the code is very questionable, but it needed to be done quick and dirty -->
+  <meta charset="utf-8">
+  <title>Układ v2.7</title>
+  <meta name="description" content="Układ współrzędnych z prostymi funkcjami.">
+  <meta name="author" content="Olaf 'grski' Górski">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/math.min.js"></script>
+  <link rel="stylesheet" href="css/papier.min.css">
+</head>
+<body onload="makePlane()">
+<input type="checkbox" id="nav" class="navCheckBox"/>
+<label for="nav" class="sidenav bg-blue">
+  <a>Menu</a>
+   <form>
+            y = <input autocomplete="off" type="text"  class="width8 text-black" id="equation" placeholder="x"/>
+            <button type="button" class="btn bg-green width9" onclick="draw(document.getElementById('equation').value);" >Narysuj wykres</button>
+            <button type="button" class="btn bg-red width9" onclick="location.reload();" >Wyczyść</button>
+            <br/>Podstawowe wykresy<br/>
+            <button type="button" onclick="draw('x*x');" class="bg-teal">x<sup>2</sup></button>
+            <button type="button" onclick="draw('x*x*x');" class="bg-teal">x<sup>3</sup></button>
+            <button type="button" onclick="draw('log(x)');" class="bg-teal">log(x)</button>
+            <button type="button" onclick="draw('sqrt(x)');" class="bg-teal">√x</button>
+            <button type="button" onclick="draw('cbrt(x)');" class="bg-teal"><sup>3</sup>√x</button>
+            <button type="button" onclick="draw('abs(x)');" class="bg-teal">|x|</button>
+            <button type="button" onclick="draw('floor(x)');" class="bg-teal">[x]</button>
+            <button type="button" onclick="draw('x-floor(x)');" class="bg-teal">x-[x]</button>
+            <button type="button" onclick="draw('1/x');" class="bg-teal">1/x</button>
+            <button type="button" onclick="draw('sign(x)');" class="bg-teal">sgn(x)</button>
+            <button type="button" onclick="draw('sin(x)');" class="bg-teal">sin(x)</button>
+            <button type="button" onclick="draw('cos(x)');" class="bg-teal">cos(x)</button>
+            <button type="button" onclick="draw('tan(x)');" class="bg-teal">tan(x)</button>
+            <button type="button" onclick="draw('cot(x)');" class="bg-teal">ctg(x)</button>
+            <br/>
+             T<sub>u=[p,q]</sub>
+             <br/>
+             p = <input autocomplete="off" type="number" class="width2 text-black"   id="vectorP"/>
+            q = <input autocomplete="off" type="number"  class="width2 text-black" id="vectorQ"/>
+            <button type="button" class="btn bg-green width9" onclick="ts();" >Translacja</button>
+            <br/>
+            Dokładność obliczeń
+            <br/>
+            <button type="button" class="bg-grey" id="prBtn">Niska</button>
+            <button type="button" class="bg-grey" id="prBtn2">Średnia</button>
+            <button type="button" class="bg-grey" id="prBtn3">Wysoka</button>
+            <button type="button" class="bg-grey" id="prBtn4">B. wysoka</button>
+            <br/>
+            abs(x) - |x|, sqrt(x) - √x
+       </form>
+
+</label>
+    <canvas id="myCanvas">
+Your browser does not support the HTML5 canvas tag.</canvas>
+  <script src="js/scripts.js"></script>
+</body>
+</html>

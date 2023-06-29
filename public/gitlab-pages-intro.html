@@ -1,0 +1,334 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>Jak za darmo opublikować swoją stronę na GitLab Pages: Pelican(jekyll/hugo), CI Pipelines, Docker, Cloudflare, linia poleceń i customowa domena https - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Po krótce o tym, jak opublikować za darmo swoją własną stronę na GitLab Pages z customową domeną, obsługą https oraz continuous integration." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Po krótce o tym, jak opublikować za darmo swoją własną stronę na GitLab Pages z customową domeną, obsługą https oraz continuous integration.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2018-06-27T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2018-06-27</h3>
+                <h1 class="title"><a href="https://grski.pl/">Jak za darmo opublikować swoją stronę na GitLab Pages: Pelican(jekyll/hugo), CI Pipelines, Docker, Cloudflare, linia poleceń i customowa domena https</a></h1>
+                <div class="content">
+                    <p>Ostatnio tak się jakoś złożyło, że Microsoft postanowił nabyć GitHuba i kilka innych firm. Nie jestem jakimś ogromnym przeciwnikiem Microsoftu, Windowsa czy innych ich produktów, niemniej jednak nie darzę ich też jakąś szczególną sympatią. Ten fakt, w połączeniu z tym, że już od jakiegoś czasu rozważałem przejście na GitLaba z racji tego, że po prostu udostępnia on znacznie więcej przydatnych funkcjonalności i swobody, sprawiły, że postanowiłem wreszcie zrobić co trzeba.</p>
+<h1>Migracja na GitLaba</h1>
+<p>Migracja różnych repozytoriów jest bardzo prosta, GitLab udostępnia tu fajne narzędzie, mnie jednak chodziło o migrację swojego bloga, tutaj pracy trochę będzie.</p>
+<p>A skoro i tak pracy będzie, to dorzucę sobie jeszcze więcej - zrobię go od nowa i do tego opiszę cały proces.</p>
+<p>Blog postanowiłem zmienić z dwóch powodów: obecny nie był responsywny i wyglądał po prostu źle, nieprofesjonalnie. </p>
+<p>Faktem jest natomiast, że oprócz samej treści i jej merytoryki, bądź co bądź liczy się też sposób prezentacji zasobu. Niestety, albo może i stety. Na to, by kompletnie nie dbać o wygląd i sposób prezentacji mogą sobie pozwalać wielkie autorytety, których ludzie i tak chcą słuchać/czytać, a nie taki mały robaczek jak ja. To pierwszy.</p>
+<p>Drugim było to, że na stronie chciałem wprowadzić serwowanie przez HTTPS, a GitHub Pages jakoś niezbyt mi pozwalał to zrobić - nie udało mi się tego poprawnie skonfigurować a nie miałem ochoty walczyć i walczyć z czymś, co i tak za niedługo zostanie wymienione.</p>
+<h1>Zaczynamy</h1>
+<p>Obecny stack - serwując stronę na GitHub pages, jeśli chcemy mieć automatycznie generowaną stronę, to niestety z góry narzucany jest nam Jekyll jako generator. Także jego też używałem z racji braku wyboru. Wpisy pisane były i formatowane za pomocą Markdowna a templatka była dowolna, lekko przeze mnie zmodyfikowana.</p>
+<p>Z racji tego, że na GitLabie można samodzielnie wybrać to, jakiego generatora statycznej strony użyjemy, zależy od nas, to postanowiłem użyć czegoś raczej z własnego Pythonowego podwórka - pelican.</p>
+<p>Różnice w zasadzie praktycznie żadne, ale wciąż.</p>
+<p>Do tego postanowiłem wybrać motyw <a href="https://github.com/alexandrevicenzi/flex">Flex</a>, wam może wystarczy domyślny, albo jakiś inny - <a href="http://www.pelicanthemes.com">tutaj</a> jest biblioteka z której można sobie wybrać, lub ewentualnie stworzyć swój, co nie jest jakieś trudne. Do gustu przypadł mi również chociażby <a href="https://github.com/jvanz/pelican-hyde/tree/1def3dd97609105f6ae31f0f88ab5ae6a94aa0c5">hyde</a>, 
+<a href="https://github.com/onuraslan/medius/tree/c4399ffdae1070fcd476157f4ab4109448d15b77">medius</a>, <a href="https://github.com/lucachr/pelican-mg/tree/5171f8719690dfe0bb7bfd2b6de428f15868602f">mg</a>, <a href="https://github.com/petrnohejl/MinimalXY/tree/87f0ebb57543b7810dffc9ebe05ed96bc897ffd1">MinimalXY</a> i <a href="https://github.com/molivier/nest/tree/18aa1345f70219c00704848d321daf45c2f50ba7">nest</a></p>
+<h1>Stawiamy lokalnie</h1>
+<p>Zakładam tutaj, że na twojej maszynie zainstalowany jest Python jak i Pip, także nie będę opisywał tu procesu konfiguracji tych dwóch programów.</p>
+<p>Zaczniemy od instalacji <code>virtualenv</code> - paczki, którą każdy powinien znać i z niej korzystać.</p>
+<div class="codehilite"><pre><span></span><code>    pip install virtualenv
+</code></pre></div>
+
+<p>Po zainstalowaniu stwórzmy katalog, gdzie żyć będzie nasza strona. Więc cyk otwieramy konsolę/cmd i przechodzimy w miejsce, gdzie trzeba trzymać różne projekty - u mnie to było <code>C:\dev\</code></p>
+<div class="codehilite"><pre><span></span><code>    cd C:\dev\
+    mkdir gitlab_pages
+    cd gitlab_pages
+    mkdir grski_pl
+</code></pre></div>
+
+<p>Będąc w katalogu <code>gitlab_pages</code> wywołujemy</p>
+<div class="codehilite"><pre><span></span><code>    virtualenv venv
+</code></pre></div>
+
+<p>Spowoduje to utworzenie nowego środowiska dla naszej stronki, dzięki czemu paczki, które zainstalujemy, będa dostępne tylko z poziomu tego środowiska - nie zabrudza nam instalacji systemowej. Następnie musimy uruchomić to wirtualne srodowisko. Jak to zrobić? Jeśli korzystasz z linuxa, to nie muszę ci tego tłumaczyć, zaś na Windowsie wystarczy użyć polecenia:</p>
+<div class="codehilite"><pre><span></span><code>    venv\Scripts\activate
+</code></pre></div>
+
+<p>Teraz przed katalogiem podanym po lewej, powinno być widać (venv) - to znaczy, że obecne operacje dotyczące Pythona wykonasz właśnie w tym środowisku, a nie w globalnym. Pamiętaj też o tym, że nie musisz pisać całych nazw katalogów czy plików - jak zaczniesz pisac i klikniesz TAB, to konsola sama dopisze sobie resztę ; )</p>
+<p>Kiedy venv'a już mamy ogarniętego, to pora zainstalować co nam trzeba. Przejdźmy zatem do katalogu naszej strony - w moim wypadku grski_pl, pamiętaj, że ty mogłeś nazwać katalog inaczej.</p>
+<div class="codehilite"><pre><span></span><code>    cd grski_pl
+    (
+    echo pelican
+    echo markdown
+    ) &gt; requirements.txt
+    pip install -r requirements.txt
+</code></pre></div>
+
+<p>lub na linuxie:</p>
+<div class="codehilite"><pre><span></span><code>    cd grski_pl
+    echo -e &quot;pelican\nmarkdown&quot; &gt; requirements.txt
+    pip install -r requirements.txt
+</code></pre></div>
+
+<p>Halo halo, moment, co tu się właśnie stało? Cóż, lubię konsolę, więc raczej staram się z niej nie wychodzić. Korzystając z operatora przekierowania '&gt;' kazałem konsoli, by ta, zamiast na standardowe wyjście, efekt wykonania echo pelican a potem echo markdown, wysłała efekty do pliku requirements.txt i tyle. Upraszaczając zaczynając komendę od '(' i enter, mówisz konsoli, że enter to nie koniec, jeszcze będę pisał więc nie wykonywuj jeszcze polecenia. Potem <code>echo pelican&lt;enter&gt;</code> i <code>echo markdown&lt;enter&gt;</code> - czyli tak w skrócie, po prostu wypisz pelican a potem, od nowej linii, markdown i tyle.
+A potem jest <code>) &gt; requirements.txt</code> co oznacza po prostu, że te dwa słowa zostaną wypisane do pliku zamiast do konsoli. Logiczne.</p>
+<p>Dla przykładu podałem też wersję linuxową w jednej linijce, na windowsie można podobnie, ale warto znać różne sposoby.</p>
+<p>Mała uwaga - jeśli korzystamy z operatora przekierowania wyjścia - '&gt;', to należy pamiętać, że użycie '&gt;' spowoduje nadpisanie całego pliku, natomiast '&gt;&gt;' spowoduje, że przekierowany tekst zostanie zapisany na końcu - niejako dodany do już istniejącego pliku.</p>
+<p>A <code>pip install -r requirements.txt</code>, to chyba logiczne - to polecenie każe pipowi zainstalować zależności, które znajdzie w danym pliku (-r od read, czyli, że plik ma przeczytać) i je sobie pobrać w najnowszej (bo innej nie podaliśmy), wersji.</p>
+<p>Uwaga, notka: markdown potrzebny wam będzie tylko wtedy, jeśli zamierzacie korzystać z markdowna przy pisaniu postów. Jeśli chcecie użyć nie wiem, restructredText, czy czegoś innego, to należy zmienić tę zależność na inną. Jaką? Zajrzyjcie do dokumentacji pelicana.</p>
+<h1>Konfigurujemy ptaka, znaczy pelikana</h1>
+<p>Będąc w folderze, gdzie chcemy, żeby nasz projekt żył, piszemy</p>
+<div class="codehilite"><pre><span></span><code>    pelican-quickstart
+</code></pre></div>
+
+<p>A następnie... klikany enter dla wszystkich opcji, poza jedną - pytaniem o to, czy chcemy customową domenę. Tam wciskany n i dopiero enter.</p>
+<p>Okej.</p>
+<p>Podstawowe pliki mamy. Pora na gita, którego kazdy powinien mieć zainstalowanego.</p>
+<div class="codehilite"><pre><span></span><code>    git init
+</code></pre></div>
+
+<p>I już, repo zainicjowane.</p>
+<p>Taka tylko mała notka, bo najpewniej pelican utworzył ci folder <code>output</code> - nie jest on nam potrzebny, więc możesz go usunąć, za pomocą: <code>rd output</code> lub <code>rm -rf output</code>.</p>
+<p>Teraz tworzymy plik <code>.gitignore</code> (za pomocą konosli, jak ja, lub może wolisz jakimś edytorem czy czymkolwiek innym) i przepisujemy tam:</p>
+<div class="codehilite"><pre><span></span><code>public/*
+__pycache__
+*.pyc
+</code></pre></div>
+
+<p>spowoduje to, że git nie będzie nam tych plików indeksował i dobrze, bo ich nie chcemy - pliki cache i ewentualnie wygenerowana już strona. Zbędne.</p>
+<p>Dodatkowo w folderze <code>content</code> musimy utworzyć sobie plik <code>.gitkeep</code>, żeby ten indeksował pusty folder, bo normalnie tego nie robi.</p>
+<p>Gotowe?</p>
+<p>To jeszcze jedna mała zmiana i nowy plik.</p>
+<p>W pliku <code>pelicanconf.py</code> musimy troszkę zmienić. Otóż by default pelican umieszcza wygenerowaną stronę w folderze <code>output</code>, na gitlab pages to nie zadziała, bo gl szuka gotowej strony w katalogu <code>public</code>. Nic to jednak, łatwo to zmienić - wystarczy jedna zmiana w <code>pelicanconf.py</code></p>
+<div class="codehilite"><pre><span></span><code>    OUTPUT_PATH = &#39;public&#39;
+</code></pre></div>
+
+<p>I już.</p>
+<p>To teraz ten nowy pliczek - w grski_pl tworzymy: <code>.gitlab-ci.yml</code>, a tam:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">image</span><span class="o">:</span><span class="w"> </span><span class="n">python</span><span class="o">:</span><span class="mf">3.6</span><span class="o">-</span><span class="n">alpine</span>
+
+<span class="n">pages</span><span class="o">:</span>
+<span class="w">  </span><span class="n">script</span><span class="o">:</span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">pip</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">requirements</span><span class="o">.</span><span class="na">txt</span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">pelican</span><span class="w"> </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="n">publishconf</span><span class="o">.</span><span class="na">py</span>
+<span class="w">  </span><span class="n">artifacts</span><span class="o">:</span>
+<span class="w">    </span><span class="n">paths</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="kd">public</span><span class="o">/</span>
+</code></pre></div>
+
+<p>O co tu chodzi? Nasza strona buildowana (i testowana) jest przez darmowe Pipeliny Gitlaba do Continous Integration. To, co widzisz wyżej, to plik konfiguracyjny dockera, który mówi mu, z jakiego obrazu ma korzystać, jakie komendy wykonać i gdzie znajdzie się nasza strona. Co to docker? W uproszczeniu to takie poręczne narzędzie, które uruchamia sobie malutkiego linuxa w tle, pobiera paczki, które nakażemy mu w pliku konfiguracyjnym i wykonuje określone komendy. Generalnie bardzo ważne i przydatne narzędzie, ale to nie o nim dzisiejszy wpis. Poczytaj sobie o tym, polecam.</p>
+<p>No, teraz już możemy zrobić coś takiego:</p>
+<div class="codehilite"><pre><span></span><code>    git add .
+    git commit -m &quot;initial commit&quot;
+</code></pre></div>
+
+<p>Zakomitowaliśmy nasz początkowy stan. Jest fajnie. Teraz na gitlabie utwórz repo. Tylko, uwaga. Nie może się ono nazywać przypadkowo.</p>
+<p>Otóż, jeśli nazwiesz swoje repo <username>.gitlab.io, to będzie to twoja 'strona główna' - taką możesz mieć tylko jedną. W innym przypadku będzie to 'strona projektu'. Nie wdawajmy się w szczegóły, w naszym wypadku repo powinno nazywać się <username>.gitlab.io i tyle.</p>
+<p>Teraz dodajemy naszemu lokalnemu gitowi adres remota, żeby wiedział, gdzie te nasze pliki słać:</p>
+<div class="codehilite"><pre><span></span><code>    git remote add origin https://gitlab.com/olafgorski/olafgorski.gitlab.io.git
+    git push origin master
+</code></pre></div>
+
+<p>Pamiętaj, żeby podać odpowiedni adres u siebie.</p>
+<p>Teraz przejdź na stronę swojego repo na gitlabie i w zakładkę CI/CD - job powinien albo się uruchamiać, albo już zakończyć sukcesem. Jak coś nie działa, to poczytaj dokładnie co.
+Stronę możesz obejrzeć pod adresem: <username>.gitlab.io</p>
+<p>Brawo. Strona stoi, ale jest pusta i brzydka, i w ogóle.</p>
+<h1>Dodajemy szablon</h1>
+<p>Żeby strona taka brzydka nie była, to dodajmy do niej nowy szablonik. W moim wypadku Flex wspomniany wcześniej. Jak? Nic trudnego. Edytujmy nasz plik - <code>.gitlab.ci.yml</code></p>
+<div class="codehilite"><pre><span></span><code><span class="n">image</span><span class="o">:</span><span class="w"> </span><span class="n">python</span><span class="o">:</span><span class="mf">3.6</span><span class="o">-</span><span class="n">alpine</span>
+
+<span class="n">pages</span><span class="o">:</span>
+<span class="w">  </span><span class="n">script</span><span class="o">:</span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">pip</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">requirements</span><span class="o">.</span><span class="na">txt</span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">apk</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="o">--</span><span class="n">update</span><span class="w"> </span><span class="n">git</span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">clone</span><span class="w"> </span><span class="n">https</span><span class="o">://</span><span class="n">github</span><span class="o">.</span><span class="na">com</span><span class="sr">/alexandrevicenzi/</span><span class="n">Flex</span><span class="o">.</span><span class="na">git</span><span class="w"> </span><span class="n">Flex</span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">pelican</span><span class="o">-</span><span class="n">themes</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">Flex</span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">pelican</span><span class="w"> </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="n">publishconf</span><span class="o">.</span><span class="na">py</span>
+<span class="w">  </span><span class="n">artifacts</span><span class="o">:</span>
+<span class="w">    </span><span class="n">paths</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="kd">public</span><span class="o">/</span>
+</code></pre></div>
+
+<p>W skrócie - najpierw kazałem dockerowi zainstalować git'a, bo obraz python:3.6-alpine, zawiera w sobie domyślnie zainstalowanego pythona3.6 i w sumie tyle, więc gita sobi trzeba doinstalować. Następnie git sklonuje sobie repozytorium danego szablonu, a pelican-themes zainstaluje go i udostępni pelicanowi.</p>
+<p>Teraz spore zmiany w <code>pelicanconf.py</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*- #</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+
+<span class="n">AUTHOR</span> <span class="o">=</span> <span class="s1">&#39;Olaf Górski&#39;</span>
+<span class="n">SITENAME</span> <span class="o">=</span> <span class="s2">&quot;grski&#39;s blog&quot;</span>
+<span class="n">SITEURL</span> <span class="o">=</span> <span class="s1">&#39;https://grski.pl&#39;</span>
+<span class="n">FAVICON</span> <span class="o">=</span> <span class="n">SITEURL</span> <span class="o">+</span> <span class="s1">&#39;/static/favicon.png&#39;</span>
+<span class="n">SITELOGO</span> <span class="o">=</span> <span class="n">SITEURL</span> <span class="o">+</span> <span class="s1">&#39;/static/profile.png&#39;</span>
+
+<span class="n">SITETITLE</span> <span class="o">=</span> <span class="s1">&#39;Olaf Górski&#39;</span>
+<span class="n">SITESUBTITLE</span> <span class="o">=</span> <span class="s1">&#39;Software Developer&#39;</span>
+<span class="n">SITEDESCRIPTION</span> <span class="o">=</span> <span class="s1">&#39;Stuff mostly about, really, Python, Django, Flask, Dart, AngularDart and Computer Science in general.&#39;</span>
+
+
+<span class="n">ROBOTS</span> <span class="o">=</span> <span class="s1">&#39;index, follow&#39;</span>
+
+<span class="n">PATH</span> <span class="o">=</span> <span class="s1">&#39;content&#39;</span>
+
+<span class="n">TIMEZONE</span> <span class="o">=</span> <span class="s1">&#39;Europe/Warsaw&#39;</span>
+
+<span class="n">DEFAULT_LANG</span> <span class="o">=</span> <span class="s1">&#39;Polish&#39;</span>
+
+<span class="c1"># Blogroll</span>
+<span class="n">LINKS</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;Archives&#39;</span><span class="p">,</span> <span class="s1">&#39;/archives.html&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s1">&#39;Categories&#39;</span><span class="p">,</span> <span class="s1">&#39;/categories.html&#39;</span><span class="p">),)</span>
+
+<span class="c1"># Social widget</span>
+<span class="n">SOCIAL</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;https://linkedin.com/in/olaf-górski-755244160/&#39;</span><span class="p">),</span>
+          <span class="p">(</span><span class="s1">&#39;gitlab&#39;</span><span class="p">,</span> <span class="s1">&#39;https://gitlab.com/olafgorski/&#39;</span><span class="p">),</span>
+          <span class="p">(</span><span class="s1">&#39;rss&#39;</span><span class="p">,</span> <span class="s1">&#39;https://grski.pl/feeds/all.atom.xml&#39;</span><span class="p">))</span>
+
+
+<span class="n">DEFAULT_PAGINATION</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">OUTPUT_PATH</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+<span class="n">THEME</span> <span class="o">=</span> <span class="s1">&#39;Flex&#39;</span>
+
+<span class="n">PYGMENTS_STYLE</span> <span class="o">=</span> <span class="s1">&#39;monokai&#39;</span>
+<span class="n">STATIC_PATHS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;static&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+<p>Upewnijcie się, że <code>SITEURL</code> nie jest nadpisane w pliku <code>publishconf.py</code>, jeśli jest, to usuńcie i już.</p>
+<p>Następnie należy dodać troszkę contentu do, żeby było co wyświetlić, można to zrobić poprzez wrzucenie dowolnych postów do folderu <code>content</code></p>
+<p>Notka: jeśli w content utworzymy sobie katalog - np. <code>python</code> to posty umieszczone w tym katalogu będą też przypisane do kategorii Python : ) Taki mądry ten pelikan.</p>
+<p>Jak wygląda przykładowy post?</p>
+<p>Chociażby tak:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Title</span><span class="o">:</span><span class="w"> </span><span class="n">Jak</span><span class="w"> </span><span class="n">za</span><span class="w"> </span><span class="n">darmo</span><span class="w"> </span><span class="n">opublikować</span><span class="w"> </span><span class="n">swoją</span><span class="w"> </span><span class="n">stronę</span><span class="w"> </span><span class="n">na</span><span class="w"> </span><span class="n">GitLab</span><span class="w"> </span><span class="n">Pages</span><span class="o">:</span><span class="w"> </span><span class="n">Pelican</span><span class="o">(</span><span class="n">jekyll</span><span class="o">/</span><span class="n">hugo</span><span class="o">),</span><span class="w"> </span><span class="n">CI</span><span class="w"> </span><span class="n">Pipelines</span><span class="o">,</span><span class="w"> </span><span class="n">Docker</span><span class="o">,</span><span class="w"> </span><span class="n">Cloudflare</span><span class="o">,</span><span class="w"> </span><span class="n">linia</span><span class="w"> </span><span class="n">poleceń</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="n">customowa</span><span class="w"> </span><span class="n">domena</span><span class="w"> </span><span class="n">https</span>
+<span class="n">Date</span><span class="o">:</span><span class="w"> </span><span class="mi">2018</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">27</span>
+<span class="n">Authors</span><span class="o">:</span><span class="w"> </span><span class="n">Olaf</span><span class="w"> </span><span class="n">Górski</span>
+<span class="n">Slug</span><span class="o">:</span><span class="w"> </span><span class="n">gitlab</span><span class="o">-</span><span class="n">pages</span><span class="o">-</span><span class="n">intro</span>
+<span class="n">Description</span><span class="o">:</span><span class="w"> </span><span class="n">Po</span><span class="w"> </span><span class="n">krótce</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">tym</span><span class="o">,</span><span class="w"> </span><span class="n">jak</span><span class="w"> </span><span class="n">opublikować</span><span class="w"> </span><span class="n">za</span><span class="w"> </span><span class="n">darmo</span><span class="w"> </span><span class="n">swoją</span><span class="w"> </span><span class="n">własną</span><span class="w"> </span><span class="n">stronę</span><span class="w"> </span><span class="n">na</span><span class="w"> </span><span class="n">GitLab</span><span class="w"> </span><span class="n">Pages</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="n">customową</span><span class="w"> </span><span class="n">domeną</span><span class="o">,</span><span class="w"> </span><span class="n">obsługą</span><span class="w"> </span><span class="n">https</span><span class="w"> </span><span class="n">oraz</span><span class="w"> </span><span class="n">continuous</span><span class="w"> </span><span class="n">integration</span><span class="o">.</span>
+
+<span class="n">Treść</span>
+
+<span class="err">#</span><span class="n">Nagłóweczek</span>
+
+<span class="n">lalala</span>
+</code></pre></div>
+
+<p>Git add, commit, push i gotowe.</p>
+<p>Co teraz?</p>
+<h1>Domena</h1>
+<p>Tutaj opiszę to wszystko w miarę skrótowo, bo to w sumie proste klikanie.</p>
+<p>Na stronie repo na gitlabie:
+Settings -&gt; Pages
+Tutaj na chwilę obecną odznaczamy 'force domain with SSL' jeśli jest zaznaczone</p>
+<p>Teraz New Domain i wypełniamy tylko nazwę domeny, w moim wypadku: grski.pl</p>
+<p>Teraz siup szybko na stronę rejestratora domeny i dodajemy A rekord o wartości: 52.167.214.135 - ip serwera GitLaba (sprawdź sobie, bo może się zmienić, za kilka lat, miesięcy or sth)</p>
+<p>No to teraz szybko na cloudflara, zakładamy tam konto, dodajemy tą domenę i zmieniamy dnsy naszej domeny na podane tam przez nich w cloudflarze. Dodatkowo należy pamiętać o dodaniu kodu weryfikacyjnego w postaci rekordu TXT - name to będzie nasza domena, a wartość możecie znaleźć details domeny na gitlabie.</p>
+<p>Jak dnsy nam przeparkują, to wchodzimy sobie znów na cloudflara, zakładka Crypto, zjeżdżamy na dół( przy okazji zaznaczając gdzie się da, by wymuszało https/ssl i te sprawy) i klikamy New Origin.</p>
+<p>Klik Dalej i mamy oto wygenerowane dwa dziwne pliczki. Pierwszy to Certyfikat - wklejamy go w pole certificate w zakładce naszej domeny na repo w gitlabie, a klucz prywatny niżej.</p>
+<p>Aaaale, to nie wszystko. CF wymaga jeszcze takiego myku, że poniżej naszego Certyfikatu musimy wkleić jeszcze to:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">tutaj</span> <span class="n">jest</span> <span class="n">twój</span> <span class="n">prywatny</span> <span class="n">certyfikat</span>
+<span class="o">-----</span><span class="kr">END</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+
+<span class="o">-----</span><span class="kr">BEGIN</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+<span class="n">MIID</span><span class="o">/</span><span class="n">DCCAuagAwIBAgIID</span><span class="o">+</span><span class="n">rOSdTGfGcwCwYJKoZIhvcNAQELMIGLMQswCQYDVQQG</span>
+<span class="n">EwJVUzEZMBcGA1UEChMQQ2xvdWRGbGFyZSwgSW5jLjE0MDIGA1UECxMrQ2xvdWRG</span>
+<span class="n">bGFyZSBPcmlnaW4gU1NMIENlcnRpZmljYXRlIEF1dGhvcml0eTEWMBQGA1UEBxMN</span>
+<span class="n">U2FuIEZyYW5jaXNjbzETMBEGA1UECBMKQ2FsaWZvcm5pYTAeFw0xNDExMTMyMDM4</span>
+<span class="n">NTBaFw0xOTExMTQwMTQzNTBaMIGLMQswCQYDVQQGEwJVUzEZMBcGA1UEChMQQ2xv</span>
+<span class="n">dWRGbGFyZSwgSW5jLjE0MDIGA1UECxMrQ2xvdWRGbGFyZSBPcmlnaW4gU1NMIENl</span>
+<span class="n">cnRpZmljYXRlIEF1dGhvcml0eTEWMBQGA1UEBxMNU2FuIEZyYW5jaXNjbzETMBEG</span>
+<span class="n">A1UECBMKQ2FsaWZvcm5pYTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB</span>
+<span class="n">AMBIlWf1KEKR5hbB75OYrAcUXobpD</span><span class="o">/</span><span class="n">AxvSYRXr91mbRu</span><span class="o">+</span><span class="n">lqE7YbyyRUShQh15lem</span>
+<span class="n">ef</span><span class="o">+</span><span class="n">umeEtPZoLFLhcLyczJxOhI</span><span class="o">+</span><span class="n">siLGDQm</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">UDkWvAXYa5DZ</span><span class="o">+</span><span class="n">pHU5ct5nZ8pGzqJ</span>
+<span class="n">p8G1Hy5RMVYDXZT9F6EaHjMG0OOffH6Ih25TtgfyyrjXycwDH0u6GXt</span><span class="o">+</span><span class="n">G</span><span class="o">/</span><span class="n">rywcqz</span>
+<span class="o">/</span><span class="mi">9</span><span class="n">W4Aki3XNQMUHNQAtBLEEIYHMkyTYJxuL2tXO6ID5cCsoWw8meHufTeZW2DyUpl</span>
+<span class="n">yP3AHt4149RQSyWZMJ6AyntL9d8Xhfpxd9rJkh9Kge2iV9rQTFuE1rRT5s7OSJcK</span>
+<span class="n">xUsklgHcGHYMcNfNMilNHb8CAwEAAaNmMGQwDgYDVR0PAQH</span><span class="o">/</span><span class="n">BAQDAgAGMBIGA1Ud</span>
+<span class="n">EwEB</span><span class="o">/</span><span class="n">wQIMAYBAf8CAQIwHQYDVR0OBBYEFCToU1ddfDRAh6nrlNu64RZ4</span><span class="o">/</span><span class="n">CmkMB8G</span>
+<span class="n">A1UdIwQYMBaAFCToU1ddfDRAh6nrlNu64RZ4</span><span class="o">/</span><span class="n">CmkMAsGCSqGSIb3DQEBCwOCAQEA</span>
+<span class="n">cQDBVAoRrhhsGegsSFsv1w8v27zzHKaJNv6ffLGIRvXK8VKKK0gKXh2zQtN9SnaD</span>
+<span class="n">gYNe7Pr4C3I8ooYKRJJWLsmEHdGdnYYmj0OJfGrfQf6MLIc</span><span class="o">/</span><span class="mi">11</span><span class="n">bQhLepZTxdhFYh</span>
+<span class="n">QGgDl6gRmb8aDwk7Q92BPvek5nMzaWlP82ixavvYI</span><span class="o">+</span><span class="n">okoSY8pwdcVKobx6rWzMWz</span>
+<span class="n">ZEC9M6H3F0dDYE23XcCFIdgNSAmmGyXPBstOe0aAJXwJTxOEPn36VWr0PKIQJy5Y</span>
+<span class="mi">4</span><span class="n">o1wpMpqCOIwWc8J9REV</span><span class="o">/</span><span class="n">REzN6Z1LXImdUgXIXOwrz56gKUJzPejtBQyIGj0mveX</span>
+<span class="n">Fu6q54beR89jDc</span><span class="o">+</span><span class="n">oABmOgg</span><span class="o">==</span>
+<span class="o">-----</span><span class="kr">END</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+</code></pre></div>
+
+<p>I to w takim formacie, jak wyzej - czyli linijka przerwy od naszego prywatnego certyfiaktu.
+Uwaga, tych prywatnych certyfikatów ani klucz to nigdzie lepiej nie podawajcie. Poważnie. Zwłaszcza publicznie.</p>
+<p>Ta druga część jest publiczna i udostępniana przez cloudflara, także spoko.</p>
+<p>Klikamy save.</p>
+<h1>Gotowe?</h1>
+<p>Nie no jeszcze nie. Musimy teraz zmienić <code>SITEURL</code> w <code>pelicanconf.py</code> na odpowiedni - u mnie <code>https://grski.pl</code>, commitnąć i pushnąć. Ponownie upewnij się, czy przypadkiem ta stała nie jest nadpisywana potem w <code>publishconf.py</code> i jeśli tak, to wyrzuć stamtąd deklarację SITEURL. Teraz powinno być gotowe. Uwaga - pliki statyczne mamy w content/static. Inaczej można tez to skonfigurować, ale jak to zrobić ogarnijcie z dokumentacji :) </p>
+<p>Po co to całe zamieszanie z Cloudflarem? Cóż, zyskujemy za darmo CDN, certyfikat SSL, https wszędzie, darmową analizę ruchu, przyśpieszenie strony dzięki CDN'owi i tak dalej. Super sprawa. Co to CDN? Pisałem o tym, poczytaj.</p>
+<h1>Podsumowanie</h1>
+<p>Strona? Gotowa. Blog? Gotowy. Automatyczne buildowanie? Gotowe. HTTPS everywhere? Gotowe. Feed atom/rss? No jasne. </p>
+<p>Super.</p>
+<p>Dodatkowo do Flex'a dość prosto można dodać np. disqusa jak ktoś sobie komentarze życzy, ale o tym to już w dokumentacji poczytajcie.</p>
+<p>Dzięki za uwagę.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

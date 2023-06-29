@@ -1,0 +1,373 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Deploying Starburst on GCP with Hive, Storage and Postgres connectors. - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="How to run popular query engine on Google Cloud Platform's Kubernetes Engine, while also adding connectors for GCS and Postgres - beginners guide." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="How to run popular query engine on Google Cloud Platform's Kubernetes Engine, while also adding connectors for GCS and Postgres - beginners guide.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2020-11-13T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2020-11-13</h3>
+                <h1 class="title"><a href="https://grski.pl/">Deploying Starburst on GCP with Hive, Storage and Postgres connectors.</a></h1>
+                <div class="content">
+                    <p>Hello folks, grski here. Today we are in for some Ops/Big Data fun instead of the usual plain old Python. Why is that?</p>
+<p>For the past year and a half, I've immersed myself in work that was related to designing/implementing APIs mostly with some of Product Ownership/Management/Mentoring on the side. The challenge in the projects/products that I've worked on was understanding business context mostly and client-facing requirements work. Technologically speaking, nothing advanced usually, or should I say: nothing interesting. Plain old Django + DRF, both of which are amazing, but you know. Stuff gets boring, especially on a small scale. So while I've developed myself when it comes to manager/product owner knowledge, my tech skills have stagnated. </p>
+<p>I've noticed that and decided to change this so STUFF ISN"T SO BORING ANYMORE, GOSH. The text that you are reading is the result of this - me trying out new stuff and learning things completely outside my usual specialization/comfort zone. Without further ado, let's get on with the technical stuff, but first let me make a small note here: the solutions shown in this article, are not perfect probably, almost certainly. I'm a newbie in this topic, who just sat down to it today and started doing things. This should NOT be inspiration to anything production-related. Also, I make some things simplified as the target for this article are greenhorns like me or even non-technical people, so bear with me. </p>
+<h2>Data is monnies</h2>
+<p>So what's this Starburst Enterprise for Presto thing? Why is it important? </p>
+<p>Nowadays we like in the age of data basically. Data == money quite often. Most of us want more monnies, right? So do all the different companies around the globe. Companies, that often have loads of data that they don't know how to use. Okay, data == money, but just selling it, is the fool's way. Sometimes the better approach is to do some numbers crunching on that data, do some analytics, gather insights and then act on them. This is where the potential to make a killing lies, this is where the miracle happens. Stuff like influencing the US elections, voting certain people out, predicting outburst of a pandemic or how it'll spread. What ties these things together? Data. </p>
+<p>Okay, so now we know that data is very important and all, right? Right. Great. Now think about it - all of that data must be stored somewhere and it indeed is. Usually in some kind of a database.</p>
+<h3>Where does Presto fit into this?</h3>
+<p>The de-facto standard in the industry, for dealing with that data, understanding it, running some queries, is SQL. It's kind of a language you can say, a language that databases understand, that tell them what to do with the data that we have. Almost everyone in the data world knows it, it's not THAT hard, it's been with us for years, so it's battle-tested. It's magnificent. So far so good, stuff is nice and easy.</p>
+<p>Here comes the boom though. SQL and relational databases are not the only thing out there, nor should they be. They are good in certain use cases, in other ones not so much. Let's call these our <code>other data sources</code>. In some applications you'll find dozens of these data source types, some of which do not understand SQL at all, making it way harder to process them together with traditional DB data, to gather insights and so on.</p>
+<p>Here comes this <a href="https://prestosql.io/">PrestoSql</a> (now known as Trino) thing though. Ah, btw - it was developed by Facebook initially. What is it? Presto is a layer of abstraction unifying all these data sources. It lets you use SQL/queries on almost any type of data source. It takes a lot of hassle away from the developer, making things easier. It's also designed with scale in mind, which means that handling loads of data won't be an issue. How much is  <code>loads</code>, well basically petabytes or exabytes. Which is a lot. A lot lot. Now, thanks to Presto, you can query all these different data sources with SQL and scale your application to suit your needs, whatever you need to query gigabytes, terabytes or petabytes, all of that is a breeze.</p>
+<h3>And Starburst?</h3>
+<p>The part about Presto is clear, what about <a href="https://www.starburstdata.com/">Starburst</a>? Well, basically it's a company that specializes in providing solutions with Presto engine, striving to be the best. They also provide a product with the same name, which is something like a gathering of cool <code>packages</code> for Presto, more <code>connectors</code> for new data sources, improvements to existing ones, better performance. In simple terms, this product is Presto on steroids and for example support if you need it. They have a couple of different "versions" of this software, in this article, we will be going through the <a href="https://www.starburstdata.com/presto-enterprise/">Starburst Enterprise</a> version setup. </p>
+<h3>Kubernetes?</h3>
+<p>This one you just have to go and google yourself. </p>
+<h2>Let's get our hands dirty</h2>
+<p>So, let's start then. We will begin by setting up the project on GCP and all of that.</p>
+<p>Except we won't. I'll not bore you with the details on how to download CLI, register at GCP and initialize you cli. Google has magnificent docs regarding this, so help yourself. I expect that you'll have:</p>
+<ol>
+<li>Project created in your google cloud platform console.</li>
+<li>CLI installed</li>
+<li>Kubectl added to gcloud </li>
+<li>Project id set in config in the cli</li>
+<li>Region set in the cli</li>
+<li>Proper services enabled in google cloud.</li>
+</ol>
+<p>Now, once you have all that done, we can roll with our cluster. To do that you need to:</p>
+<div class="codehilite"><pre><span></span><code>gcloud<span class="w"> </span>container<span class="w"> </span>clusters<span class="w"> </span>create<span class="w"> </span>starburst
+</code></pre></div>
+
+<p>It'll probably take a few minutes to create the cluster. After it's done, you can see what was deployed eg. using</p>
+<div class="codehilite"><pre><span></span><code>gcloud<span class="w"> </span>container<span class="w"> </span>node-pools<span class="w"> </span>list
+gcloud<span class="w"> </span>compute<span class="w"> </span>instances<span class="w"> </span>list
+</code></pre></div>
+
+<p>The first command will list you all of your node-pools, which are like a <code>group</code> for the machines you'll have. It's a very simplified description but bear with me or learn k8s. As for the second one it lists all the <code>instances</code>, so the <code>machines/computers</code> that your cluster will run on. </p>
+<p>Okay, our cluster is more or less running. What to do now? Head over here to <a href="https://docs.starburstdata.com/latest/kubernetes/deployment.html">Starburst's docs</a> and download the files listed at the beginning of the linked page. After that navigate to the place where you have these files and apply these configs to our k8s cluster. How?</p>
+<div class="codehilite"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>service_account.yaml
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>role.yaml
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>role_binding.yaml
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>presto_v1_crd.yaml
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>operator.yaml
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>example_presto_v1_cr.yaml
+</code></pre></div>
+
+<p>After all of that is done, try:</p>
+<div class="codehilite"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>pods
+</code></pre></div>
+
+<p>which should get you all of your pods. </p>
+<div class="codehilite"><pre><span></span><code>NAME<span class="w">                                                    </span>READY<span class="w">   </span>STATUS<span class="w">    </span>RESTARTS<span class="w">   </span>AGE
+pod/hive-metastore-example-presto-8fc4787d8-phg8d<span class="w">       </span><span class="m">0</span>/1<span class="w">     </span>Pending<span class="w">   </span><span class="m">0</span><span class="w">          </span>27m
+pod/hive-postgresql-example-presto-5694696897-6whjr<span class="w">     </span><span class="m">0</span>/1<span class="w">     </span>Pending<span class="w">   </span><span class="m">0</span><span class="w">          </span>27m
+pod/presto-coordinator-example-presto-798cb57c7-mrfx9<span class="w">   </span><span class="m">2</span>/2<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>27m
+pod/presto-operator-549d58bd9f-9wrgd<span class="w">                    </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>27m
+pod/presto-worker-example-presto-6dc67485f-czmbb<span class="w">        </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>27m
+pod/presto-worker-example-presto-6dc67485f-dwfzd<span class="w">        </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>27m
+pod/presto-worker-example-presto-6dc67485f-qst95<span class="w">        </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>27m
+</code></pre></div>
+
+<p>You should see a couple of pods running, some of them might have the status of <code>PENDING</code>. For now, that's all fine.</p>
+<h2>The world is yours to take</h2>
+<p>So our Presto cluster is more or less running. It'd be good to access it though, right? A UI interface comes packed together with Starburst Enterprise, it exposes itself at the port 8080, therefore all we have to do is to expose it to the world. How to do that? Well, k8s has a solution for it - stuff like LoadBalancer and ingress?</p>
+<p>What are they exactly? Just smart way of calling the service that faces the world and routes requests to proper resources. More or less. How should we do it? <a href="https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/">K8s docs tell us how</a>. Considering that my k8s knowledge is first of all, very very shallow, second of all rusty as hell, since I've last touched it 1.5 yrs ago, I tried doing it the naive way and creating a file called <code>lb.yml</code> inside the same catalogue that I had my other deployment files with contents of:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loadbalancer</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loadbalancer</span>
+<span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span>
+<span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LoadBalancer</span>
+</code></pre></div>
+
+<p>If you know k8s even slightly, you should see what's wrong in this approach. Anyway. I've applied this deployment, the load balancer service got up properly, so far so good. I checked it using:</p>
+<div class="codehilite"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>services
+</code></pre></div>
+
+<p>You need to wait till your LB gets <code>external ip</code> column assigned. The IP that you see there is the one you should try connecting to. And I've tried just that, trying to connect to <code>&lt;external ip of my lb&gt;:8080</code> in my browser. That didn't work. I get an error right away. Weird. Let's try to connect just the ip without the port. That behaved differently. How? The connection was made but it just hanged till timeout. Interesting. That suggested to me that LB was working correctly, overall, but the config was wrong - the service tried to map our request to a resource that didn't exist. That part with <code>selector.app: loadbalancer</code> was wrong. I had to know what is the name of the resource that I need to point to. But which one to pick? I have a couple of pods already. Hm. Let's be smart here and do:</p>
+<div class="codehilite"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>all
+</code></pre></div>
+
+<p>This will list all of our resources, in my case:</p>
+<div class="codehilite"><pre><span></span><code>NAME<span class="w">                                            </span>TYPE<span class="w">        </span>CLUSTER-IP<span class="w">     </span>EXTERNAL-IP<span class="w">   </span>PORT<span class="o">(</span>S<span class="o">)</span><span class="w">             </span>AGE
+service/example-presto<span class="w">                          </span>NodePort<span class="w">    </span><span class="m">10</span>.3.253.30<span class="w">    </span>&lt;none&gt;<span class="w">        </span><span class="m">8080</span>:31234/TCP<span class="w">      </span>27m
+service/hive-metastore-example-presto<span class="w">           </span>ClusterIP<span class="w">   </span><span class="m">10</span>.3.244.139<span class="w">   </span>&lt;none&gt;<span class="w">        </span><span class="m">9083</span>/TCP<span class="w">            </span>27m
+service/hive-postgresql-example-presto<span class="w">          </span>ClusterIP<span class="w">   </span><span class="m">10</span>.3.254.181<span class="w">   </span>&lt;none&gt;<span class="w">        </span><span class="m">5432</span>/TCP<span class="w">            </span>27m
+service/kubernetes<span class="w">                              </span>ClusterIP<span class="w">   </span><span class="m">10</span>.3.240.1<span class="w">     </span>&lt;none&gt;<span class="w">        </span><span class="m">443</span>/TCP<span class="w">             </span>36m
+service/presto-operator-metrics<span class="w">                 </span>ClusterIP<span class="w">   </span><span class="m">10</span>.3.241.122<span class="w">   </span>&lt;none&gt;<span class="w">        </span><span class="m">8686</span>/TCP,8383/TCP<span class="w">   </span>27m
+service/prometheus-coordinator-example-presto<span class="w">   </span>ClusterIP<span class="w">   </span><span class="m">10</span>.3.254.83<span class="w">    </span>&lt;none&gt;<span class="w">        </span><span class="m">8081</span>/TCP<span class="w">            </span>27m
+service/prometheus-worker-example-presto<span class="w">        </span>ClusterIP<span class="w">   </span><span class="m">10</span>.3.248.236<span class="w">   </span>&lt;none&gt;<span class="w">        </span><span class="m">8081</span>/TCP<span class="w">            </span>27m
+
+NAME<span class="w">                                                </span>READY<span class="w">   </span>UP-TO-DATE<span class="w">   </span>AVAILABLE<span class="w">   </span>AGE
+deployment.apps/hive-metastore-example-presto<span class="w">       </span><span class="m">0</span>/1<span class="w">     </span><span class="m">1</span><span class="w">            </span><span class="m">0</span><span class="w">           </span>27m
+deployment.apps/hive-postgresql-example-presto<span class="w">      </span><span class="m">0</span>/1<span class="w">     </span><span class="m">1</span><span class="w">            </span><span class="m">0</span><span class="w">           </span>27m
+deployment.apps/presto-coordinator-example-presto<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span><span class="m">1</span><span class="w">            </span><span class="m">1</span><span class="w">           </span>27m
+deployment.apps/presto-operator<span class="w">                     </span><span class="m">1</span>/1<span class="w">     </span><span class="m">1</span><span class="w">            </span><span class="m">1</span><span class="w">           </span>27m
+deployment.apps/presto-worker-example-presto<span class="w">        </span><span class="m">3</span>/3<span class="w">     </span><span class="m">3</span><span class="w">            </span><span class="m">3</span><span class="w">           </span>27m
+
+NAME<span class="w">                                                          </span>DESIRED<span class="w">   </span>CURRENT<span class="w">   </span>READY<span class="w">   </span>AGE
+replicaset.apps/hive-metastore-example-presto-8fc4787d8<span class="w">       </span><span class="m">1</span><span class="w">         </span><span class="m">1</span><span class="w">         </span><span class="m">0</span><span class="w">       </span>27m
+replicaset.apps/hive-postgresql-example-presto-5694696897<span class="w">     </span><span class="m">1</span><span class="w">         </span><span class="m">1</span><span class="w">         </span><span class="m">0</span><span class="w">       </span>27m
+replicaset.apps/presto-coordinator-example-presto-798cb57c7<span class="w">   </span><span class="m">1</span><span class="w">         </span><span class="m">1</span><span class="w">         </span><span class="m">1</span><span class="w">       </span>27m
+replicaset.apps/presto-operator-549d58bd9f<span class="w">                    </span><span class="m">1</span><span class="w">         </span><span class="m">1</span><span class="w">         </span><span class="m">1</span><span class="w">       </span>27m
+replicaset.apps/presto-worker-example-presto-6dc67485f<span class="w">        </span><span class="m">3</span><span class="w">         </span><span class="m">3</span><span class="w">         </span><span class="m">3</span><span class="w">       </span>27m
+</code></pre></div>
+
+<p>Hmmmm. The UI was supposed to expose port 8080, riiight? Well, if you look this output through, you'll get: </p>
+<div class="codehilite"><pre><span></span><code>service/example-presto<span class="w">                          </span>NodePort<span class="w">    </span><span class="m">10</span>.3.253.30<span class="w">    </span>&lt;none&gt;<span class="w">        </span><span class="m">8080</span>:31234/TCP<span class="w">      </span>27m
+</code></pre></div>
+
+<p>Gotcha. I now know the proper name of the resource I need to refer to, time to fix this and also get rid of the file holding the config - deploy the lb using just a command. Why? To try another way and learn more basically! </p>
+<p>But before I did that, maybe you'd like to try and kill/remove our previous load-balancer service? You don't need to do that theoretically if the name matches, but try it anyway. How? Google it this time. Anyways, to bring up the proper LB do this:</p>
+<div class="codehilite"><pre><span></span><code>kubectl<span class="w"> </span>expose<span class="w"> </span>service/example-presto<span class="w"> </span>--port<span class="o">=</span><span class="m">8080</span><span class="w"> </span>--target-port<span class="o">=</span><span class="m">8080</span><span class="w"> </span>--name<span class="o">=</span>load-balancer<span class="w"> </span>--type<span class="o">=</span>LoadBalancer
+</code></pre></div>
+
+<p>Now, if you go to <code>&lt;external ip of my lb&gt;:8080</code> magic will happen.</p>
+<h2>Let's do some queries</h2>
+<p>Okay, our Presto cluster is properly exposed, everything is fine and dandy. Let's connect to the cluster, maybe create some tables or query hive. Let's go. How to do that? Install Presto CLI. How? <a href="https://docs.starburstdata.com/latest/installation/cli.html">Installing CLI for Starburst Enterprise Presto</a></p>
+<p>I won't get into that, as the docs are enough. Now, let's run:</p>
+<div class="codehilite"><pre><span></span><code>presto<span class="w"> </span>--server<span class="w"> </span>&lt;external<span class="w"> </span>ip<span class="w"> </span>of<span class="w"> </span>my<span class="w"> </span>lb&gt;:8080<span class="w"> </span>--user<span class="w"> </span><span class="nb">test</span>
+</code></pre></div>
+
+<p>and we see:</p>
+<div class="codehilite"><pre><span></span><code>presto&gt;
+</code></pre></div>
+
+<p>SUCCESS! What do to now? Let's maybe query hive a bit? Just to check if it's working properly. Let's start with typing this command in presto console:</p>
+<div class="codehilite"><pre><span></span><code>USE hive.default;
+</code></pre></div>
+
+<p>in my case it caused an error. If you head over to the UI wrapper for you Presto, and filter for <code>failed</code> queries, you'll be able to get more details about why it failed. In my case it was <code>connectivity</code> error. As if it couldn't connect or there was nothing to connect to. Hm... Remember that <code>PENDING</code> status we got after using <code>kubectl get pods</code>. Here lies the issue. Both hive's <code>metastore</code> and it's internal <code>postgres</code> were still pending. Something's wrong.</p>
+<p>Getting logs with <code>kubectl get logs &lt;pod name&gt;</code> won't work since the pod hasn't even started yet, so it won't return anything insightful, but describing a pod should. How do those two differ? <code>kubectl get logs</code> is focused on the things outputted in the pod, while it's running. <code>kubectl describe pod</code> on the other hand will tell us more about the pod's configuration and stuff like that. Let's do it then.</p>
+<div class="codehilite"><pre><span></span><code>kubectl<span class="w"> </span>describe<span class="w"> </span>pod<span class="w"> </span>&lt;name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>pod<span class="w"> </span>with<span class="w"> </span>hive&gt;
+</code></pre></div>
+
+<p>What did it return? Something along the lines of:</p>
+<div class="codehilite"><pre><span></span><code>...
+<span class="w">  </span>Warning<span class="w">  </span>FailedScheduling<span class="w">  </span>43s<span class="w"> </span><span class="o">(</span>x2<span class="w"> </span>over<span class="w"> </span>43s<span class="o">)</span><span class="w">  </span>default-scheduler<span class="w">  </span><span class="m">0</span>/3<span class="w"> </span>nodes<span class="w"> </span>are<span class="w"> </span>available:<span class="w"> </span><span class="m">3</span><span class="w"> </span>Insufficient<span class="w"> </span>cpu.
+<span class="w">  </span>Warning<span class="w">  </span>FailedScheduling<span class="w">  </span>2m30s<span class="w"> </span><span class="o">(</span>x7<span class="w"> </span>over<span class="w"> </span>9m31s<span class="o">)</span><span class="w">  </span>default-scheduler<span class="w">  </span><span class="m">0</span>/3<span class="w"> </span>nodes<span class="w"> </span>are<span class="w"> </span>available:<span class="w"> </span><span class="m">3</span><span class="w"> </span>Insufficient<span class="w"> </span>cpu.
+<span class="w">  </span>Warning<span class="w">  </span>FailedScheduling<span class="w">  </span>97s<span class="w"> </span><span class="o">(</span>x6<span class="w"> </span>over<span class="w"> </span>116s<span class="o">)</span><span class="w">     </span>default-scheduler<span class="w">  </span><span class="m">0</span>/4<span class="w"> </span>nodes<span class="w"> </span>are<span class="w"> </span>available:<span class="w"> </span><span class="m">4</span><span class="w"> </span>Insufficient<span class="w"> </span>cpu.
+...
+</code></pre></div>
+
+<p>Everything got clear.</p>
+<h2>Plan your resources smartly</h2>
+<p>As you can see, our pod with <code>hive</code> and <code>postgres</code> couldn't get enough resources therefore it didn't start. What to do? Well, my initial idea was to just add more machines/scale the number of nodes. How to do that? You can read about that in google cloud docs. I increased the number of my nodes to 5, just in case. By default I had 3. </p>
+<p>Let's see now. <code>kubectl get pods</code> -&gt; bang! Hive metastore started properly, but postgres... STILL PENDING, although in theory the node-pool still had lots of free resources. Wat to do? Let's dig with <code>kubectl describe pod &lt;name of the pod with postgres for hive&gt;</code> again.</p>
+<div class="codehilite"><pre><span></span><code>...
+<span class="w">    </span>Requests:
+<span class="w">      </span>cpu:<span class="w">     </span><span class="m">2</span>
+<span class="w">      </span>memory:<span class="w">  </span>2Gi
+...
+<span class="w">  </span>Warning<span class="w">  </span>FailedScheduling<span class="w">  </span>30s<span class="w">  </span>default-scheduler<span class="w">  </span><span class="m">0</span>/4<span class="w"> </span>nodes<span class="w"> </span>are<span class="w"> </span>available:<span class="w"> </span><span class="m">1</span><span class="w"> </span>Insufficient<span class="w"> </span>memory,<span class="w"> </span><span class="m">4</span><span class="w"> </span>Insufficient<span class="w"> </span>cpu.
+...
+</code></pre></div>
+
+<p>This part of the config got my attention. Why? Because I checked the machines on which our nodes run. They were of type <code>n1-standard-1</code> which means all of them had 1 vCPU and 1 GB of RAM. Now, it can be quite hard to run a pod that needs 2 vcpus and 2 gigs of ram on a machine with just 1 vcpu ang 1 gig of RAM. How do we deal with this? Well, we need to resize our instances. I have no idea if there are more sophisticated ways of doing that, but I settled for just deleting the old node pool and creating a new one with bigger machines. </p>
+<p>First - get the name of your node-pool</p>
+<div class="codehilite"><pre><span></span><code>gcloud<span class="w"> </span>container<span class="w"> </span>node-pools<span class="w"> </span>list
+</code></pre></div>
+
+<p>and then delete your old one, while also creating a new one:</p>
+<div class="codehilite"><pre><span></span><code>gcloud<span class="w"> </span>container<span class="w"> </span>node-pools<span class="w"> </span>delete<span class="w"> </span>&lt;your<span class="w"> </span>node<span class="w"> </span>pool<span class="w"> </span>name&gt;
+<span class="c1"># after it&#39;s done then create a new one:</span>
+gcloud<span class="w"> </span>container<span class="w"> </span>node-pools<span class="w"> </span>create<span class="w"> </span>starburst-pool<span class="w"> </span>--machine-type<span class="o">=</span>n1-standard-4<span class="w"> </span>--num-nodes<span class="o">=</span><span class="m">3</span>
+</code></pre></div>
+
+<p>This will create a node-pool with the name of <code>starburst-pool</code>, running on machine type <code>n1-standard-4</code>, with 3 nodes, so 3 machines more or less. For the example deployment, you can also probably roll with just 2 nodes to save money, but I'd rather go with 3. Let's now see if our pods are running correctly.</p>
+<div class="codehilite"><pre><span></span><code>NAME<span class="w">                                                 </span>READY<span class="w">   </span>STATUS<span class="w">    </span>RESTARTS<span class="w">   </span>AGE
+hive-metastore-example-presto-75bcb5954b-vgcpj<span class="w">       </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>20m
+hive-postgresql-example-presto-5694696897-bgshb<span class="w">      </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>21m
+presto-coordinator-example-presto-7688499cb8-pxvbx<span class="w">   </span><span class="m">2</span>/2<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>20m
+presto-operator-549d58bd9f-mbgn6<span class="w">                     </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>20m
+presto-worker-example-presto-784f5db44-clxgp<span class="w">         </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>20m
+presto-worker-example-presto-784f5db44-gxfnr<span class="w">         </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>20m
+presto-worker-example-presto-784f5db44-wz98m<span class="w">         </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>20m
+</code></pre></div>
+
+<p>EVERYTHING IS WORKING, YAY!</p>
+<p>Try the initial query that we did a while ago. It should work now. If it does, congrats. You hive with it's internal postgres is running correctly.</p>
+<h2>External sources of data</h2>
+<p>Okay. We have the cluster set up finally. Everything is perfect. Except for one thing. We have no data to run queries against. Which is sad. Let's maybe load some. Why not?</p>
+<p>How can we do that? Lots of ways, but let's go with one that's quite common: reading an ORC file from Object Storage Service. What is this? ORC is this format developed for big data basically. Performance reasons and so on - you don't have to bother yourself that much about it. Object Storage Service is something like Amazon's AWS S3 or Google Cloud Platform's Google Cloud Storage, which is basically a fancy way of saying that it's kind of a hard drive but in the cloud. </p>
+<p>I decided to roll with GCP's solution as to have everything in one place, plus I know S3 already, so let's try something new.</p>
+<p>How to create a bucket? It's easy, google it. Then do the same with the information on how to create a service key. Just watch out to not create a public bucket as then all your files will be available on the internet. Also maybe try to limit the access you give to your service key. Research more about these two topics on your own. </p>
+<p>Once you have a service key generated, download it's .json file. You have it? Great. Let's proceed.</p>
+<h3>Object Storage Service - GCS</h3>
+<p>Do you remember this file <code>example_presto_v1_cr.yaml</code> that we downloaded before? Open it in some kind of text editor/IDE, find the <code>hive</code> section. In my case it looks like that:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span>hive:
+<span class="w">    </span>internalMetastore:
+<span class="w">      </span>image:
+<span class="w">        </span>pullPolicy:<span class="w"> </span>Always
+<span class="w">      </span>internalPostgreSql:
+<span class="w">        </span>enabled:<span class="w"> </span><span class="nb">true</span>
+<span class="w">      </span>memory:<span class="w"> </span><span class="m">0</span>.5Gi
+<span class="w">      </span>cpu:<span class="w"> </span><span class="m">0</span>.5
+</code></pre></div>
+
+<p>What we need to do here is to allow hive to somehow authorize with GCP. How? Remember the .json service file we downloaded? Good, move it to the same directory as <code>example_presto_v1_cr.yaml</code> and name it <code>gcs-key.json</code>. Then edit the deployment to look like that:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span>hive:
+<span class="w">    </span>gcs:
+<span class="w">      </span>json-key-file-path:<span class="w"> </span><span class="s2">&quot;./gcs-key.json&quot;</span>
+<span class="w">    </span>internalMetastore:
+<span class="w">      </span>image:
+<span class="w">        </span>pullPolicy:<span class="w"> </span>Always
+<span class="w">      </span>internalPostgreSql:
+<span class="w">        </span>enabled:<span class="w"> </span><span class="nb">true</span>
+<span class="w">      </span>memory:<span class="w"> </span><span class="m">0</span>.5Gi
+<span class="w">      </span>cpu:<span class="w"> </span><span class="m">0</span>.5
+</code></pre></div>
+
+<p>After that:</p>
+<div class="codehilite"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>example_presto_v1_cr.yaml
+</code></pre></div>
+
+<p>Beng, done. Now hive will be able to properly authenticate if you've set up the service access properly, which I think you did. But wait a second. If we want to read in some data, we need the data, but we don't have it.</p>
+<p>There are two solutions here: find some example ORC file on the internet and just use that or prepare your own random set of test data. What are we doing to do? The latter of course! How? With Python. Let's first instal this one package we will need with:</p>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>pyorc
+</code></pre></div>
+
+<p>Use virtualenv if you want to, I didn't.</p>
+<p>Now, a simple script shall do:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># filename: generate_orc.py</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">choice</span>
+
+<span class="kn">import</span> <span class="nn">pyorc</span>
+
+
+<span class="n">first_names</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Jacob&quot;</span><span class="p">,</span> <span class="s2">&quot;Mat&quot;</span><span class="p">,</span> <span class="s2">&quot;Demon&quot;</span><span class="p">,</span> <span class="s2">&quot;Lucifer&quot;</span><span class="p">,</span> <span class="s2">&quot;Jaroslaw&quot;</span><span class="p">,</span> <span class="s2">&quot;Kunaal&quot;</span><span class="p">,</span> <span class="s2">&quot;Rajan&quot;</span><span class="p">,</span> <span class="s2">&quot;Taro&quot;</span><span class="p">)</span>
+<span class="n">last_names</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Sasin&quot;</span><span class="p">,</span> <span class="s2">&quot;Smith&quot;</span><span class="p">,</span> <span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="s2">&quot;Apple&quot;</span><span class="p">,</span> <span class="s2">&quot;Leaf&quot;</span><span class="p">,</span> <span class="s2">&quot;Shitsu&quot;</span><span class="p">,</span> <span class="s2">&quot;Kowalski&quot;</span><span class="p">,</span> <span class="s2">&quot;Górski&quot;</span><span class="p">)</span>
+
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;./users.orc&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">pyorc</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;struct&lt;col0:int,col1:string,col2:string&gt;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">choice</span><span class="p">(</span><span class="n">first_names</span><span class="p">),</span> <span class="n">choice</span><span class="p">(</span><span class="n">last_names</span><span class="p">)))</span>
+</code></pre></div>
+
+<p>This will generate a list of a 1000 users with first and last names and ids. It's a very simple example, but will do. Now run it with:</p>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>generate_orc.py
+</code></pre></div>
+
+<p>and bam. There we go.  You should see a new file in your dir called <code>users.orc</code> . Now go to your bucket, create a directory there called <code>import</code> and upload the file there. Now in order to import this file, we need to enter presto shell again. If you exited it before, here's a little reminder how to reach it:</p>
+<div class="codehilite"><pre><span></span><code>presto<span class="w"> </span>--server<span class="w"> </span>&lt;external<span class="w"> </span>ip<span class="w"> </span>of<span class="w"> </span>my<span class="w"> </span>lb&gt;:8080<span class="w"> </span>--user<span class="w"> </span><span class="nb">test</span>
+</code></pre></div>
+
+<p>once you are there do:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="n">hive</span><span class="p">.</span><span class="k">default</span><span class="p">;</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">people</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="nb">bigint</span><span class="p">,</span><span class="w"> </span><span class="n">first_name</span><span class="w"> </span><span class="n">var_char</span><span class="p">(</span><span class="mi">60</span><span class="p">),</span><span class="w"> </span><span class="n">last_name</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">60</span><span class="p">))</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="p">(</span><span class="n">external_location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;gs://{your bucket name}/import/&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">format</span><span class="o">=</span><span class="s1">&#39;ORC&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+<p>This will make Hive go to that bucket location and process ALL the files there, importing them and populating newly created table <code>people</code>. </p>
+<p>Done. Now try:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">hive</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">people</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+</code></pre></div>
+
+<p>to print out first 10 rows. Does it work? If so, congrats.</p>
+<p>Nice. We now can query stuff from ORC files stored in a Object Storage Service. What about getting data from a more popular data source, more <code>normal</code> one, like a <code>regular</code> db eg. postgres? Let's do that.</p>
+<h3>Postgres</h3>
+<p>How can we query postgres from the inside of our presto cluster? First of all, we need to have such a db. For the purpose of this article, you can just provision a managed db on GCP. How to do that? Google it again. Just remember to authorize your cluster's IP address to access the db or use <code>0.0.0.0/0</code> to allow ANY IP to acces it. What's next?
+Go back to the same file that you used to add hive gcs connector. Now open it and try to find section with <code>additionalCatalogs</code>. Configure it more or less like that:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="nt">additionalCatalogs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">postgresql</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">connector.name=postgresql</span>
+<span class="w">      </span><span class="no">connection-url=jdbc:postgresql://&lt;your ip&gt;:5432/&lt;db name&gt;</span>
+<span class="w">      </span><span class="no">connection-user=postgres</span>
+<span class="w">      </span><span class="no">connection-password=very-secure</span>
+</code></pre></div>
+
+<p>Now - first issue here: PASSWORD STORED IN THE PLAIN TEXT OMG OMG. Usually, I'd use secrets to manage it there, as k8s has a mechanism for that, but this ain't no production setup guide. Plus if someone has access to the repo with your deployment code, it usually it's too late for security anyway, but I get your worry. This should NOT be done like that in real-life applications.</p>
+<p>Okay. You added that, what now? Apply the changes with the same command you applied them in case of Hive, so the thing with <code>kubectl apply</code>.</p>
+<p>Open your presto console and try to do something eg. list available schemas:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">SHOW</span><span class="w"> </span><span class="n">SCHEMAS</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">postgresql</span><span class="p">;</span>
+</code></pre></div>
+
+<p>If that works for you, you are officially done. You can now query all you want. Your queries will be nicely summed up on the UI, you can see the details there.</p>
+<h2>Summary</h2>
+<p>Well, we are more or less done. That was a fun exploration for me, as I did not have any experience with either Presto, Starburst or GCP. Had a blast overall, which is nice, especially in these daunting times. Anyway.</p>
+<p>We've slightly tasted the things that Presto can do, but there's so much more to try. </p>
+<p>This is all for today's episode of grski's ramblings!</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

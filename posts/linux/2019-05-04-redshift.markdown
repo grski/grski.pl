@@ -1,0 +1,57 @@
+Title: How to fix RedShift on Linux: Trying location provider `geoclue2'...
+Date:   2019-05-04
+Authors: Olaf Górski
+Slug: redshift
+Description: Quick way that will let you to solve the problem with popular screen filter.
+
+If you ever encountered this RedShift error: Trying location provider `geoclue2`. here's a way to solve it. 
+
+What is redshift? An app that I use to adjust my screen color temperature to the time of the day, stopped working. Back to the main topic.
+
+As I've found out in the logs, it spits out msg like this:
+
+```
+Trying location provider `geoclue2'...
+Using provider `geoclue2'.
+Waiting for initial location to become available...
+poll: Interrupted system call
+Unable to get location from provider.
+```
+
+After a quick investigation, I've found out that it's coz of a package responsible for geolocation. It just doesn't work and screw you.
+
+
+Aight, that's not nice, but, still, I gotta use my redshift coz I like it and well, can't sleep well without it. Too lazy to fix the package/make a PR myself. There has to be a quciker way.
+
+And there is.
+
+All that I had to do was to modify the configuration to start with manualy entered coordinates instead of trying to autodetect. How?
+
+# Solution
+
+File `./.config/redshift.conf`
+
+```
+[redshift]
+location-provider=manual
+
+[manual]
+lat=52.23
+lon=21.01
+```
+
+And that's all.
+
+Works like a charm.
+
+Please note though. The coordinates I've specified here are for Warsaw. If you live somewhere else, just google yours.
+
+Also, considering how I like to keep the colors really warm during the night, i've also added, in the `[redshift]`section, something like this
+
+`temp-night=3000`
+
+which is a bit lower than default value of `4500` - the lower the value, the more `yellowy` your screen will be.
+
+Why would you even use this stuff? 
+Tldr; blue light. Read about it. Bad stuff.
+

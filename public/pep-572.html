@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>PEP 572 - czyli co ciekawego może znaleźć się w Pythonie 3.8 - przypisywanie zmiennej w wyrażeniach - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="O PEP 572, czyli propozycji dodania operatora przypisywania zmiennych w do Pythona 3.8." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="O PEP 572, czyli propozycji dodania operatora przypisywania zmiennych w do Pythona 3.8.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2018-07-02T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2018-07-02</h3>
+                <h1 class="title"><a href="https://grski.pl/">PEP 572 - czyli co ciekawego może znaleźć się w Pythonie 3.8 - przypisywanie zmiennej w wyrażeniach</a></h1>
+                <div class="content">
+                    <p>Niedawno miała miejsce premiera Pythona 3.7, który przyniósł ze sobą kilka ciekawych rzeczy, jak <em>async i await</em> jako słowa kluczowe, <em>opóźnioną ewaluację adnotacji typów</em> czy <em>breakpoint()</em>. Prace nad nowymi wersjami jednak nie ustają i nadchodzaca wersja - Python 3.8 prawdopodobnie również przyniesie ze sobą coś ciekawego, o czym ostatnio sporo się rozmawia. Co to takiego?</p>
+<p>Otóż chodzi o możliwość przypisywania zmiennych nie tylko w stwierdzeniach a również i w wyrażeniach. Cóż to takiego znaczy?</p>
+<p>Mała notka, nie jestem pewien, czy poprawnie przetłumaczyłem te zdania. Raczej nie korzystam z polskich źródeł i nie wiem, czy takich też używają polscy autorzy. Dla pewności chodzi mi o statement i expression.</p>
+<p>EDIT: operator został formalnie zaakceptowany i na pewno znajdzie się w standardzie : )</p>
+<h1>PEP 572</h1>
+<p>W tym dokumencie, tej propozycji wprowadzenia zmiany, którego autorami są Guido van Rossum, Chris Angelico czy Tim Peters, proponowane jest, by od wersji 3.8 Python wspierał przypisywanie zmiennych nie tylko w stwierdzeniach, ale również i wyrażeniach, za pomoca operatora <code>NAME := expr</code>.</p>
+<p>No dobrze, ale co to znaczy w praktyce. Spójrzmy na kod.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">if</span> <span class="n">our_function_getting_json</span><span class="p">(</span><span class="n">some_arg</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">our_function_getting_json</span><span class="p">(</span><span class="n">some_arg</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">do_stuff</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Raczej proste do zrozumienia, zasadne, racja? Przykład z pewnego kodu wzięty. Przykład brzydki. Powyższy kod ssie w tym kontekście.
+Jak można by go poprawić? </p>
+<div class="codehilite"><pre><span></span><code><span class="n">data</span> <span class="o">=</span> <span class="n">our_function_getting_json</span><span class="p">(</span><span class="n">some_arg</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">do_stuff</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Możemy zrobić coś takiego, ale czy to najkrócej jak się da, najlepiej jak się da? Obecnie raczej tak, ale...</p>
+<p>Fajnie by było, gdyby można było zadeklarować tą zmienną tam w tym ifie - zapisać po prostu wynik funkcji tam, gdzie jest ona pierwotnie używana. Ważne jest to tam, gdzie chcemy później np. wykonać jakieś operacje na wyniku wyrażenia, które wykonaliśmy, np. w warunku, ale przez to, że w wyrażeniach obecnie nie można zapisywać zmiennych, to musimy zapisać ją sobie sami, wcześniej. Czy to w pętlach, czy w list comprehensions, lambda functions czy w innych.</p>
+<p>Obecnie inaczej się nie da. To znaczy, w tym wypadku:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">our_function_getting_json</span><span class="p">(</span><span class="n">some_arg</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">do_stuff</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Jedyne co otrzymamy, to błąd. Taki zapis jest nieprawidłowy.</p>
+<p>Od Pythona 3.8 najprawdopodobniej będziemy jednak mogli zrobić coś podobnego:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="o">:=</span> <span class="n">our_function_gettin_json</span><span class="p">(</span><span class="n">some_arg</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">do_stuff</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Krócej, czyściej, lepiej.</p>
+<p>Popatrzmy na inne przykłady.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Handle a matched regex</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">match</span> <span class="o">:=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">match</span><span class="o">.</span><span class="n">do_stuff</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Ponownie, zamiast musieć wcześniej definować zmienną, zapisać do niej dane wyrażenie, sprawdzić ją potem, możemy zrobić to w jednym miejscu.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">while</span> <span class="p">(</span><span class="n">value</span> <span class="o">:=</span> <span class="n">read_next_item</span><span class="p">())</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="o">...</span>
+</code></pre></div>
+
+<p>Alternatywa do 2 argumentowej wersji inwokacji iter().</p>
+<p>Teraz coś ciekawego - użycie tego w list comprehensions. Wydaje mi się, że to tutaj ten proponowany element języka będzie błyszczał.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">filtered_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">:=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+</code></pre></div>
+
+<p>Inny fajny przykład, gdzie można użyć tego operatora:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">results</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">/</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">input_data</span> <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">:=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> 
+<span class="c1"># lub też coś takiego jak niżej</span>
+<span class="n">stuff</span> <span class="o">=</span> <span class="p">[[</span><span class="n">y</span> <span class="o">:=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="o">/</span><span class="n">y</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+</code></pre></div>
+
+<h1>Gdzie to nie przejdzie?</h1>
+<p>Na razie podałem wam przykłady tego, gdzie nowego operatora <code>:=</code> można by użyć, ale gdzie będzie to zakazane?</p>
+<p>Zacznijmy od pierwszego obostrzenia - <code>:=</code> nie będzie można używać po prostu jako zamiennika <code>=</code>. To by było bez sensu - dwa operatory wykonujące tą samą czynność w tych samych miejscach. Skąd wtedy wiedzieć, którego lepiej użyć?</p>
+<p>Zatem, jeśli wcześniej mieliśmy kod:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">something</span> <span class="o">=</span> <span class="s1">&#39;lalala&#39;</span>
+<span class="n">something2</span> <span class="o">=</span> <span class="s1">&#39;hey&#39;</span>
+</code></pre></div>
+
+<p>I zmienimy go na:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">something</span> <span class="o">:=</span> <span class="s1">&#39;lalala&#39;</span> <span class="c1"># BŁĄD</span>
+<span class="n">something2</span> <span class="o">=</span> <span class="s1">&#39;hey&#39;</span> <span class="c1"># OK</span>
+</code></pre></div>
+
+<p>Bo tak po prostu jakoś nam się uwidzi, to kod taki nie zadziała. Nie ma zatem takiego miejsca, gdzie operator <code>:=</code> i <code>=</code> byłyby jednocześnie poprawne. Zwykłe, tradycyjne przypisanie? <code>=</code>. Miejsce, gdzie nie możesz użyć <code>=</code>, czyli domyślnie wyrażenie? <code>:=</code>. Prosta sprawa, nie inaczej.</p>
+<p>Nie będzie ich też można 'łączyć ze sobą.' Co to znaczy?</p>
+<div class="codehilite"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">:=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c1"># BŁĄD</span>
+</code></pre></div>
+
+<p>Taki zapis nie przejdzie. Ponownie byłoby to niepotrzebne, mylące i zbędne. Nie chcemy redundancji w Pythonie. Wszystko ma być czytelne, dlatego też taką operację można zastąpić następującym zapisem:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y1</span> <span class="o">:=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="c1"># OK</span>
+</code></pre></div>
+
+<p>Innym tego przykładem mogło by być:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">bar</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">:=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="c1"># BŁĄD</span>
+<span class="n">bar</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">:=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span> <span class="c1"># OK</span>
+</code></pre></div>
+
+<p>To również nie zadziała - bez nawiasów nie wolno używać przypisania w wyrażeniu jako wartości dla keyword-argument. Ponownie - żeby czytelność była.</p>
+<p>Dyskusja toczy się, czy zapis poniżej powinien być dozwolony</p>
+<div class="codehilite"><pre><span></span><code><span class="n">foo</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">:=</span> <span class="n">f</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">bar</span><span class="p">(</span><span class="n">x</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</code></pre></div>
+
+<p>Czyli używanie keyword-arguments i przypisania w wyrażeniu jednocześnie w wywołaniu funkcji. Co z tego wyjdzie, to się okaże. </p>
+<p>Przypisania w wyrażeniu nie będzie można też użyć podczas definiowania domyślnych wartości argumentów funkcji czy też w pośrednich jego wyrażeniach. Co to znaczy?</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">answer</span> <span class="o">=</span> <span class="n">p</span> <span class="o">:=</span> <span class="mi">42</span><span class="p">):</span>  <span class="c1"># BŁĄD</span>
+<span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="n">answer</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">:=</span> <span class="mi">42</span><span class="p">)):</span>  <span class="c1"># BŁĄD</span>
+<span class="k">def</span> <span class="nf">baz</span><span class="p">(</span><span class="n">callback</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span> <span class="n">p</span> <span class="o">:=</span> <span class="n">arg</span><span class="p">)):</span>  <span class="c1"># BŁĄD</span>
+</code></pre></div>
+
+<p>To chyba tyle, jeśli chodzi o główne przypadki gdzie można, a gdzie nie można będzie użyć <code>:=</code>. Oczywiście, to, że dana konstrukcja jest dozwolona, nie znaczy, że należy jej używać w każdym miejscu, gdyż większość z tych możliwości wymienionych wyżej, jest niepotrzebnie komplikującym elementem kodu i raczej nie powinno się ich tak wykorzystywać, <code>:=</code> powinien byc używany tam, gdzie faktycznie uprości on kod, a nie wszędzie, bo to jakaś fajna nowinka technologiczna.</p>
+<h1>Różnice między dwoma operatorami</h1>
+<p>Różnice są widoczne chociażby wtedy, kiedy chcemy przypisać wartości do wielu zmiennych jednocześnie. Jak to wygląda?</p>
+<div class="codehilite"><pre><span></span><code><span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">=</span> <span class="n">z</span> <span class="o">=</span> <span class="mi">0</span> 
+<span class="p">(</span><span class="n">x</span> <span class="o">:=</span> <span class="p">(</span><span class="n">y</span> <span class="o">:=</span> <span class="p">(</span><span class="n">z</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">)))</span>
+</code></pre></div>
+
+<p>Bardzo brzydki konstrukt, racja?</p>
+<p>Przypsanie w wyrażeniu może być tylko w postaci <code>NAME := exp</code>, to znaczy, że takie operacje jak:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">some_obj</span><span class="o">.</span><span class="n">prop1</span> <span class="o">=</span> <span class="s1">&#39;something&#39;</span>
+</code></pre></div>
+
+<p>Nie będą wspierane przez <code>NAME := exp</code>.</p>
+<p>Podobnie <code>+=</code>, <code>-=</code>, <code>*=</code> itd. również nie zadziała podczas używania <code>:=</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">x</span> <span class="o">+=</span> <span class="n">y</span>
+</code></pre></div>
+
+<p>Trzeba będzie to zrobić tak:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">(</span><span class="n">x</span> <span class="o">:=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
+</code></pre></div>
+
+<h1>Podsumowanie</h1>
+<p>Nowego operatora przypisania w wyrażeniu, będzie można użyć do <em>uproszczania list comprehensions, zapisywania wartości warunków czy innych wyrażeń.</em></p>
+<p>Oczywiście nic nie jest jeszcze pewne, wciąż prowadzi się dyskusje na temat tego, jak to wszystko ma wyglądać i działać, zmienić się może nawet sam operator, bo rozważane, zamiast <code>:=</code>, są jeszcze <code>as</code> albo <code>-&gt;</code> itd., ale taki mniej więcej będzie tego obraz.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Behind the Scenes of Data Inspector: Swagger, Makefile, Django project structure. - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Continuation of the previous post. This time we'll talk about Django project structure, docs." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Continuation of the previous post. This time we'll talk about Django project structure, docs.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2019-04-09T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2019-04-09</h3>
+                <h1 class="title"><a href="https://grski.pl/">Behind the Scenes of Data Inspector: Swagger, Makefile, Django project structure.</a></h1>
+                <div class="content">
+                    <p>Hi, it’s me again. Olaf.</p>
+<p>If the last entry wasn’t long, enough here comes its continuation, let’s see how long this one can get. Will we go over the record set by the previous one at 10 pages? Probably not, hopefully.</p>
+<p>Previously, we’ve talked, or at least I did, a bit about the architecture, asynchronous nature of our project, the reasoning behind choosing our technological stack and also something about the workflow we’ll use.</p>
+<p>Now let’s get down to the details, to the thing we all love and anticipate the most: code base.</p>
+<p>As you might imagine, the code base for this project won’t be that big. Probably. We’re using Django. It gives you some freedom in how you want to structure your application. Well, in our case, this is what I did. Well, not exactly I per se. This approach to Django project’s structure, was shamelessly stolen by me taught to me by my friend, Sebastian Opałczyński, among many other things. Either way.</p>
+<div class="codehilite"><pre><span></span><code>data-inspector/
+    .githooks/
+        pre-commit
+    app/
+        core/
+        django_app1/
+        django_app2/
+        __init__.py
+    docs/
+        swaggery.yml
+    requirements/
+        app.txt
+        ci.txt
+        dev.txt
+    settings/
+        common.py
+        development.py
+        test.py
+        production.py
+        __init__.py
+    urls/
+        v1/
+            urls.py
+            __init__.py
+        urls.py
+        __init__.py
+    .dockerignore
+    .gitignore
+    .style.yapf
+    .yapfignore
+    bitbucket-pipelines.yml
+    docker-compose.yml
+    Dockerfile
+    Makefile
+    manage.py
+    README.md
+    setup.cfg
+    uwsgi.ini
+    wsgi.py
+</code></pre></div>
+
+<p>Now that’s a lot of stuff for just a boilerplate django project, isn’t it? And you say you want to keep the code base small, design it with micro-services in mind? You crazy? RIGHT? RIGHT?</p>
+<p>Hell no, all of this might look like <code>bloat powered software</code>, but well, quite honestly, it’s not. I won’t say anything like this is still nothing compared to Hello World in corporate Java project, nah no way, I’m too professional for making Java jokes. Anyway.</p>
+<p>Every single file in this project has its purpose and is brought by a rational decision on my part. I’ll try to convince you that it indeed is the case.</p>
+<p>Let’s start with general project structure.</p>
+<h1>Structure</h1>
+<p>In my case, a directory called <code>data-inspector</code>, which just happens to be the project’s name, is the Python package root. As my coworker – another dev @ Marketplace, Tomasz said, I might’ve used <code>app</code> as the root, so going one level lower, or something else instead, thanks to which I’d make a micro-optimization of built Docker image size by not including files like bitbucket-pipelines or docker-compose in the image, but… </p>
+<p>That’s what it’d be – a micro optimization. And well, as we all know, certain someone by the name of Donald Knuth, said something like this: “premature optimization is the root of all evil”. And honestly, to whom should we listen if not to Donald? In case you don’t know who that is, stop reading this article and go catch up. Right now. Done? Let’s continue.</p>
+<p>So the root is <code>data-inspector</code>. Now inside of it, we have lots of things. One of them is the directory called <code>.githooks</code>. It contains… git hooks. Yeah. Surprise. In our case it’s <code>pre-commit</code>. What do we need that for?</p>
+<h1>Don’t make a mess</h1>
+<p>Well, I like to keep my projects clean. This means using thins like isort, yapf, flake8, bandit. We’ve previously talked about them in the context of pipelines, remember? Yeah. There’s this caveat to all of this. On pipelines, more often than not, I just do the checking whatever my code in repository, after a commit, merge or whatever, still adheres to the rules specified in these tools.</p>
+<p>Making them work and change files in-place in pipeline wouldn’t be that smart I guess. It’d mean that every pipeline (caused by every change in repo) would produce a new commit if there was something to fix. Mess awaiting to happen. So we just check if the rules apply. If they don’t the pipeline fails, specifying why it did.Now you can either fix all the reported errors by hand, or keep it in mind to not break any rules, formatting style and imports order in the first place. Tldr – you do the job.</p>
+<p>Or you can be smart and well, just use git hooks. If you want all your code to be styled in certain way before you commit, then well, uh, just use <code>pre-commit</code> hook. </p>
+<p>Thanks to that, every time you commit something, git will run all the checks, all the fixing and stuff, for you. Guaranteeing that your pipelines won’t fail the style checks. Keep in mind though – if there were things to fix, pre-commit won’t commit the changes made while fixing files in your repo by stuff in the pre-commit hook. </p>
+<p>You gotta do it yourself – just add all the changed files and amend it to previous commit or make git do it for you by modifying the hook. Your choice. Also – you don’t have to add hooks, running all the tools by hand is fine too, but it means you have to remember to do that and stuff. Why bother? Let’s be lazy. Computers are here for that – to do repetitive tasks which do not need human interaction.</p>
+<p>Speaking of the hook, there’s how it looks:</p>
+<div class="codehilite"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+<span class="c1">#</span>
+<span class="c1"># A hook which will format code in yapf-way; do an isort and run flake8;</span>
+make<span class="w"> </span>code-fixes
+</code></pre></div>
+
+<p>This presumes you have make installed. And yapf too. Also, flake8, isort and bandit too.
+What is this so called make?</p>
+<p>It has many uses, but in our case it’s just something that will execute some commands for us. Why?</p>
+<h1>To make or not to make? That is the question of life.</h1>
+<p>Well, let’s suppose we want, for some reason, run our <code>code-fixes</code> by hand, without make. 
+In <code>code-fixes</code> we effectively make use of 4 tools. Yapf, isort, flake8, bandit. So we’d need to run 4 commands, each for every tool. Or create a bash script which would do that for us. WAY too much hassle for me – I’m a lazy creature. I’d rater just call one command and have it done for me.</p>
+<p>That’s what we use make for, and speaking of make, let’s look into the <code>Makefile</code> which keeps all of our make commands, which are:</p>
+<div class="codehilite"><pre><span></span><code>code-checks
+code-fixes
+requirements-dev
+requirements-ci
+yapf
+hook-setup
+flake8
+isort
+isort-inplace
+bandit
+bumpversion
+version
+</code></pre></div>
+
+<p>As for the specific contents of these commands, I won’t give it to you. This will be a small exercise – if you want to implement this in your project, you can at least try, and search how to use this yourself.</p>
+<p>Anyway. So, they’re simple, really. Code-checks – fires isort, yapf, flake8, bandit for checks only. Code-fixes – same thing, but it also does… fixing in-place.
+Requirements-dev install requirements for dev, -ci same thing.
+Hook-setup – it copies hooks from our .hooks to local git repository so that git recognizes this hook
+bumpversion – bumps the version of our app
+version – I use this to print current version – simple sed. Needed in pipelines.
+and so on.</p>
+<p>As for other miscellaneous files such as <code>.gitignore</code>, <code>.dockerignore</code>, <code>.yapfignore</code>, well I hope I don’t have to tell you what they do, or do I?</p>
+<p>I’ll tell you one thing though. Pay attention to your README. Like really. Having documentation pays off. Really. It does. A lot.</p>
+<p>I know it may be cumbersome and stuff. But in the long run it’ll help you document your knowledge, it will save you time coz people won’t bother you that much – a lot of their problems can be solved by a good README and what’s most important – you’ll have the information about your project stored.</p>
+<p>Coz what happens if you stop working on a project, focus on something more important, for like two weeks or more? After such a long time, it’s highly probable, you might forget some subtle details. The thing is though: if you have a good README, it’ll allow you or for example a new coworker, to get back into the project a lot faster. So yeah. Same thing goes for the folder called <code>docs/</code>. 
+Most people do not like writing documentation. I’m not surprised – we love writing code, not some boring documentation. But still. Do it. Really.</p>
+<p>As for docs in my project, they’re done using swagger mostly. I hate that tool. Oh yes I do. But I still use it. Well my hate for swagger is still not comparable with my hate for confluence. WHY DO PEOPLE EVEN USE IT? UGHHHH.</p>
+<p>Anyway. Sorry for that. </p>
+<h1>Docker</h1>
+<p>As you can see we have to mysterious files in our project – Dockerfile and docker-compose. What are they here for? Well, you probably might know that already, but if you don’t, let me introduce you to something called Docker. Docker is a containerization platform. WHAT?</p>
+<p>If you are a bit older than 12, then you might remember that back in the days, if you wanted to install some new cool game, first you had to install DirectX, Flash and other stuff. Oh, it also often had to be in a correct version. Fun times, right?Well now imagine that you didn’t have to do that. It all came packed into a ‘container’ - you don’t have to install anything new on your computer. Everything a program needs to run is in that ‘container’. </p>
+<p>Well, now you kind of might know what Docker does on the basic level. It also brings in security, scalability and so on. Enough about that. So that’s what Dockerfile is for – it’s an instruction for Docker, telling it how to build your application’s image that you may distribute later, when you upload it to some kind of Image Repository – you can do that for example in… Pipelines : ) See how things fit together? Anyway.</p>
+<p>Docker compose is there so that we can use docker-compose. It’s a type of tool used to easily wrap around base Docker commands, that’s all.</p>
+<p>Manage.py is just django fluff that we will use tu ‘run’ our application. Wsgi.py and uwsgi.py have similar purpose – they say how the server should ‘serve’ our application. </p>
+<p>Most of the time I use python’s alpine version of the base image. 3.7 preferably. </p>
+<h1>Setup</h1>
+<p>Well in this file we have all kinds of configurations for different tools. Eg. flake8, isort and so on. Instead of creating a million files, you can just write it all here, most of the time.
+Here you can see an example:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[bumpversion]</span>
+<span class="na">current_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0.1.27</span>
+<span class="na">commit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">True</span>
+<span class="na">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">True</span>
+
+<span class="k">[flake8]</span>
+<span class="na">max-line-length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">120</span>
+<span class="na">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">manage.py,migrations,venv</span>
+
+<span class="k">[isort]</span>
+<span class="na">line_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">120</span>
+<span class="na">known_future_library</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">future</span>
+<span class="na">known_first_party</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">app</span>
+<span class="na">known_django</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">django</span>
+<span class="na">known_third_party</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">pykafka</span>
+<span class="na">multi_line_output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">3</span>
+<span class="na">indent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;    &#39;</span>
+<span class="na">skip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">manage.py,migrations,venv</span>
+<span class="na">sections</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">FUTURE, STDLIB, DJANGO, THIRDPARTY, FIRSTPARTY, LOCALFOLDER</span>
+<span class="na">...rest of the file...</span>
+</code></pre></div>
+
+<p>Alright. Off to the other dirs let’s go.</p>
+<h1>App</h1>
+<p>This is where I store the codebase. I either just call it <code>app</code> which is not descriptive, so I don’t do it that often – instead most of the time I just name this directory after the project’s name – in this case it’d be data-inspector, but you gotta remember that <code>-</code> in package name is not such a good practice, so instead I’d use for example <code>data_inspector</code>, which in turn is ugly, so let’s just stick with <code>inspector</code> still descriptive, but prettier. Yay. At least it is from my perspective. This time I just rolled with ‘app.’ Idk why really.</p>
+<p>So in this directory, I store most of the source code, splitting it like follows:</p>
+<p>for each django app I have a separate directory. In almost every project I include a directory called <code>core</code>. It contains things that are vital to every app in the project or things that relate to the whole project in general – eg. things like viewset handling documentation or versioning, some abstract models, middleware or handy utils widely used everywhere. I also put files related to <code>django-admin</code> if it’s very short - otherwise I create a separate app for it.</p>
+<p>Example of something I’ll have in my <code>core</code> app is this:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="n">CreatedUpdatedAtModel</span>(<span class="n">models</span>.<span class="n">Model</span>):
+    <span class="n">created_at</span> = <span class="n">models</span>.<span class="n">DateTimeField</span>(<span class="n">auto_now_add</span>=<span class="nb">True</span>)
+    <span class="n">updated_at</span> = <span class="n">models</span>.<span class="n">DateTimeField</span>(<span class="n">auto_now</span>=<span class="nb">True</span>)
+
+    <span class="k">class</span> <span class="n">Meta:</span>
+        <span class="n">abstract</span> = <span class="nb">True</span>
+</code></pre></div>
+
+<p>If my models inherit from this instead of inheriting from default django Model, then well, I’ll be able to easily track basic changes in every row – it often comes handy to know when the model was created and last modified. Really.</p>
+<p>One thing you might want to consider. How do you structure your utils? What do I mean? Most of the time I see this approach: people just create a file called <code>utils</code> where they blatantly just put all their functions in a flat structure. </p>
+<p>Then, in other files, where they use the code from utils, they either import it all by doing <code>from utils import *</code> which is bad in my opinion, in most cases at least, or they import it all one by one creating something like this: <code>from utils import really_long_function_name1, really_long_function_name2, really_long_function_name_thats_also_longer_than_all_the_rest3</code> and so on. You get the idea?</p>
+<p>Importing it all one by one may create a mess later. “There must be a better way.” I have a different approach here.</p>
+<p><code>services</code> or whatever.
+I mean… Instead of having just <code>utils.py</code> and a flat code structure there, I either create a file called <code>services</code> or modify the utils a bit. How? I don’t just plainly put my functions/methods there in a flat structure, instead I create a class there and make these functions/methods into class methods.</p>
+<p>Then I can just <code>from utils import UtilNameService</code> - that’s all for the imports. In the code it’d look like this: <code>UtilNameService.somet_method()</code> In my opinion this is cleaner. Just my preference though.</p>
+<p>Alright. Off we go to the next dir. And that’d be <code>docs</code>.</p>
+<h1>Docs</h1>
+<p>Well what does it do… Hm…
+Just swagger. Nothing more, really. So not much to say here. Except for another reminder – DO write a documentation, it’s so important.</p>
+<h1>Requirements</h1>
+<p>As you can see here, in this directory, I have a couple of files. Each has its own purpose. Let’s start with the most important one - <code>app.txt</code> here I include all the <code>pip</code> dependencies that need to be installed in order for the app to work in the basic case. This is absolute required minimum. </p>
+<p><code>dev.txt</code> contains dependencies that might come in handy when developing the app locally – so things like test runners, maybe coverage and other stuff like that.</p>
+<p><code>ci.txt</code> is there so that I can specify what I want to install just during the pipelines duration, which is: flake8, yapf, coverage, isort, bandit. You get the idea? No point in including all these packages in our base image, making the build process longer and the image size larger and that’s bad.</p>
+<h1>Settings</h1>
+<p>Oh well, this might seem a bit counterintuitive to some – why do I store settings outside of eg. <code>core</code> or some Django app? Well, it just suits me better and makes the code a bit cleaner – especially when it comes to imports.</p>
+<p>That’s my opinion at least.</p>
+<p>Either way. Here we have 4 files basically.
+<code>common</code>, <code>development</code>, <code>test</code>,  <code>production</code></p>
+<p>As you might imagine, they’re all different settings for the project. Each one is used depending on the environment currently set.</p>
+<p>Here is something I’d like you to remember. You have to tell Django which setting file to use. It has no idea by default. Just don’t do that by hard coding that in your code. No, don’t.  How to do that then? Just set default settings based on environment variable for example.</p>
+<h1>Urls</h1>
+<p>Last but not least: urls.</p>
+<p>I generally use something like that: </p>
+<div class="codehilite"><pre><span></span><code>urls/
+    urls.py
+    v1/
+        urls.py
+</code></pre></div>
+
+<p>Versioning in API is important if you make it public and then create major backwards-incompatible changes. If you do so, you might think about creating another version of the api – eg. v2, so that the apps already created using you api v1, won’t stop working.</p>
+<p>Well it’s better not to put yourself in that position in the first place – that’s why it’s important to think through carefully the design of every feature you do. Backwards incompatible changes suck. Avoid them when you can.</p>
+<p>Anyway.</p>
+<p>So, all the urls from <code>v1</code> live in a namespace…. <code>v1</code>. Yes.</p>
+<p>Hm. </p>
+<p>That’d be all I think. </p>
+<p>This entry definitely was a bit shorter than the previous one. Thank god. </p>
+<p>After these two articles I think you should have a basic grasp over how I structure my Django projects, why I do it, how I came up with the project’s architecture and so on. Maybe you haven any ideas how to improve this?</p>
+<p>Did it work out though? What were the results? Well, while the product is still in development, I can tell you that the code did turn out decent indeed. </p>
+<p>Modular, simple and easily reusable. I’m not trying to brag here – me being just a beginner is nothing but a fact, so nothing to brag about here. I just try to simplify things whenever I can and more often than not, it pays off. </p>
+<p>Here it did, and the fact, that when in the so called <code>meanwhile</code> we had to write another service which had a bit n common with this project, most of the functionalities there came from doing this <code>from inspector import xyz</code> or copy-pasting code without any changes really. And it just worked.</p>
+<p>That’d be all for today. Thanks for reading.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

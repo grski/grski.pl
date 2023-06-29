@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Performance of different string concatenation methods in Python - why f-strings are awesome - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Few words on performance of f-string and string concatenations methods in Python." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Few words on performance of f-string and string concatenations methods in Python.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2020-01-10T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2020-01-10</h3>
+                <h1 class="title"><a href="https://grski.pl/">Performance of different string concatenation methods in Python - why f-strings are awesome</a></h1>
+                <div class="content">
+                    <p>Hi there, today I'd like to write a few things about f-strings in #python, why I think they're awesome, why we should use them and why they'll save the world from World War III.</p>
+<p>Personally speaking, I'm a big proponent of f-strings. I sue them when I can where I can and tell people to do the same. Elegant, readable and simple in usage. I got curious though - I mean, nothing in life comes free, right? This elegance, simplicity and just pure beauty must come at a price. In Python, most of the time, the price we pay for different things is performance. Well, I've decided to check if that's the case with f-strings.</p>
+<p>So today we will compare few ways you can modify/add strings together or generally format them.</p>
+<p>I'll compare f-strings, string concatenation, join() method, format() method and template string.</p>
+<p>No % operator for string in this comparison. Why? It's old. It's a bit ugly. My personal preference - I just don't like it. It reminds me of C way too much and Python syntax ain't no C. We can do better than %.</p>
+<h2>How we will test</h2>
+<p>To test and measure the performance of our code we will use timeit module that's a part of Python standard lib, calling Python from a command line. All the variables that we will use, will be defined in a command outside of the measuring time as to reduce the amount of overhead we have and the noise that Python itself generates - we are just interested in the string manipulation functions, nothing more.
+We will run standard 1000000 iterations in each loop, with 3 loops for each command. From all of these the program will output the shorter time it took to finish a given operation. Now let's get to the job.</p>
+<h2>Comparison</h2>
+<p>So, watch and behold my fugly code that I've produced on my knee, the one below (as if other code I produce was any different though…), that'll measure everything.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span> <span class="s2">&quot;f&#39;</span><span class="si">{x}</span><span class="s2"> </span><span class="si">{y}</span><span class="s2">&#39;&quot;</span>  <span class="c1"># f-string</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span> <span class="s2">&quot;x + &#39; &#39; + y&quot;</span>  <span class="c1"># concatenation</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span> <span class="s2">&quot;&#39; &#39;.join((x,y))&quot;</span>  <span class="c1"># join</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;; t = &#39; &#39;.join&quot;</span> <span class="s2">&quot;t((x,y))&quot;</span>  <span class="c1"># join2</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;&quot;</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&#39;.format(x,y)&quot;</span>  <span class="c1"># format</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;x = &#39;f&#39;; y = &#39;z&#39;; t = &#39;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&#39;.format&quot;</span> <span class="s2">&quot;t(x,y)&quot;</span>  <span class="c1"># format2</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;from string import Template; x = &#39;f&#39;; y = &#39;z&#39;&quot;</span> <span class="s2">&quot;Template(&#39;$x $y&#39;).substitute(x=x, y=y)&quot;</span>  <span class="c1"># template string</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;from string import Template; x = &#39;f&#39;; y = &#39;z&#39;; t = Template(&#39;$x $y&#39;)&quot;</span> <span class="s2">&quot;t.substitute(x=x, y=y)&quot;</span>  <span class="c1"># template string2</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;from string import Template; x = &#39;f&#39;; y = &#39;z&#39;; t = Template(&#39;$x $y&#39;).substitute&quot;</span> <span class="s2">&quot;t(x=x, y=y)&quot;</span>  <span class="c1"># template string3</span>
+</code></pre></div>
+
+<p>Looks basic and crude, but it'll do the job. For Template string I've considered three cases. First one is when the initialization of the instance of the Template class happens during the time that counts towards the result, the second one is where the initialization is done before the timer is started, I initialize the instance and pass it over and the third one is where I initialize the instance and also access the proper method already, so that the only thing that will contribute to the outcome's time, will be the method. What do I mean by that?
+Well, basically, as you know, instantiating a class takes time and memory in Python, well in other language too, actually. So considering a case where this takes place in a different part of the code is a sane thing to do. That much is obvious.</p>
+<p>But why do I also test a case, in which I pass instance.attribute to the test loop, instead of calling instance.attribute in the loop itself? Well, it's quite interesting nifty thing.
+Python, in the background, when you create a class, creates a dictionary that contains a mapping with all the attributes/method names and so on that you have on a class and that you can access using the . dot operator. So each time you you use it, in the background, a dictionary lookup happens. Of course this changes a bit if you use <code>__slots__</code>, but we won't be discussing this case here.
+If the key is found -&gt; proper attr/method is returned, otherwise we get attribute error. Anyway. All of this costs time. Even though lookup, for the most part and in most cases, in dictionaries is O(1) operation, then well, it still means additional steps. So just for the sake of it, we will see what's the difference with and without that operation by testing different cases.</p>
+<p>Same thing for join &amp; format. Here I've considered two cases for each - one with <code>.</code> access and one without - just calling a function.</p>
+<h2>Here are the results.</h2>
+<div class="codehilite"><pre><span></span><code><span class="nv">f</span><span class="o">-</span><span class="nv">string</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">0791</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">concat</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">0985</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">join</span><span class="w"> </span>,<span class="w"> </span><span class="nv">no</span><span class="w"> </span><span class="nv">lookup</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">112</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">join</span>:<span class="w"> </span><span class="mi">10000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">144</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">format</span>,<span class="w"> </span><span class="nv">no</span><span class="w"> </span><span class="nv">lookup</span>:<span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">232</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">format</span>:<span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">0</span>.<span class="mi">264</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">template</span><span class="w"> </span><span class="nv">string3</span>:<span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">1</span>.<span class="mi">01</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">template</span><span class="w"> </span><span class="nv">string2</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">1</span>.<span class="mi">06</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+<span class="nv">template</span><span class="w"> </span><span class="nv">string</span>:<span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="nv">loops</span>,<span class="w"> </span><span class="nv">best</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="mi">3</span>:<span class="w"> </span><span class="mi">1</span>.<span class="mi">36</span><span class="w"> </span><span class="nv">usec</span><span class="w"> </span><span class="nv">per</span><span class="w"> </span><span class="k">loop</span>
+</code></pre></div>
+
+<h2>Surprise, surprise!</h2>
+<p>Honestly, I did not expect that f-string will be both the most elegant solution and also the fastest one! This smears joy over my heart, makes me want to live.
+The second place went to concatenation and so on - you can basically see for yourself.</p>
+<p>Considering that the optimization I made - getting rid of the dot operation and attr lookup in the test loop, is rather unpractical and should not be used unless you want to end up in seventh circle of hell, together with Java creators, I'll remove it from the rankings - just wanted to show it for the sake of it. So here's the ranking for a simple case of manipulating three strings.</p>
+<ol>
+<li>f-string</li>
+<li>concatenation</li>
+<li>join()</li>
+<li>format()</li>
+<li>Template-string</li>
+</ol>
+<h2>Let the joker dance</h2>
+<p>I've showed you a simple example with three strings and their manipulation. What about a case when someone wants to manipulate more of them?! Like, idk, maybe 13 at a time? For example you want to create a string containing 13 letters separated by a space. WHY NOT? Let's do it, Morty.</p>
+<p>Also take note, here I won't test the variants with dot operator and lookup and without them. Why? Because as the amount of variables increases, the lookup itself becomes smaller and smaller part of the result, in this case it practically does not matter, so why bother.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;a, b, c, d, e, f, g, h, i, j, k, l, m = [str(s) for s in range(13)]&quot;</span> <span class="s2">&quot;f&#39;</span><span class="si">{a}</span><span class="s2"> </span><span class="si">{b}</span><span class="s2"> </span><span class="si">{c}</span><span class="s2"> </span><span class="si">{d}</span><span class="s2"> </span><span class="si">{e}</span><span class="s2"> </span><span class="si">{f}</span><span class="s2"> </span><span class="si">{g}</span><span class="s2"> </span><span class="si">{h}</span><span class="s2"> </span><span class="si">{i}</span><span class="s2"> </span><span class="si">{j}</span><span class="s2"> </span><span class="si">{k}</span><span class="s2"> </span><span class="si">{l}</span><span class="s2"> </span><span class="si">{m}</span><span class="s2">&#39;&quot;</span>  <span class="c1"># f-string</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;a, b, c, d, e, f, g, h, i, j, k, l, m = [str(s) for s in range(13)]&quot;</span> <span class="s2">&quot;a + &#39; &#39; + b + &#39; &#39; + c + &#39; &#39; + d + &#39; &#39; + e + &#39; &#39; + f + &#39; &#39; + g + &#39; &#39; + h + &#39; &#39; + i + &#39; &#39; + j + &#39; &#39; + k + &#39; &#39; + l + &#39; &#39; + m&quot;</span>  <span class="c1"># concat</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;t = [str(i) for i in range(13)]&quot;</span> <span class="s2">&quot;&#39; &#39;.join(t)&quot;</span>  <span class="c1"># join</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;t = [str(s) for s in range(13)]&quot;</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&#39;.format(*t)&quot;</span>  <span class="c1"># format</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;from string import Template; a, b, c, d, e, f, g, h, i, j, k, l, m = [str(s) for s in range(13)]&quot;</span> <span class="s2">&quot;Template(&#39;$a $b $c $d $e $f $g $h $i $j $k $l $m&#39;).substitute(a=a, b=b, c=c, d=d, e=e, f=f, g=g, h=h, i=i, j=j, k=k, l=l, m=m)&quot;</span>  <span class="c1"># template string</span>
+</code></pre></div>
+
+<p>Now I wonder how the results will turn out.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">join</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">0.217</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+<span class="n">f</span><span class="w"> </span><span class="n">string</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">0.399</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+<span class="n">format</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">0.811</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+<span class="n">concat</span><span class="o">:</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">1.13</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+<span class="n">template</span><span class="w"> </span><span class="n">string</span><span class="o">:</span><span class="w"> </span><span class="mi">100000</span><span class="w"> </span><span class="n">loops</span><span class="o">,</span><span class="w"> </span><span class="n">best</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="mf">2.04</span><span class="w"> </span><span class="n">usec</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">loop</span>
+</code></pre></div>
+
+<p>Some changes there. A lot of them actually, but basing on previous results, I'm not that surprised. Why?</p>
+<p>Well, let's begin with what changed. Join on the 1st place, from the 3rd, concat on second to last from it's glorious 2nd place, format to 3rd from the 4th. Template-string last, as always. Quite reasonable outcome.</p>
+<p>First place, so our winner in this case, join is obvious case of optimization. Just look at what we are doing here - nothing more than just joining some strings with a common separator and that's it. Wasn't join precisely designed to do just that? I'm sure, and CPython source code shows this, that there was some heavy optimizing made on this method as it's part of the core of the language, be it on the implementation level or maybe even on the CPython level. It allows join to handle an arbitrary (to a point) large number of args while still being quite performant. Which is nice. Why? Because again - the most elegant solution (f-string was not as elegant in this particular case) turned out the fastest.</p>
+<p>Second place, f-strings. Not surprised anymore. After the initial result of f-strings being first and me being surprised, I dug a bit deeper. Turns out that at first, in the first implementation, f-strings very indeed very slow. It was because they were, internally, translated to nothing more than a bunch of joins/formats, don't remember exactly. Only later did they create a special OPCODE on the CPython level, specifically designed for f-strings, which made it way faster as it allowed the core developers to make optimizations on C-level code.</p>
+<p>Why did format appear before concatenation? Let me tell you. It's all about evaluation and strings being immutable in Python. Each time we do anything to them, new one is created and returned. In order to do that, Python must allocate new memory for the new string with appropriate length, copy the contents of the strings. Allocation and copy, this sounds like something that might take some time. In case of our code, this takes place each time we call the + operator. So basically it means, that when we typed in <code>a + ' ' + b + ' ' + …</code> and so on, underneath Python called in something like that:</p>
+<ol>
+<li>Allocate memory that'll fit a and ' '</li>
+<li>Copy a to that place</li>
+<li>Copy ' ' to that place</li>
+<li>Resulting string you ought to add to b</li>
+<li>Allocate memory that'll fit the resulting string and b</li>
+<li>Copy ….</li>
+</ol>
+<p>You get the idea. All of this takes time.
+Last one is obviously our Trajan horse - template string.</p>
+<h2>Summary</h2>
+<p>In Python, most of the time, mechanisms that look elegant in a particular situation, are almost for sure optimized for it, that's why you ought to use them. I love this snake. Elegant code that also is the fastest option available most of the time. Nice.
+If there are a lot of strings you ought to join in a predictable manner - use join.
+In most of the other cases, use f-strings where you can, enjoy your life.</p>
+<p>Just like we, at thirty3, do. We enjoy life, use f-strings, fast and chill. That's it for today.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

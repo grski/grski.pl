@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>Niedokładność liczb zmiennoprzecinkowych, czyli dlaczego 0.1+0.2 != 0.3 - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Trochę teorii dlaczego 0.1+0.2 != 0.3, niedokładności liczb zmiennoprzecinkowych w języku binarnym." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Trochę teorii dlaczego 0.1+0.2 != 0.3, niedokładności liczb zmiennoprzecinkowych w języku binarnym.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2017-09-25T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2017-09-25</h3>
+                <h1 class="title"><a href="https://grski.pl/">Niedokładność liczb zmiennoprzecinkowych, czyli dlaczego 0.1+0.2 != 0.3</a></h1>
+                <div class="content">
+                    <p>Floating point imprecision, czy też może po polsku(chyba) niedokładność liczb zmiennoprzecinkowych. Brzmi poważnie, co? A no trochę jest, przynajmniej czasami. Zwłaszcza, jak operujemy na pieniądzach w jakiś sposób. A to w programowaniu dość częsty przypadek, no bo przecież te wszystkie templatki dla banków same się nie napiszą, prawda? W każdym razie... O co chodzi?</p>
+<p>Dziś temat taki raczej prosty do zrozumienia i krótki. Floating point imprecision to powód dla którego nie powinno używać się floatów czy prymitywów zmiennoprzecinkowych jeśli mamy do czynienia z pieniędzmi czy też może wykonujemy dokładne obliczenia.</p>
+<p>Konkretniej.</p>
+<p>Rozważmy prosty program w C(sprawa dotyczy praktycznie każdego języka):</p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="cp">#!c</span>
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">example_float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">example_float</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0.1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Equal&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+</code></pre></div>
+
+<p>Prosty kod, prawda? Myślę, ża każdy powinien go zrozumieć, jeśli zna choćby podstawy programowania. Oczekiwanym przez sporą część wynikiem działania tego kodu byłoby wydrukowanie 'Equal' w konsoli, racja? Ja też oczywiście tak myślałem na początku. Sprawdźcie jednak sami, co się stanie gdy kod skompilujecie i uruchomicie.</p>
+<p>O dziwo "Equal" się nie wyświetliło. Dlaczego? Coś się pomyliło? Liczby pozornie te same, no bo i tu 0.1 i tu 0.1, co jest? Hm, może zmienną nam źle zapisało. Wypiszmy ją sobie i zobaczmy.</p>
+<div class="codehilite"><pre><span></span><code>    #!c
+    printf(&quot;%f&quot;, example_float);
+</code></pre></div>
+
+<p>Dodajcie sobie tę linijkę kodu po zakończonym ifie. Uruchomcie kod... I co?
+Oto wynik:</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">0.100000</span>
+</code></pre></div>
+
+<p>Chwila. Czyli jednak coś źle działa w naszym programie, prawda? No bo <code>example_float</code> jest przecież równy 0.1, prawda? A no nie.</p>
+<p>Tutaj tego nie widać, bo precyzja jest zbyt niska, ale poprawny to, zmuśmy funkcję <code>printf</code> do wyświetlenia naszego floata z większą dokładnością niż domyślna, bo jak widzicie, printf domyślnie wyświetla tylko 6 cyfr po przecinku.</p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="cp">#!c</span>
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">example_float</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">example_float</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0.1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Equal&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%.16f&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">example_float</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+</code></pre></div>
+
+<p>Daje nam</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">0.1000000014901161</span>
+</code></pre></div>
+
+<p>Lekka modyfikacja naszego kodu i wszystko jasne. Nasz <code>example_float</code> nie jest równy dokładnie 0.1, tylko troszkę więcej. Dlaczego?</p>
+<h1>Winowajca</h1>
+<p>Wszystko wynika stąd, że komputer 'operuje' na języku binarnym. Oznacza to, że przy tworzeniu liczb dostępne są jedynie potęgi dwójki, mnożone odpowiednio przez 1 lub 0, które można sumować(tak w dużym uproszczeniu). Nic zatem dziwnego, że nasz float tak wygląga. No bo spróbujcie z takich liczb <code>{..., 1/128, 1/64, 1/32, 1/16, 1/8, 1/4, 1/2, 0, 1, 2, 4, 8, 16, ...}</code> zbudować dokładnie 0.1. Nie da się tego zazwyczaj zrobić idealnie. Teoretycznie w wyimaginowanym świecie,
+gdzie mielibyśmy nieskończoną ilość pamięci do dyspozycji i nieskończoną ilość czasu, to moglibyśmy zbliżyć się nieskończenie blisko, nawet ją osiągnąć czasem, do dowolnej liczby. Ale o tym jak chcecie więcje, to o limitach sobie poczytajcie albo przypomnijcie z liceum i z matematyki.</p>
+<p>Stąd ta niedokładność - wynika ona jedynie z tego jak reprezentowane są liczby zmiennoprzecinkowe w pamięci komputera. O ile w większości przypadków, za pomocą skończonej ilości pamięci można uzyskać zadowalającą dokładność, tak są takie przypadki, gdzie niestety ta dokładność nie będzie wystarczająca.</p>
+<p>Do takich przypadków mamy specjalne biblioteki czy też może specjalne podejście, które inaczej zajmuje się tematem, niemniej jednak warto o tym wiedzieć. Dlatego też, jeśli piszemy jakiś program, który cokolwiek ma wspólnego z pieniędzmi, warto zastanowić się dwa razy zanim użyjemy floata czy doubla. Może lepiej złotówki trzymać w oddzielnym incie, a grosze w oddzielnym? Who knows.</p>
+<p>A jak dokładnie wygląda reprezentacja tego floata w pamięci? Cóż, to już trochę bardziej skomplikowany temat, raczej na inny wpis.</p>
+<p>To tyle, hej!</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>Dlaczego w programowaniu indeksujemy od 0? - wskaźniki, adresy w pamięci - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Rozwikłajmy zagadkę - dlaczego w programowaniu indeksujemy zazwyczaj od zera?" />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Rozwikłajmy zagadkę - dlaczego w programowaniu indeksujemy zazwyczaj od zera?">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2018-06-30T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2018-06-30</h3>
+                <h1 class="title"><a href="https://grski.pl/">Dlaczego w programowaniu indeksujemy od 0? - wskaźniki, adresy w pamięci</a></h1>
+                <div class="content">
+                    <p>Ostatnio pod <a href="https://4programmers.net/Mikroblogi/View/30661#entry-30661">jednym z moich wpisów</a> na mikroblogu 4p, nawiązała się krótka rozmowa nt indeksowania elementów w tablicach - gdyż stwierdziłem, iż logiczne i normalne jest ich indeksowanie od 0, natomiast języki, które indeksują od 1, czy innych liczb, no są troszkę nietypowo-dziwno-śmieszne.</p>
+<p>Padł jednak komentarz, że jest w zasadzie na odwrót a my, programiści, indeksujemy sobie od 0 tak po prostu, bo się przyzywczailiśmy.</p>
+<p>Otóż nie. <a href="https://4programmers.net/Mikroblogi/View/8661#entry-8661">Mimo tego, że sam kiedyś podobnie myślałem</a>, to indeksowanie od 0 jest logiczne i ma swoją zasadność, dlatego też w tej krótkiej notce opiszę z czego ono wynika na przykładzie języka C.</p>
+<h1>Skąd to 0?</h1>
+<p>Sprawa jest dość prosta.</p>
+<div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">numbers</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">};</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;numbers in general: %p -- %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">numbers</span><span class="p">,</span><span class="w"> </span><span class="n">numbers</span><span class="o">+</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="n">numbers</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;number no. %i: %p -- %p -- value: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">numbers</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">numbers</span><span class="o">+</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">numbers</span><span class="o">+</span><span class="n">i</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;int size: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<p>Powyższy kod wyświetli nam w konsoli coś takiego:</p>
+<div class="codehilite"><pre><span></span><code>numbers in general: 0x7ffc9f728f20 -- 0x7ffc9f728f20
+number no. 0: 0x7ffc9f728f20 -- 0x7ffc9f728f20 -- value: 1
+number no. 1: 0x7ffc9f728f24 -- 0x7ffc9f728f24 -- value: 2
+number no. 2: 0x7ffc9f728f28 -- 0x7ffc9f728f28 -- value: 3
+number no. 3: 0x7ffc9f728f2c -- 0x7ffc9f728f2c -- value: 4
+int size: 4
+</code></pre></div>
+
+<p>Przeanalizujmy troszkę o cóż tu chodzi.</p>
+<p>Zanim to zrobimy, zaznaczę tylko, że Ty, jeśli uruchomiłeś ten kod u siebie, mogłeś dostać nieco inne wyniki. To normalne.</p>
+<p>Dla większości osób nieznajomych z C/C++ ten kod może wydawać się nieco kryptyczny, ale w gruncie rzeczy jest dość prosty.</p>
+<h1>Co znaczy ten kod?</h1>
+<p>Zacznijmy może od linijki</p>
+<div class="codehilite"><pre><span></span><code><span class="n">printf</span><span class="p">(</span><span class="s">&quot;numbers in general: %p -- %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">numbers</span><span class="p">,</span><span class="w"> </span><span class="n">numbers</span><span class="o">+</span><span class="mi">0</span><span class="p">);</span>
+</code></pre></div>
+
+<p>Zakładam, że pierwsza część printa jest zrozumiała dla każdego, może poza <code>%p</code> - to po prostu nam mówi, że argument do wyprintowania będzie specyficznym typem danych.</p>
+<h1>&amp; - co to jest?</h1>
+<p><code>&amp;numbers</code> - operator &amp; zaś mówi, że chcę otrzymać adres danej zmiennej - czyli jej lokację w pamięci. Bo jak dobrze wiemy, zmienne alokowane są w pamięci, w pewnym miejscu wybranym przez komputer. To miejsce zazwyczaj opisuje się jako 'adres' - czyli liczba bajtów od 'poczatku' pamięci, którą procesor musi 'przeskoczyć', by dotrzeć do danej zmiennej. </p>
+<p>Nasza tablica (czyli taka jakby lista z Pythona, ale nie do końca), znajduje się pod adresem: 0x7ffc9f728f20 (zapis szesnastkowy), i jest to tym samym adres naszego pierwszego elementu.</p>
+<p>Kompilator musi musi jednak wiedzieć, pod jakim adresem znajduje się następny element naszej tablicy. Skąd? Otóż prosta sprawa. </p>
+<p>Zadeklarowaliśmy, że elementy naszej tablicy będą typu <code>int</code>. Typ <code>int</code> na komputerze, z którego korzystam, jest akurat 4 bajtowy, czyli 32 bitowy. Jest to w zasadzie standard (chociaż oficjalnie standard mówi o tym, że int ma być po prostu przynajmniej 16 bitowy, nie specyfikuje jego rozmiaru dokładnie), ale czasami są odstępstwa od reguły, zależnie od architektury, stąd też ten <code>sizeof(int)</code> w kodzie - zwraca on rozmiar danego typu w obecnym środowisku.</p>
+<p>Dlatego też, jeśli 0x7ffc9f728f20 jest adresem pierwszego elementu, który zajmuje w pamięci 4 bajty o adresach: <code>0x7ffc9f728f20</code>, <code>0x7ffc9f728f21</code>, <code>0x7ffc9f728f22</code>, <code>0x7ffc9f728f23</code>, to możemy wnioskować, że następny element tej tablicy będzie po nim, pod adresem 0x7ffc9f728f24, czyli 4 bajty dalej. Następny znowu kolejne 4 bajty i tak dalej, aż do ostatniego elementu.</p>
+<h1>Prosty wzór</h1>
+<p>Zatem adres konkretnego elementu tablicy można określić wzorem <code>adres_pierwszego_elementu+(index*rozmiar_typu)</code>. Z takiego też wzoru korzysta komputer - za każdym razem, gdy piszesz <code>numbers[index]</code> kompilator tłumaczy to sobie wewnętrznie na <code>*(numbers+(index*rozmiar_typu))</code>. Co znaczy <code>*</code>? Nic innego, jak 'idź pod dany adres i weź wartość znajdującą się pod tym adresem.'</p>
+<p>Zatem gdy napiszemy numbers[0], to nasz kompilator przetłumaczy to na <code>*(0x7ffc9f728f20+0)</code>, czyli <code>*(0x7ffc9f728f20)</code>, co z kolei znaczy: weź wartość z tego adresu i wstaw ją tutaj. </p>
+<p>W przypadku np. numbers[1], będzie to <code>*(0x7ffc9f728f20+(1*sizeof(int))) = *(0x7ffc9f728f20+(1*4)) = *(0x7ffc9f728f20+4)</code>, czyli <code>*(0x7ffc9f728f24)</code>. Jasne? Jak dla mnie tak. Jeśli masz problem ze zrozumieniem tego konceptu, nie przejmuj się, wiele osób nie do końca rozumie wskaźniki, adres i pamięć. Ja też miałem z tym problem. Przynajmniej na początku. </p>
+<p>Możesz wspomóc się <a href="https://www.youtube.com/watch?v=bewTJaboGIw">filmikami Gynvaela</a> czy <a href="https://www.youtube.com/watch?v=PYJYiBlto5M">wykładami z CS50 - kursu z Harvardu</a> oni, jako osoby o znacznie większej wiedzy, tłumaczą całe zagadnienie znacznie lepiej niż ja.</p>
+<h1>Jak by to wyglądało, gdybyśmy indeksowali od 1?</h1>
+<p>Załóżmy, że indeksujemy od 1. Wtedy wzór musiałby ulec modyfikacji - i wyglądałby on tak:</p>
+<div class="codehilite"><pre><span></span><code>adres_pierwszego_elementu+((index-1)*rozmiar_typu)
+</code></pre></div>
+
+<p>Innym rozwiązaniem byłoby przesunięcie lokacji pierwszego elementu tablicy o 4 bajty do przodu względem adresu samej tablicy, ale wtedy nasza tablica zajmowała by dodatkowe miejsce w pamięci i to niepotrzebnie, gdyż te pierwsze x bajtów, gdzie x to rozmiar danego typu danych, byłoby po prostu puste. To raz, dwa, że trzeba by pamiętać, że adres tablicy nie jest adresem pierwszego jej elementu.</p>
+<p>Oba te rozwiązania są bezsensowne, bo o ile nie jest to niby dużo - kilka bajtów na każdej tablicy, czy jedna operacja odejmowania, to gdy pomnożymy to sobie przez ilość takich zmiennych, które mamy w pamięci, to już wyjdzie całkiem pokaźna sumka bajtów/operacji, które w istocie rzeczy, są zbędnie zajmowane.</p>
+<p>Dodatkowo ileż kodu bazuje już na indeksowaniu od 0. Niemożliwym by było to wszystko zmienić.</p>
+<p>Oczywiście, są również inne argumenty, by indeksować czy liczyć elementy od zera, jak chociażby <a href="https://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html">te, głoszone przez Dijsktrę</a>. To taki raczej znany i ważny Pan, dla tych, którzy nie kojarzą ;) </p>
+<h1>Podsumowanie</h1>
+<p>Jak widać powyżej, indeksowanie od 1 jest nieco absurdalne, kiedy wiesz, jak proces dostępu do elementów tablicy wygląda od środka.</p>
+<p>We wpisie użyłem troszkę 'uproszczeń', także za niedokładności z góry przepraszam.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

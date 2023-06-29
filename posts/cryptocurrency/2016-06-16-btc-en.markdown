@@ -1,0 +1,86 @@
+Title: My first month with bitcoin - summary from small fish perspective 
+Date: 2016-06-16
+Authors: Olaf Górski
+Slug: btc-first-month
+Language: en
+Description: Today I'd like to talk a bit with you about my first month with Bitcoin and cryptocurrency world. Or rahter how not to do things.
+
+Today I'd like to talk a bit with you about my first month with Bitcoin and cryptocurrency world.
+
+Not until a month ago I knew nothing about crypto and things related to it. Now it's not that much different, but at least I got some basics down.
+
+Here I'll try to tell you what I did, what mistakes I made and so on, as objectively as I can. So you can learn on my mistakes.
+
+Let's start.
+
+I'll do that by saying that I'm not a particularly wealthy person and also adding in the fact that I'm from a country that has not that strong currency, my initial capital was quite limited.
+
+Let this simple table illustrate my purchases.
+
+DATE | USD | COIN | USD/COIN
+------------ | ------------- | ------------- | -------------
+2017-05-12 | $208 | 0.11403871 BTC | $1823
+2017-05-12 | $52 | 1.68310083 LTC | $31
+
+So as you can see at first I invested around $260. Not a lot. For $208 I bought some Bitcoin, the rest went for LTC. Had no idea what I am doing and so on, but LTC was rising at the time so I thought I'm being smart, haha.
+First lesson: do not buy during so called big green dildo.
+Second lesson: do not listen to your emotions.
+
+DATE | USD | COIN | USD/COIN
+------------ | ------------- | ------------- | -------------
+2017-05-22 | $132 | 0.06197560 BTC | $2129
+2017-05-22 | $260 | 0.11853572 BTC | $2193
+
+Couple of days go by. Bitcoin is up like crazy. I decide to dig in more. So I do. Because of problems with wire I had to wait couple of hours between them and so I paid $64 more the second time.
+By this time my LTC is down considerably. Around 20% or so. Don't buy on green dildo.
+
+I get a bit spooked by this. Meanwhile, I learned about other cryptocurrencies and decided to give them a go. So I did.
+
+I snet my 1.68310083 LTC to Poloniex to do some trading for fun. At this point in time it was worth 43$ - considerable drop in price, so I of course, decided to sell... Yep, still no idea what am I doing.
+
+Through @noisy post on certain polish site I learned about steemit and steem. Decided to give it a shot so I created an account here and decided to buy some STEEM with bitcoins I got from selling LTC. I bought 39.135 STEEM for $43. A little more than $1/STEEM.
+
+STEEM started rising a bit then on 3rd of June I was around +15% on STEEM - sold 20.0 of it then. Oh how happy I was. So I got decided to also start trading with all my BTC.
+
+Then the mayhem started. Or my retardness should I say. It's been precisely a week since I poured my btc to bittrex. And during this week I made exactly 97 orders on from my account. Most of them just at random.
+
+I started with around 0.29 BTC. At best, I got to 0.37 BTC, at worst... Better not say. Now I'm up to 0.26 BTC. Yeah. Sucks.
+
+I however learned my lesson. I stopped trading randomly, counting on luck. I joined a group called coinvestments, where people post different kind of signals for coins to buy. Encourage you to check them out - they quite good and free.
+
+Either way. I invested $652.
+After a month of my stupidity and playing around, I own 0.26 BTC, which is currently worth around 760 USD.
+
+I made around $108, which is 16.5% of my initial investment. Not that bad, but not good either.
+
+If I wasn't stupid, greedy, cheeky little bastard and stopped where I should've, now I'd own 0.37 BTC which is around $1090. I'd make 4 times as much as I did, but... I didn't. Too bad. Lesson learned though.
+
+Now I'm more cautious with my strategy and I adhere to certain rules, take advice from people from the group I mentioned earlier.
+
+All of my 0.26 BTC is currently in BAT - BasicAttentionToken - it's very interesting project that is brought by inventor of JavaScript, co-founder of Mozilla among others. Really interesting project. Even though right now it's quite low (~0.00007800 BTC) and has given me a loss for now, I believe it will fly.
+
+DATE | COIN | BTC-BAT | BTC | USD
+------------ | ------------- | ------------- | ------------- | -------------
+2017-06-10 | 3338 BAT | 0.00007802 | 0.26 | $760
+
+Plans for now? Hold BAT. Get some more money to buy STEEM - I also believe that I'll fly in the long term, so yeah.
+
+See ya next month.
+
+Concluding:
+1. Do not trade under the influence of emotions. Try to be a cold calculative psycho.
+2. Do not buy on green dildo. You'll most likely lose as the price will drop.
+3. Be patient.
+4. Do your research - don't just randomly buy some coins because you heard something somewhere. Look on the product, read what it's about, think about it. If you think it has a future - go for it. Otherwise, don't.
+5. It's worth to invest in crypto even with small capital.
+6. Do not invest what you can't lose.
+
+Questions some newbies might have, same as I did:
+1. How do you store your bitcoin?
+I used cold storage and paper wallet. Do not hold your bitcoins on exchanges. Do not. Period. Temporarily maybe. But not for longer periods of time.
+
+2. What exchange do you use?
+At first I used poloniex, then moved to bittrex. Poloniex's support was way to overflowed with everything. They still are. I also heard good things about Bitifiniex, but was told to avoid Kraken.
+
+3. When it's good time to cash out?
+Depends on you. For me it's probably a long time from now on - I believe that long term bitcoin will only gain on value.

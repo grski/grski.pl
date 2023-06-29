@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>Batalia z linuxem na nowym sprzęcie i czemu wróciłem na Windowsa jako hosta - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Python Lead's take on software development, Python, leadership, random thoughts and living a good life." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Olaf Górski">
+    <meta property="og:description" content="Python Lead's take on software development, Python, leadership, random thoughts and living a good life.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2018-06-25T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    Olaf Górski - Lead Python Developer
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2018-06-25</h3>
+                <h1 class="title"><a href="https://grski.pl/">Batalia z linuxem na nowym sprzęcie i czemu wróciłem na Windowsa jako hosta</a></h1>
+                <div class="content">
+                    <p>Kontrowersyjny tytuł, ale już śpieszę z wyjaśnianiem.</p>
+<p>Niegdyś byłem zapalonym fanatykiem linuxa, inaczej tego nazwać nie można. Windows be i koniec, patykiem nie tykaj. Z czasem jednak zacząłem dostrzegać pewne wady takiego myślenia, wady samego linuxa jak i zalety windowsa. </p>
+<p>Ostatecznie musiałem przesiąść się na windowsa przez projekt w pracy, ale zawsze planowałem wrócić do pingwinka. Cóż, ostatnio nabyłem nowy sprzęt, pomyślałem więc, że wreszcie pora wrócić do domu, do kochanego pingwinka, bo na tym sprzęcie, nawet jak sobie odpalę windowsa w wirtualce, to i tak nie odczuje spadku wydajności. I co?</p>
+<p>Katastrofa.</p>
+<h1>Zacznijmy jednak od początku.</h1>
+<p>Na sam początek wybrałem sobie do instalacji dystrybucję Manjaro - ze środowiskiem Budgie, która to utrzymywana jest przez community, ale aktualna i zadbana.</p>
+<p>Budgie mi się ogółem bardzo podoba, kiedyś korzystałem z Solus'a z tym menadżerem i byłem dość zadowolony. Instalacja przebiegła pomyślnie, zero problemów poza drobnymi niuansami do zmiany w BIOSie, ale przecież nie po to tytułuję się programistą, żeby sobie z tym nie poradzić. Dałem radę. Świetnie.</p>
+<h1>Pierwszy problem</h1>
+<p>Napotykam jednak pierwszy problem. Touchpad nie działa. Aaale, przecież to nic. Znany mi doskonale problem. Zazwyczaj wystarczy dosintalować paczkę <code>xf86-input-synaptics</code> i wszystko będzie grało. Tak też było. Uff. Dobra. Idziemy dalej.</p>
+<p>Aktualizacje, instalacja różnych programów. Coś jednak pod palcami czuję, że ciepły się laptop zrobił, mocno ciepły, w niektórych miejscach dotknąć nie idzie. Ale cóż, to pewnie przez to, że te wszystkie aktualizacje były bardzo zasobożerne, chociaż z tego co pamiętam, to mój kilkuletni laptop tak się nie grzał przy nich, ale co tam. Wracam do zachwycania się kilkaset mb mniejszym zużyciem ramu.</p>
+<p>Ale... Drugiego dysku mi nie montuje tak jak potrzeba, muszę naprawić to szybko ręcznie edytując /etc/fstab, co to jednak dla mnie. Cyk i gotowe.</p>
+<p>Wszystko poinstalowane, środowiska ustawione, spoko. Robota skończona. No to cóż, poprzeglądam sobie internet w takim razie.</p>
+<h1>Coś dalej ciepło</h1>
+<p>Mija chwila, dłuższa chwila, ale laptop wciąż jakiś gorący. Myślę, hm, podejrzane.</p>
+<p>Pobrałem zatem <code>openhardwaremonitor</code> żeby sprawdzić jaka jest temperatura poszczególnych komponentów.</p>
+<p>Cóż, zawiodłem się, bo nie działał. No nic, w końcu paczka z AUR, może coś nie tak w skrypcie instalacyjnym, kto wie. Pobrałem zatem dwa inne z domyślnego repo manjaro. Otwieram, patrzę i co?</p>
+<p>Nie jest dobrze. Otóż na CPU wskaźniki trochę latają, ale 65-70 stopni. Przy przeglądaniu internetu z otwartymi 2-3 kartami. W drugim programie podobnie, ale troszkę inaczej, różnice w odczytach były - jakaś niedokładność. </p>
+<p>Cóż, szybko zatem reboot i sprawdźmy w biosie. Tam powinna być dokładna temperatura z samego czujnika CPU. Otwieram, patrzę, a tam stale utrzymujące się 80 stopni Celsjusza, dopiero teraz spada bo wiatraczki zaczęły szaleć, wcześniej cały czas chodziły sobie stabilnie na 2k RPM. Nie no tak być nie może. Trzeba coś zaradzić.</p>
+<h1>Rozwiązujemy problme</h1>
+<p>Wracam do linuxa, czytam, próbuję znaleźć jakiś soft do kontroli prędkości obrotu wiatraczków. Szybkie szukanie w sieci przynosi rezultaty, faktycznie jest nawet taka paczuszka, skrypcik. Uff.</p>
+<p>Odpalam, czekam, czekam. Nic się nie uruchomiło. Żadnego błędu, nada. Dobra, odpale z konsoli. Tam już nieco jaśniej, brakuje jakiegoś pliku konfiguracyjnego. </p>
+<p>Googluje - aha, faktycznie, przed odpalaniem fancontrol trzeba ogarnąć lm-sensors i konfigurację.</p>
+<p>Ja to naprawię w takim razie. Cyk <code>sensors</code> w konsoli i... co? No nic, żadnych sensorów nie znalazło i cześć, i siema. Nadzieja moja nie gaśnie, googluje dalej.</p>
+<p>Coś o pwmconfig wyczytałem. Nah. Nic nie pomogło, ale naprowadziło mnie na trop ACPI. I co? Też ostatecznie nic. </p>
+<p>Ale, ale moment. Myślę wytężenie. Może to kwestia starego jądra? Przecież procek dość nowy, lapek też, to może na tym jądrze nie ma wsparcia? Okej, warto spróbować.</p>
+<p>Instaluję najświeższe jądro, reboot. Już w myślach widzę, jak to działa, jak śmiga i jest pięknie, tymczasem system się nawet nie bootuje.</p>
+<p>Wróciłem do poprzedniego jądra w GRUBie, system działa, ale dalej się grzeje i nie obsługuje wiatraczków, mierników poprawnie.</p>
+<p>Ehhh.</p>
+<p>Ale, ale. Może to kwestia tego, że to edycja community z budgie i coś tu popsuli? To musi być to! </p>
+<h1>Inne distro</h1>
+<p>Instaluję zatem standardowe Manjaro z XFCE. Ponawiam wszystkie kroki, efekt ten sam, poza tym, że gdzieś po drodze klawiatura w lapku przestała działać.</p>
+<p>Cholerka. O, to może lepiej Ubuntu, mimo, że nie przepadam, to może on lepiej zadziała? Starsze jądro co prawda, ale Canonical raczej ma dobre wsparcie dla zamkniętych driverów. Okej, spróbujmy.</p>
+<p>Po instalacji ubuntu okazało się, że faktycznie lekko niższe temperatury, ale wciąż nieakceptowalne do codziennej pracy a wiatraczki dalej sobie chodzą jak chcą(a raczej nie), nie zamierzam wymieniać nowego laptopa za kilka tygodni, jak przy intensywnej pracy procek mi walnie, czy też uniemożliwi mi pracę bo będzie tak nagrzane wszystko, że się nie dotknę.</p>
+<h1>Poddałem się</h1>
+<p>Zostałem pokonany. Porażka. Nie zamierzam sam pisać swoich sterowników czy coś. To nie lata 80.</p>
+<p>Ściągam ISO windowsa 10. Wgrywam na pendrive. Instaluję. Wszystko działa. Touchpad. Dysk wykrywany normalnie. Z biosem nie musiałem się szarpać. Temperatura stabilna, niska. Mam kontrolę nad wiatraczkami. Nic mnie nie interesuje.</p>
+<h1>I jaki z tego wniosek?</h1>
+<p>Czy Windows jest lepszy? Nie. Czy Linkus jest lepszy? Nie. To po prostu tylko narzędzia. Jedno lepsze do tego, drugie do tego i tyle. Nie można zamykać się w jednej kategorii myślenia i tyle. W linuxie kocham wolność, narzędzia konsolowe i konfigurowalność, ale oczekuję też, że wszystko będzie działać tak, jak powinno, bez wymagania stu godzin ingerencji ode mnie. Tutaj tak ewidentnie nie było.</p>
+<p>Po prostu na tej maszynie to nie działa, ale nie dziwię się, bo to dość nowy sprzęt i nietypowy. Chyba jedyny laptopt z desktopowym ryzenem 7 na pokładzie. Tak, pełnoprawny desktopowy procek w laptopie. Nie pytajcie nawet o długość pracy na baterii bo padniecie przy porównaniu z tą półką cenową.</p>
+<p>Czyja to wina? Moim zdaniem producentów, którzy nie tworzą i nie wspierają domyślnie (zazwyczaj) linuxa, bo jest on mało popularny. Jest on z kolei mało popularny bo często są problemy ze sprzętem, aplikacjami i tak dalej. I koło się zamyka. Oczywiście ostatnio się to zmienia (i mówię tu o desktopach a nie serwerach), ale wciąż powoli i przed nami jeszcze długa droga.</p>
+<h1>Konkluzja</h1>
+<p>Za Microsoftem nie przepadam, staram się nie korzystać z jego produktów (dlatego migruję na GitLaba), podobnie z Googlem, gdyż cenię sobię prywatność i wolność, ale cóż. Czasami trzeba pójść na ustępstwa i koniec. Dlatego też jako host będę jedynie używał Windowsa a Linux gdzieś tam w tle na vmce i tyle. Co prawda będę musiał skonfigurować kilka rzeczy, by redmont szpiegował mnie mniej, ale to opcjonalnie.</p>
+<p>Wybierajmy odpowiednie narzędzia do odpowiednich zadań i żyjmy szczęśliwi.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>
