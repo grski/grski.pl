@@ -245,4 +245,5 @@ Heard some good stuff here, especially regarding the feature set. However did no
 7. Milvus is what I'd stay away from. Old Oracle of VDB world.
 8. For anything that can hit production, FAISS is a no-go, it's just a lib. For simple play-around hobby projects? Why not.
 
-Yes, this was written by a human in a 4h long flow state powered act of uninterrupted creativity. It was fun, I've actually learned a lot.
+Yes, this was written by a human in a 4h long flow state powered act of uninterrupted creativity. It was fun, I've actually learned a lot. 
+I've written this in one go almost, except minor stuff or including the feedback from Jeff. I'll leave it mostly unedited, with original wording and typos.
