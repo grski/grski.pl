@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Why your brain is 3 milion more times efficient than GPT-4: The comparison what Vector Database to choose for your AI/LLM projects and introduction to the topic</title>
+    <title>Why your brain is 3 milion more times efficient than GPT-4 or the comparison what Vector Database to choose for your AI/LLM projects.</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Python Lead's take on software development, Python, leadership, random thoughts and living a good life." />
@@ -73,6 +73,7 @@
                     <p>Recently I had to go on journey into the Vector Database world and pick one for a particular project. And oh boy, was it a ride. Recently Vector Databases have gained a newfound attraction and spotlight thanks to the rise of LLMs. Such situation is both a blessing and a little bit of a curse, bringing some of the things attributed to LLMs to Vector Databases too - the perception they are 'a new thing', untested technology or some shiny crap good only for LLM-based stuff. All of which is wrong.</p>
 <p>Vector Databases have been with us for waaay longer than most know. There's legit engineering, science and rigorous testing behind most of them over the span of multiple years. And there's a lot of them, they all have their own quirks, just a little bit like RDBMSes do, except the situation there is quite clear, at least for me, in most cases postgres FTW, I mean it's not 2005 anymore, we won't go with mysql or LAMP stack, right? Do most of you even remember what it is or am I exaggerating things?</p>
 <p>In case of Vector Databases I was, and still am, actually, completely green. So I had to go around, gather facts, check stuff out and form my opinion regarding each particular database, as to select one for my particular use case.</p>
+<p>Before we begin, let me put a disclaimer here. I do not title myself as an expert in AI. There are all my just personal ramblings, opinions, certainly biased. Take everything you read with a grain of salt and do your own due dilligence.</p>
 <h2>Introduction to Vectors, Similarity and our amazing brains</h2>
 <p>Before we actually begin I think we should dig a bit deeper into what exactly we are playing around. If you are not interested in understanding how this all works in detail and how it relates to generative AI, feel free to skip this part and go over to the next section.</p>
 <p>First we must lay down certain axioms (smart word for the common sense/ground rules we all agree upon and accept as true). </p>
@@ -204,8 +205,9 @@ Electrons -&gt; Electricity -&gt; Binary -&gt; Binary Numbers -&gt; "Human" or b
 <li>Redis is acceptable, but doesn't shine IMO. Positive surprise performance wise. It's not core of their business tho, plus they seem to be sunsetting certain parts that do not belong to the core like RedisGraph.</li>
 <li>pgvector is disappointing, but still can be valid in some use cases and scenarios, it levarage the postgres brand and benefits which also enforce certain limitations on it. Do not count on great performance though or accuracy with concurrency.</li>
 <li>Milvus is what I'd stay away from. Old Oracle of VDB world.</li>
-<li>For anything that can hit production, FAISS is a no go, it's just a lib. For simple play-around hobby projects? Why not.</li>
+<li>For anything that can hit production, FAISS is a no-go, it's just a lib. For simple play-around hobby projects? Why not.</li>
 </ol>
+<p>Yes, this was written by a human in a 4h long flow state powered act of uninterrupted creativity. It was fun, I've actually learned a lot.</p>
                 </div>
             </article>
         </div>

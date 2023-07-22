@@ -10,6 +10,8 @@ Vector Databases have been with us for waaay longer than most know. There's legi
 
 In case of Vector Databases I was, and still am, actually, completely green. So I had to go around, gather facts, check stuff out and form my opinion regarding each particular database, as to select one for my particular use case.
 
+Before we begin, let me put a disclaimer here. I do not title myself as an expert in AI. There are all my just personal ramblings, opinions, certainly biased. Take everything you read with a grain of salt and do your own due dilligence.
+
 ## Introduction to Vectors, Similarity and our amazing brains
 
 Before we actually begin I think we should dig a bit deeper into what exactly we are playing around. If you are not interested in understanding how this all works in detail and how it relates to generative AI, feel free to skip this part and go over to the next section.
@@ -241,5 +243,6 @@ Heard some good stuff here, especially regarding the feature set. However did no
 5. Redis is acceptable, but doesn't shine IMO. Positive surprise performance wise. It's not core of their business tho, plus they seem to be sunsetting certain parts that do not belong to the core like RedisGraph.
 6. pgvector is disappointing, but still can be valid in some use cases and scenarios, it levarage the postgres brand and benefits which also enforce certain limitations on it. Do not count on great performance though or accuracy with concurrency.
 7. Milvus is what I'd stay away from. Old Oracle of VDB world.
-8. For anything that can hit production, FAISS is a no go, it's just a lib. For simple play-around hobby projects? Why not.
+8. For anything that can hit production, FAISS is a no-go, it's just a lib. For simple play-around hobby projects? Why not.
 
+Yes, this was written by a human in a 4h long flow state powered act of uninterrupted creativity. It was fun, I've actually learned a lot.
