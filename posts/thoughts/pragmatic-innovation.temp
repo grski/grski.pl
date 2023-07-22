@@ -1,0 +1,12 @@
+Title: Pragmatic Innovation: why today's IT is doomed
+Date: 2023-07-15
+Authors: Olaf Górski
+Slug: pragmatic-innovation
+Language: en
+Description: My thoughts on Pragmatic Innovation, declouding, hype driven development and why today's IT is doomed.
+
+No, you do not need kubernetes and your fancy in-cloud remote development culture that in most cases only acts as an excuse to show shiny & trendy logos on the pitchdeck and hire overgrown and wildly unproductive X-ops teams. 
+No, you do not need to use the latest and greatest AI/ML technology to solve your problems.
+No, you do not need to use the latest and greatest frontend framework to build your website and then rewrite that in half a year because new one is on top or the author decided to drop support.
+
+Stick to the basics, master them first. Iterate fast and often. Be lean.
