@@ -1,4 +1,5 @@
 Title: When AI/LLMs go MAD. Training LLMs on LLM-generated data and on fintetuning vs context augmentation
+Description: Humans might not become obselete as soon as you think or why I still sleep soundly at night without worrying about AI taking over the world.
 Date: 2023-07-17
 Authors: Olaf Górski
 Slug: mad-ai

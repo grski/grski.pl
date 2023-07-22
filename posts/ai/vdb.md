@@ -1,4 +1,5 @@
-Title: Why your brain is 3 milion more times efficient than GPT-4 or the comparison what Vector Database to choose for your AI/LLM projects.
+Title: Why your brain is 3 milion more times efficient than GPT-4 - dead simple introduction to Embeddings, HNSW, ANNS, Vector Databases and their comparison based on experience from production project
+Description: Wild ramblings, raport from the field about choosing Vector Database for a particular project and a little bit of a rant about the current state of AI and how it's perceived, why human brains are a wonder of nature, and why it's far from 'thinking' and 'consciousness'.
 Date: 2023-07-22
 Authors: Olaf Górski
 Slug: vdb

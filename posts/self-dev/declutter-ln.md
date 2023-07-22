@@ -1,4 +1,5 @@
-Title: How to declutter you Linkedin feed. Bulk remove connections.
+Title: How to declutter you LinkedIn feed. Bulk remove connections.
+Description: Tired of seeing spam in your LN feed? Well, I was, so I did something about it.
 Date: 2023-07-22
 Authors: Olaf Górski
 Slug: bulk-remove-ln-connections
