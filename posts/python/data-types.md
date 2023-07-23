@@ -1,4 +1,4 @@
-wTitle: Typy danych w Pythonie i ich krótka charakterystyka
+Title: Typy danych w Pythonie i ich krótka charakterystyka
 Date: 2023-01-27
 Slug: types
 Author: Olaf Górski
