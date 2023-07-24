@@ -233,7 +233,21 @@ As you can see I'm totally biased and sold, so take what I wrote with a grain of
 
 Heard some good stuff here, especially regarding the feature set. However did not try it out personally. Compared to qdrant tho, they do have to improve on performance probably, but it might be a valid potential choice. Plus their community seems nice. Or I'm being biased only because @Philip Vollet, so their head of Dev Growth laughed at my joke about pgvector, so he seems salty in similar way to myself, which implicates good stuff. Eh, Olaf and his shenanigans again. Either way. Check it out, should be ok.
 
+## Tie it all together
 
+So now, we understand some basic concepts regarding the vectors, embeddings, fundaments of CS, HNSW, ANNS. What Vector Databases do, is to tie this all together, provide more functionalities on top of that and some abstraction layer, so you don't have to reinvent the while, and on top of that, they also take care about the regular stuff that databases do.
+
+What are they? Well, it's mostly stuff related to scalability (so you can easily handle millions of users), persistence (so stuff doesn't get lost), survivability (so it doesn't randomly die easily), data consistency and so on. 
+
+It's A LOT of work to do. We don't want to take care about all of these ourselves, do we?
+
+So that's why we let Vector Databases take care of that. It's something they should excell at, other than performance and accuracy, obviously. It's not easy at all.
+
+Also, I think that before you call your product a Database, it's required it meets at least some of these conditions as lately, in the hype driven world, it's not always the case.
+
+Given that, all of the above and certain set of requirements I had for the project, I did the evaluation and research as to which product to actually choose.
+
+Below you'll find a very brief and to the point summary of it. I didn't want to dig deep into the tech details to keep this article digestible, so these will come eventually in another article.
 
 ## Summary 
 

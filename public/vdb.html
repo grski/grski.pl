@@ -3,13 +3,13 @@
 <html lang="en">
 
 <head>
-    <title>Why your brain is 3 milion more times efficient than GPT-4 - dead simple introduction to Vector DBs and their comparison based on experience from production project</title>
+    <title>Why your brain is 3 milion more times efficient than GPT-4 - dead simple introduction to Embeddings, HNSW, ANNS, Vector Databases and their comparison based on experience from production project</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Wild ramblings, raport from the field about choosing Vector Database for a particular project and a little bit of a rant about the current state of AI and how it's perceived, why human brains are a wonder of nature, and why it's far from 'thinking' and 'consciousness'." />
 
     <meta name="robots" content="index, follow">
-    <meta property="og:title" content="Why your brain is 3 milion more times efficient than GPT-4 - dead simple introduction to Vector DBs and their comparison based on experience from production project - The Engineer">
+    <meta property="og:title" content="The Engineer">
     <meta property="og:description" content="Wild ramblings, raport from the field about choosing Vector Database for a particular project and a little bit of a rant about the current state of AI and how it's perceived, why human brains are a wonder of nature, and why it's far from 'thinking' and 'consciousness'.">
     <meta property="og:url" content="https://grski.pl/">
     <meta property="og:site_name" content="grski.pl">
@@ -196,6 +196,14 @@ Electrons -&gt; Electricity -&gt; Binary -&gt; Binary Numbers -&gt; "Human" or b
 <p>As you can see I'm totally biased and sold, so take what I wrote with a grain of salt and verify yourself all of the above. I'll however remain quite bullish </p>
 <h3>Weaviate</h3>
 <p>Heard some good stuff here, especially regarding the feature set. However did not try it out personally. Compared to qdrant tho, they do have to improve on performance probably, but it might be a valid potential choice. Plus their community seems nice. Or I'm being biased only because @Philip Vollet, so their head of Dev Growth laughed at my joke about pgvector, so he seems salty in similar way to myself, which implicates good stuff. Eh, Olaf and his shenanigans again. Either way. Check it out, should be ok.</p>
+<h2>Tie it all together</h2>
+<p>So now, we understand some basic concepts regarding the vectors, embeddings, fundaments of CS, HNSW, ANNS. What Vector Databases do, is to tie this all together, provide more functionalities on top of that and some abstraction layer, so you don't have to reinvent the while, and on top of that, they also take care about the regular stuff that databases do.</p>
+<p>What are they? Well, it's mostly stuff related to scalability (so you can easily handle millions of users), persistence (so stuff doesn't get lost), survivability (so it doesn't randomly die easily), data consistency and so on. </p>
+<p>It's A LOT of work to do. We don't want to take care about all of these ourselves, do we?</p>
+<p>So that's why we let Vector Databases take care of that. It's something they should excell at, other than performance and accuracy, obviously. It's not easy at all.</p>
+<p>Also, I think that before you call your product a Database, it's required it meets at least some of these conditions as lately, in the hype driven world, it's not always the case.</p>
+<p>Given that, all of the above and certain set of requirements I had for the project, I did the evaluation and research as to which product to actually choose.</p>
+<p>Below you'll find a very brief and to the point summary of it. I didn't want to dig deep into the tech details to keep this article digestible, so these will come eventually in another article.</p>
 <h2>Summary</h2>
 <ol>
 <li>Qdrant rocks and wins. In all categories. It's postgres of the VDB world.</li>
