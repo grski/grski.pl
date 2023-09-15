@@ -3,7 +3,7 @@
 <html lang="pl">
 
 <head>
-    <title>Dodawanie ReCaptcha do appki we Flasku</title>
+    <title>Dodawanie ReCaptcha do appki we Flasku - The Enginer by Olaf Górski</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Dziś kilka słów o tym, jak walczyć ze spamem prostym sposobem w aplikacjach korzystających z Flask" />
@@ -130,13 +130,13 @@ RECAPTCHA_SECRET_KEY - klucz prywatny
 
 <p>Ważna uwaga. Trzymanie kluczy prywatnych w takiej formie, zwłaszcza jeśli korzystasz w githuba, nie jest mądre. O tym jak bezpiecznie trzymać różne hasła/klucz w aplikacji flaska musisz sobie sam poczytać.
 Następujące pola są nieobowiązkowe:</p>
-<div class="codehilite"><pre><span></span><code><span class="nv">RECAPTCHA_THEME</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">kolorystyka</span><span class="w"> </span><span class="nv">foremki</span><span class="w"> </span><span class="s1">&#39;dark&#39;</span><span class="w"> </span><span class="nv">lub</span><span class="w"> </span><span class="s1">&#39;light&#39;</span>,<span class="w"> </span><span class="s1">&#39;light&#39;</span><span class="w"> </span><span class="nv">jest</span><span class="w"> </span><span class="nv">domy</span>ś<span class="nv">lne</span>
+<div class="codehilite"><pre><span></span><code>RECAPTCHA_THEME - kolorystyka foremki &#39;dark&#39; lub &#39;light&#39;, &#39;light&#39; jest domyślne
 
-<span class="nv">RECAPTCHA_TYPE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">rodzaj</span><span class="w"> </span><span class="nv">zabezpieczenia</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">mo</span>ż<span class="nv">e</span><span class="w"> </span><span class="nv">by</span>ć<span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="s1">&#39;image&#39;</span><span class="w"> </span><span class="nv">obrazek</span>,<span class="w"> </span><span class="nv">lub</span><span class="w"> </span><span class="s1">&#39;audio&#39;</span><span class="w"> </span><span class="nv">d</span>ź<span class="nv">wi</span>ę<span class="nv">k</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nv">ods</span>ł<span class="nv">uchania</span>,<span class="w"> </span><span class="nv">domy</span>ś<span class="nv">lnie</span><span class="w"> </span><span class="nv">jest</span><span class="w"> </span><span class="s1">&#39;image&#39;</span>
+RECAPTCHA_TYPE - rodzaj zabezpieczenia - może być to &#39;image&#39; obrazek, lub &#39;audio&#39; dźwięk do odsłuchania, domyślnie jest &#39;image&#39;
 
-<span class="nv">RECAPTCHA_SIZE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">rozmiar</span><span class="w"> </span><span class="nv">obrazka</span>,<span class="w"> </span><span class="s1">&#39;normal&#39;</span><span class="w"> </span><span class="nv">lub</span><span class="w"> </span><span class="s1">&#39;compact&#39;</span>,<span class="w"> </span><span class="nv">domy</span>ś<span class="nv">lnie</span><span class="w"> </span><span class="nv">normal</span>
+RECAPTCHA_SIZE - rozmiar obrazka, &#39;normal&#39; lub &#39;compact&#39;, domyślnie normal
 
-<span class="nv">RECAPTCHA_TABINDEX</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="ss">(</span><span class="nv">int</span><span class="ss">)</span><span class="w"> </span><span class="nv">dla</span><span class="w"> </span><span class="nv">tych</span>,<span class="w"> </span><span class="nv">kt</span>ó<span class="nv">rzy</span><span class="w"> </span><span class="nv">u</span>ż<span class="nv">ywaj</span>ą<span class="w"> </span><span class="nv">tabindexu</span>
+RECAPTCHA_TABINDEX - (int) dla tych, którzy używają tabindexu
 </code></pre></div>
 
 <p>Jak to wygląda w mojej appce?</p>

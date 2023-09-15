@@ -3,19 +3,19 @@
 <html lang="en">
 
 <head>
-    <title>You can now finetune GPT-3.5-Turbo - The Enginer by Olaf Górski</title>
+    <title>NO, YOU DO NOT LANGCHAIN - The Enginer by Olaf Górski</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Previously fine-tuning was impossible for anything newer than GPT-3 in the openai stable. Now that is not the case anymore." />
+    <meta name="description" content="Observations from using langchain to develop a little more complex project and state of llm-based development." />
 
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="The Engineer">
-    <meta property="og:description" content="Previously fine-tuning was impossible for anything newer than GPT-3 in the openai stable. Now that is not the case anymore.">
+    <meta property="og:description" content="Observations from using langchain to develop a little more complex project and state of llm-based development.">
     <meta property="og:url" content="https://grski.pl/">
     <meta property="og:site_name" content="grski.pl">
     <meta property="og:type" content="website">
     <meta property="article:section" content="">
-    <meta property="og:updated_time" content="2023-08-23T00:00:00Z" />
+    <meta property="og:updated_time" content="2023-09-15T00:00:00Z" />
 
     <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
     <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
@@ -67,29 +67,27 @@
                 <div class="subtitle tags is-6 is-pulled-right">
              <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
                 </div>
-                <h3 class="subtitle is-6 date">2023-08-23</h3>
-                <h1 class="title"><a href="https://grski.pl/">You can now finetune GPT-3.5-Turbo</a></h1>
+                <h3 class="subtitle is-6 date">2023-09-15</h3>
+                <h1 class="title"><a href="https://grski.pl/">NO, YOU DO NOT LANGCHAIN</a></h1>
                 <div class="content">
-                    <p>You can finetune gpt-3.5 turbo now. Absolutely amazing. It's way faster than I, or probably anyone, anticipated.</p>
-<h2>Fine-tuning and what it is</h2>
-<p>What does it mean though?</p>
-<p>Fine-tuning is basically influencing the performance of a pre-trained model towrad certain stuff. 
-Think of it like a collage graduate taking additional course. 
-The course can be minor or offer no interesting benefits, or it could be great and offer tremendous benefits (but maybe just in a small subset of topics covered in the whole collage course/or a wider one).
-The course will change this student for life. It will impact his/her future performance and behaviour.</p>
-<p>So far you could only fine-tune a bit 'older'/'simpler' models, for example gpt-3 (in our analogy let's say gpt-4 would be Ive League education, gpt-3 would be state collage, for simplicy). 
-They are simpler, more crude which means usually they perform worse. Of course given fine-tuning and massive enough data set, in some cases they'd outperform the bigger/newer general, not fine-tuned models, but not many of such use cases are popular.</p>
-<h3>What it means?</h3>
-<p>Now, when we can fine-tune gpt-3.5, it means our base performance just got way higher. Not only that.</p>
-<p>If we do fine-tuning on top 3.5 instead of 3, we will be able to achieve way more interesting results, better accuracy and what not.
-Imagine base gpt-3.5-turbo but fine-tuned on your data or company communication style guide so it responds according to your brand, OOB as a part of the model itself, without context augmentation.</p>
-<p>We could do sth similar before for gpt-3.5-turbo with context augmentation, but that's a different thing. 
-It doesn't change the base model. Fine-tuning does. It impacts model's behaviour later, always.
-Context augmentation, if not provided properly in the prompt, leaves the model unchanged and the response. Even if you provide the context properly into chat 
-Here the context is unchanged but the model gets changed. So we can now influence it's inner workings.</p>
-<p>Long story short, the use cases that previously required gpt-4 or were deemed impossible, now might be viable.</p>
-<p>Absolutely amazing.
-Excited for what's to come.</p>
+                    <p>Langchain is nowhere near sensible production-grade level and for anything other than fancy happy-path demos it makes stuff increasingly harder. ¯_(ツ)_/¯</p>
+<h2>Down the rabbit hole.</h2>
+<p>For 80% of the projects I've heard bout, <strong>NO, YOU DO NEED LANGCHAIN.</strong></p>
+<p>Sure, they've started to increase the code quality recently, but. tbh, till now I've seen lack of proper support, architecture or just sane engineering practices.
+It's bloated, slow and adds shit tone of abstractions upon abstractions. OOP and dependency hell.</p>
+<p>Inconsistent often. Won't even mention how I had 'Michael Jackson was not mentioned in this context " in our production code after one release. Also breaking changes without any warning? Sure why not. Real sensible Open Source software release processes? What's that?
+Tests? Maybe they added something so far.</p>
+<p>Docs are messy, sometimes out of date.</p>
+<p>Some of these are being tackled by eg. langsmit but, as you can imagine, they are fighting problems now known anywhere else, for a price too.</p>
+<p>Worst part is lots of people still use it. Given how it's still all very early in the lifecycle of AI/LLM-related projects, for now, this is fine (not everywhere tho). Some of the early adopters or people that have been using it for a bit more time with their apps growing in complexity, are probably already seeing this.</p>
+<p>I say it still has some use-cases, especially around data ingestion part (which I think llamaindex might do better anyway) which it's good at, but as for the rest? No idea.</p>
+<p>The basic ecosystem of eg. plain openai client has grown enough for us to just do better with even the bare client. Langchain is becoming an unncessary wrapper whose detriments outweight the benefits.</p>
+<p>And, well, it's not rare with all the other AI/LLM-craze related packages. Latest new cool kid on the block: open-interpreter (or let's-wrap-llm-output-in-eval()-and-see-what-goes-wrong). 21k stars on github. Fancy demo, nice README, but then we look into the code - 2nd commit has added the whole venv to the repo. In the third one similar with pycache files.
+Then you see stuff like on screenshot.</p>
+<p>My prediction is in 6 months either langchain (and a lot of similar libs/projects) will start seeing the effects of the decisions made, when it all goes to production where real debugging/obervability or resilience is required. They'll either have to dramatically improve, which given the codebase, is unlikely, or a need for smaller, more down-to-the-basics libs will explode.</p>
+<p>Stop being lazy, read additional 5-10 lines of documentation and use the goddamn base lib, you'll thank me later. For simple RAG scenarios that 90% have, it's all you need.</p>
+<p>And I'm not the only one. Recently saw a post by Francesco Saverio Zuppichini https://lnkd.in/e2HVePRe with similar thoughts. BTW follow the guy, if you find my posts relevant, with my sometimes 'angry-kid-raging-flow', he's next level there, gotta love it.)</p>
+<p>Thanks Maciek Szczesniak for sharing these gems</p>
                 </div>
             </article>
         </div>
