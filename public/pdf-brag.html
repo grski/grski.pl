@@ -1,0 +1,986 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Build your own LLM RAG API without langchain using openai and qdrant. [WIP] - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Want to travel the road less traveled? Well, here we go." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="The Engineer">
+    <meta property="og:description" content="Want to travel the road less traveled? Well, here we go.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2023-10-015T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    The Engineer by Olaf Górski - on Python & AI
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2023-10-015</h3>
+                <h1 class="title"><a href="https://grski.pl/">Build your own LLM RAG API without langchain using openai and qdrant. [WIP]</a></h1>
+                <div class="content">
+                    <p>Let's see what happens. </p>
+<h2>Well, that escalated quickly</h2>
+<p>Long story short, in my last post I mentioned that well,<a href="https://grski.pl/no-langchain"> you do not need langchain</a>. 
+Somehow it kinda ended up with a comment from <a href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7108316710566260736?commentUrn=urn%3Ali%3Acomment%3A%28ugcPost%3A7108316710566260736%2C7111512324414324736%29&amp;dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287111512324414324736%2Curn%3Ali%3AugcPost%3A7108316710566260736%29">Langchain's CEO</a>. Whoops. TBH gotta admit, Harrison's comment was very humble and understanding. <strong>I was amazed by how profesionally he took the feedback, even though I was a bit biased.</strong> Impressive.</p>
+<p>To be fair, I've taken a look at Langchain again and <strong>changed my opinion on some points - they've improved tramendously,</strong> however, my general point still stands - <strong>in my case, Langchain isn't preferred.</strong> 
+What to use instead though? Good question. Let's find out what mr. smarty here went with and create a <strong>B</strong>asic Retrieval <strong>A</strong>ugmented Generation API.</p>
+<p>Beware though. This post will be long, it will cover lots of aspects and go beyond just plugging openai into fastapi endpoints.
+We will pimp it up a bit.</p>
+<p>We will use:</p>
+<ol>
+<li><a href="https://github.com/openai/openai-python">plain python openai</a> client to interact with our LLM</li>
+<li><a href="https://qdrant.tech/">qdrant</a> as our vector database of choice and their <a href="https://github.com/qdrant/qdrant-client">client</a>.</li>
+<li>For the embeddings we will use ~~openai~~ Qdrant's <a href="https://github.com/qdrant/fastembed">fastembed</a> lib. </li>
+<li>the API will be written using <a href="https://github.com/tiangolo/fastapi">fastapi</a></li>
+<li>no ORM for us. Instead we will roll with <a href="https://github.com/mcfunley/pugsql">pugsql</a></li>
+<li>migrations will be done using plain sql and <a href="https://github.com/mcfunley/pugsql">dbMate</a>.</li>
+<li>instead of poetry, we will go for <a href="https://github.com/pyenv/pyenv">pyenv</a> + <a href="https://github.com/jazzband/pip-tools">pip-tools</a></li>
+<li>on the db front - <a href="https://www.postgresql.org/">postgres</a></li>
+<li>lastly, the app will be containerised - <a href="https://www.docker.com/">docker</a></li>
+</ol>
+<p>Does that sound weird to you? Because it is! </p>
+<h2>Basics</h2>
+<p>To start, let's make sure you have pyenv installed. What is pyenv? You can read a bit about it on my blog.
+<a href="https://grski.pl/pyenv-en">Pyenv, poetry and other rascals - modern Python dependency and version management.</a></p>
+<p>Long story short it's like a virtualenv but for python versions that keeps everything isolated, without polluting your system interpreter or interpreters of other projects, which would be bad. You don't need to know much more than that.</p>
+<p>If you are on mac you can just </p>
+<div class="codehilite"><pre><span></span><code>brew<span class="w"> </span>install<span class="w"> </span>pyenv
+</code></pre></div>
+
+<p>or if you do not like homebrew/are linux based:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>https://pyenv.run<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+</code></pre></div>
+
+<p>Remember to <a href="https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv">set up your shell for pyenv.</a>..
+In short you have to add some stuff to either your <code>.bashrc</code>, <code>.zshrc</code> or <code>.profile</code>. Why? So the proper 'commands' are available in your terminal and so that stuff works. How?</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># For bash:</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PYENV_ROOT=&quot;$HOME/.pyenv&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;command -v pyenv &gt;/dev/null || export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;eval &quot;$(pyenv init -)&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+
+<span class="c1"># For Zsh:</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PYENV_ROOT=&quot;$HOME/.pyenv&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;command -v pyenv &gt;/dev/null || export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;eval &quot;$(pyenv init -)&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+</code></pre></div>
+
+<p>Done? Now you just need to get pyenv to get python 3.11 downloaded &amp; installed locally (no worries it won't change your system interpreter):</p>
+<div class="codehilite"><pre><span></span><code>pyenv<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.11
+</code></pre></div>
+
+<p>When you are done installing pyenv, we can get going.</p>
+<p>We will name our project <strong>bRAG</strong> - the name coming from <strong>b</strong>asic <strong>R</strong>etrieval <strong>A</strong>ugmented <strong>G</strong>eneration API.
+First of all, let's create a directory of the project:</p>
+<div class="codehilite"><pre><span></span><code>mkdir<span class="w"> </span>bRAG
+<span class="nb">cd</span><span class="w"> </span>bRAG
+</code></pre></div>
+
+<p>Now we can set up a python version we want to use in this particular directory. How? With pyenv and pyenv-virtualenv, which is nowadays installed by default with the basic pyenv installer. If you need to, check the article I referred before to understand what's happening.</p>
+<div class="codehilite"><pre><span></span><code>pyenv<span class="w"> </span>virtualenv<span class="w"> </span><span class="m">3</span>.11<span class="w"> </span>bRAG-3-11<span class="w">  </span><span class="c1"># this creates a &#39;virtualenv&#39; based on python 3.11 named bRAG-3-11</span>
+pyenv<span class="w"> </span><span class="nb">local</span><span class="w"> </span>bRAG-3-11
+</code></pre></div>
+
+<p>Now, if all goes well, pyenv should activate the context of this particular python version when we are inside the project directory. You might need to cd to some other catalog and back for changes to take effect.</p>
+<p>Now we need to install pip-tools and pre-commit</p>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>pre-commit<span class="w"> </span>pip-tools
+</code></pre></div>
+
+<p>Why do we need pip-tools? Because we won't be using poetry. Why? Well, <a href="https://www.youtube.com/watch?v=Gr9o8MW_pb0">here's why.</a> that plus, well, it's heavy.</p>
+<p>Pre-commit allows us to handle stuff like linting/formatting automatically, we will talk about that later.</p>
+<p>What now?
+Let's define <code>pyproject.toml</code>. </p>
+<p><code>pyproject.toml? Aren't we ditching poetry?</code> you might ask. Yes, we are, but this file has become the defacto standard for python configuration, so even if we are not using poetry, it's still needed.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[project]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;brag&quot;</span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0.0.1&quot;</span>
+<span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&gt;=3.11&quot;</span>
+<span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;fastapi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;openai&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pydantic-settings&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;uvicorn&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gunicorn&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;qdrant-client[fastembed]&quot;</span><span class="p">]</span>
+
+<span class="k">[project.optional-dependencies]</span>
+<span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;ruff&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;black&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<p>Fastapi, openai and qdrant - all we need for the application. </p>
+<p>On top of that we will use pydantic-settings to manage our settings and secrets.</p>
+<p>Uvicorn &amp; gunicorn are what will serve our app later. </p>
+<p>That's all we need. For dev stuff we additionally need black, ruff.</p>
+<p>Side note - If you are running into problems with locking/installation of qdrant-client (unlikely - maybe if you install the package on a python version that doesn't yet have wheels, but it means you know what you are doing, probably), go:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>--proto<span class="w"> </span><span class="s1">&#39;=https&#39;</span><span class="w"> </span>--tlsv1.2<span class="w"> </span>-sSf<span class="w"> </span>https://sh.rustup.rs<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+</code></pre></div>
+
+<p>In case of poetry, it takes the requirements specified in its custom format in pyproject.toml and resolves the deps based on that. We do not want that. We want something understandable by basic pip. Pip-tools to teh rescue.</p>
+<h2>Pin 'em</h2>
+<p>We have our dependencies defined in pyproject.toml, time to create a proper requirements.txt that pip will understand. How? We will used pip-tools, namely <code>pip-compile</code> </p>
+<p>What pip-compile does is somewhat similar to creating the <code>.lock</code> file in poetry. Long story short it pins the dependencies so that pip knows which version to exactly install, how to resolve dependencies and so on.</p>
+<p>Ah, about that, <strong>dependency</strong> <strong>resolving</strong> and <strong>dependency</strong> <strong>locking</strong>.</p>
+<p>Basically it’s just a proces of making sure that <strong>we</strong> <strong>know</strong> <strong>the</strong> <strong>dependencies</strong> <strong>of</strong> <strong>our</strong> <strong>dependencies</strong> <strong>and</strong> <strong>their</strong> <strong>dependencies</strong>.</p>
+<p>And also we have a clear account of their <strong>versions</strong>, <strong>usually</strong> <strong>signed</strong> <strong>with a</strong> <strong>hash</strong>.</p>
+<p>This allows something called <strong>deterministic builds</strong> which is one of the keys of <strong>modern CI/</strong><strong>CDs</strong> and apps that adhere to <strong>the</strong> <strong>Twelve-factor</strong> <strong>app</strong> <strong>pattern</strong>. Meaning that unless you change something in your app, it should be built the same way regardless of where it was built and when. </p>
+<p>Withour further ado:</p>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span>pip-compile<span class="w"> </span>--generate-hashes<span class="w"> </span>-o<span class="w"> </span>requirements/requirements.txt<span class="w"> </span>pyproject.toml<span class="w">  </span><span class="c1"># for production</span>
+<span class="w"> </span>pip-compile<span class="w"> </span>--extra<span class="w"> </span>dev<span class="w"> </span>-o<span class="w"> </span>requirements/requirements-dev.txt<span class="w"> </span>pyproject.toml<span class="w">  </span><span class="c1"># local usage</span>
+</code></pre></div>
+
+<p>This takes our requirements from <code>pyproject.toml</code>, resolves dependencies, pins them, generates hashes. Why and what for? Again - <strong>repeteable and deterministic builds.</strong> Very <strong>important</strong>.
+You wanna make sure that the app is built the same way regardless of where and when it is built. Otherwise debugging is a nightmare. So is CI/CD.</p>
+<p><code>requirements/requirements.txt</code> contains list of requirements together with their hashes and pinned versions, only for the dependencies strictly required for the app to work - production build.</p>
+<p><code>requirements/requirements-dev.txt</code> contain everything that <code>requirements.txt</code> does and some more - certain packages that are useful eg. during development, but are not needed on production. In our production builds we want as little dependencies as possible, to reduce bloat, speed up build time and reduce number of packages that could be vulnerable, introducing more security risks - I mean in the end every 3rd party dependency you do not controll is a potential threat. </p>
+<p>You should now have <code>requirements-dev.txt</code> file. Let's install the dependencies finally!</p>
+<div class="codehilite"><pre><span></span><code>pip-sync<span class="w"> </span>requirements/requirements.txt<span class="w"> </span>requirements/requirements-dev.txt
+</code></pre></div>
+
+<p>What is pip-sync? pip-sync works alongside pip-compile as a part of pip-tools. Basically it installs packages that we need in our environment based on the output of pip-compile. Bit better than plain <code>pip install -r</code> but very similar.</p>
+<p>Setup complete. That was long, wasn't it? And we havent' even written 1 line of code yet!</p>
+<h2>App itself</h2>
+<p>Let's take a look at the file structure and what's in the project:</p>
+<p>The file structure we will end up with is:</p>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="n">app</span><span class="o">/</span><span class="w">  </span><span class="c1"># Main codebase directory</span>
+<span class="w"> </span><span class="o">|----</span><span class="w"> </span><span class="n">chat</span><span class="o">/</span>
+<span class="w"> </span><span class="o">|------</span><span class="w"> </span><span class="n">__init__</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|------</span><span class="w"> </span><span class="n">api</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|------</span><span class="w"> </span><span class="n">constants</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|------</span><span class="w"> </span><span class="n">message</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|------</span><span class="w"> </span><span class="n">models</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|------</span><span class="w"> </span><span class="n">streams</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|----</span><span class="w"> </span><span class="n">core</span><span class="o">/</span>
+<span class="w"> </span><span class="o">|------</span><span class="w"> </span><span class="n">__init__</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|------</span><span class="w"> </span><span class="n">api</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|------</span><span class="w"> </span><span class="n">logs</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|------</span><span class="w"> </span><span class="n">middlewares</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|------</span><span class="w"> </span><span class="n">models</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|----</span><span class="w"> </span><span class="n">__init__</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|----</span><span class="w"> </span><span class="n">db</span><span class="o">.</span><span class="n">py</span>
+<span class="w"> </span><span class="o">|----</span><span class="w"> </span><span class="n">main</span><span class="o">.</span><span class="n">py</span>
+
+
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="n">db</span><span class="o">/</span><span class="w">  </span><span class="c1"># Database/migration/pugsql related code</span>
+<span class="w"> </span><span class="o">|----</span><span class="w"> </span><span class="n">migrations</span><span class="o">/</span>
+<span class="w"> </span><span class="o">|----</span><span class="w"> </span><span class="n">queries</span><span class="o">/</span>
+<span class="w"> </span><span class="o">|----</span><span class="w"> </span><span class="n">schema</span><span class="o">.</span><span class="n">sql</span>
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="n">settings</span><span class="o">/</span><span class="w">  </span><span class="c1"># Settings files directory</span>
+<span class="w"> </span><span class="o">|----</span><span class="w"> </span><span class="n">base</span><span class="o">.</span><span class="n">py</span><span class="w">  </span><span class="c1"># base config for our app</span>
+<span class="w"> </span><span class="o">|----</span><span class="w"> </span><span class="n">gunicorn</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">py</span><span class="w">  </span><span class="c1"># config for gunicorn</span>
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="n">tests</span><span class="o">/</span><span class="w">  </span><span class="c1"># Main tests directory</span>
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="n">requirements</span><span class="o">/</span>
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="o">.</span><span class="n">dockerignore</span>
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">example</span>
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="o">.</span><span class="n">gitignore</span>
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="n">pre</span><span class="o">-</span><span class="n">commit</span><span class="o">-</span><span class="n">config</span><span class="o">.</span><span class="n">yaml</span><span class="w">  </span><span class="c1"># for linting in during development</span>
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">.</span><span class="n">yml</span>
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="n">Dockerfile</span>
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="n">Makefile</span><span class="w">  </span><span class="c1"># useful shortcuts</span>
+<span class="w"> </span><span class="o">|--</span><span class="w"> </span><span class="n">README</span><span class="o">.</span><span class="n">md</span>
+</code></pre></div>
+
+<p>Let's start small though. In our <code>bRAG</code> directory, let's create the following files/directories:</p>
+<div class="codehilite"><pre><span></span><code> bRAG
+ |-- app/
+ |---- core/
+ |-- main.py
+</code></pre></div>
+
+<p>The minimum we can start with is (ofc we could skip logging but...):</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># app/core/logs.py</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="c1"># we are setting the logging level to log everything at level info and above</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+<span class="c1"># we are creating one common logger for our application that we will later use</span>
+<span class="c1"># everywhere we want to log stuff</span>
+<span class="c1"># this provides common configuration and, if we want it, standard/format</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="c1"># we will push the logs to the console/stdout</span>
+<span class="n">ConsoleOutputHandler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ConsoleOutputHandler</span><span class="p">)</span>
+
+
+<span class="c1"># main.py - at the top level of the project</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+
+<span class="kn">from</span> <span class="nn">app.core.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+
+<span class="c1"># in here we just initialise the fastapi app, without defining</span>
+<span class="c1"># any endpoints</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;App is ready!&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>that doesn't do much. does it though? Let's expand it at least a little bit to, for example, include the version of our app.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># __init__.py - at the top level of the project</span>
+<span class="c1"># read-only tomllib is now part of python core, so we do not need to install it</span>
+<span class="kn">import</span> <span class="nn">tomllib</span>
+
+<span class="c1"># we get the version from pyproject.toml and put it into a variable</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">tomllib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">][</span><span class="s2">&quot;version&quot;</span><span class="p">]</span>
+
+
+<span class="c1"># main.py - at the top level of the project</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">version</span>
+<span class="kn">from</span> <span class="nn">app.core.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;App is ready!&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Still not much, but at least it's something - our FastApi knows which version of the api we currently are serving.</p>
+<p>Let's create first real endpoint. Usually we like to have an endpoint in our application that allows us to tell if it's running and healthy. In our case it'll be trivial to implement, so let's do that.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># core/api.py</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span>
+
+<span class="kn">from</span> <span class="nn">starlette</span> <span class="kn">import</span> <span class="n">status</span>
+<span class="kn">from</span> <span class="nn">starlette.requests</span> <span class="kn">import</span> <span class="n">Request</span>
+
+<span class="c1"># we define a router to hold all our core endpoints together</span>
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Core Endpoints&quot;</span><span class="p">])</span>  
+
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/healthcheck&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">healthcheck</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">version</span><span class="p">}</span>
+
+<span class="c1"># main.py</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">version</span>
+<span class="kn">from</span> <span class="nn">app.core.api</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">core_router</span>
+<span class="kn">from</span> <span class="nn">app.core.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">core_router</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;App is ready!&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Sometimes people put all the endpoints into <code>main.py</code> or <code>app.py</code> file. While this is fine for applications that have few endpoints, it gets messy over time.</p>
+<p>I have a preference of splitting the application into <code>modules</code> or <code>apps</code> that are related to a particular topic/domain problem.
+All the <code>api</code>, <code>models</code>, <code>utils</code>, <code>constants</code>, <code>services</code> related to that particular piece of the domain, are put in there. Good examples of such apps are eg. <code>users</code>, <code>emails</code>, <code>chats</code> and so on. It's a bit like how you'd structure your app in Django.</p>
+<ol>
+<li>api.py contains all the endpoints/views</li>
+<li>models.py contain stuff related to data definition/validation/schema</li>
+<li>constants.py is self-descriptory</li>
+<li>services.py this is where business logic lives.</li>
+</ol>
+<p>In an ideal world, we have API interaction flow that goes like this: 
+User &lt;-&gt; Views &lt;-&gt; Services &lt;-&gt; Models &lt;-&gt; Data Sources/Database.</p>
+<p>Sometimes Services deal directly with DS too, and that is fine.</p>
+<p>Each <code>app</code> gets it's own APIRouter where we define proper endpoints and which we later include in our fastapi app object. </p>
+<p>Everything is nicely separated, prepared for growth.
+Me gusta.</p>
+<h2>Serving our app</h2>
+<p>But wait. How do we run our app? Just running:</p>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>app.main
+</code></pre></div>
+
+<p>causes the interpreter to log that <code>App is ready!</code> but nothing else happens. The app just finishes. What's going on?</p>
+<p>Long story short, we need some kind of Worker and a Server to serve our asynchronous (or synchronous) python web app in accoradance to certain standards. WSGI, ASGI. Google these terms.</p>
+<p>Let's not delve into details, but <strong>uvicorn &amp; gunicorn</strong> to the rescue. </p>
+<p>For <strong>local</strong> stuff/dev we are going to just use <strong>uvicorn</strong>. For <strong>prod</strong>-ready, we will <strong>wrap uvicorn with gunicorn.</strong> </p>
+<p><strong>Gunicorn</strong> will be our 'process manager' and <strong>uvicorn</strong> the <strong>Worker</strong> <strong>class</strong>. what does that mean?</p>
+<p>Imagine <strong>gunicorn</strong> as a supervisor at a construction site. For <strong>big jobs, serious stuff</strong> he needs to tell the workers what to do where etc to provide guarantess, to provide quality, make sure nothing bad happens.
+He manages them and makes sure everything is good. If one worker is on vacation, he makes sure another one comes. If one is sick, same. If they need new workers, he makes sure that is known and fullfilled.
+And so on.</p>
+<p>Whereas <strong>uvicron</strong> is the <strong>worker</strong>. He does stuff. Doesn't think much. 
+For <strong>simple tasks he's self-sufficient</strong> (think serving app for local dev), 
+but for more complex stuff where you eg. need to coordinate work of multiple workers or do advanvced projects, <strong>he needs help of the supervisor/manager.</strong></p>
+<p>Hope it's clear now.</p>
+<p>So how to run our app using uvicorn?</p>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>uvicorn<span class="w"> </span>--reload<span class="w"> </span>app.main:app
+</code></pre></div>
+
+<p>Later we will create a shorthand command <code>make run-dev</code> for this.
+Now go to <code>http://localhost:8000/docs</code>. Beng. It's alive! </p>
+<p>It's not much so far, we just got the heartbeat endpoint going.</p>
+<h2>Settings</h2>
+<p>It's slowly the time to actually make some requests to OpenAI's api.
+Before we do that, we will need something. Ah right, a way to store our secrets/settings and so on. Why?</p>
+<p>Almost any 3rd party API requires you to authenticate in one way or another. Quite a popular way of doing that is using API-keys or other secrets. What are they? </p>
+<p>Long story short they are this 'secret' values that are known only to you and the service provider, in theory. It's usually a long and random string that is sufficiently hard to guess, that one can assume, that if you know this string, it must be you. </p>
+<p>Now, commiting secrets to the repo in plaintext is a big no-no. You need to keep your secrets, well, secret.</p>
+<p>The practice is that we usually put &amp; get the secrets from environment variables of the OS/container that the project is running in, instead of just putting it in plaintext to the repo as a string.</p>
+<p>It's much more secure if done properly, however it's a bit more complext. I mean saving a string to the code is easy, this requires a bit more overhead, but it's well worth it. How to do it?</p>
+<p>Pydantic-settings to the rescue.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># core/constants.py</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">StrEnum</span>
+
+<span class="c1"># on local we just need 1 worker, no need to spawn multiple threads</span>
+<span class="n">DEFAULT_NUMBER_OF_WORKERS_ON_LOCAL</span> <span class="o">=</span> <span class="mi">1</span>  
+
+
+<span class="c1"># we could have any number of environments here, this is useful when</span>
+<span class="c1"># defining settings/behavior per environment - eg on production</span>
+<span class="c1"># you probably do not want debug enabled and so on.</span>
+<span class="k">class</span> <span class="nc">Environments</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span>
+    <span class="n">PRODUCTION</span> <span class="o">=</span> <span class="s2">&quot;production&quot;</span>
+
+<span class="c1"># settings/base.py</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">pydantic_settings</span> <span class="kn">import</span> <span class="n">BaseSettings</span>
+
+<span class="kn">from</span> <span class="nn">app.core.constants</span> <span class="kn">import</span> <span class="n">Environments</span>
+
+
+<span class="k">class</span> <span class="nc">Settings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
+    <span class="n">APP_NAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bRAG&quot;</span>
+    <span class="n">ENVIRONMENT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;ENVIRONMENT&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">Environments</span><span class="o">.</span><span class="n">LOCAL</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">OPENAI_API_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_local</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENVIRONMENT</span> <span class="o">==</span> <span class="n">Environments</span><span class="o">.</span><span class="n">LOCAL</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="c1"># this will make it so that pydantic will look for our env variables</span>
+    <span class="c1"># in a file called .env and automatically load them as such</span>
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">env_file</span> <span class="o">=</span> <span class="s2">&quot;.env&quot;</span>
+
+<span class="c1"># settings/__init__.py</span>
+<span class="kn">from</span> <span class="nn">settings.base</span> <span class="kn">import</span> <span class="n">Settings</span>
+
+<span class="c1"># this enables us to easily import settings later by going </span>
+<span class="c1"># from settings import settings</span>
+<span class="c1"># something like django settings</span>
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+
+<span class="c1"># .env.example </span>
+<span class="n">OPENAI_API_KEY</span><span class="o">=</span><span class="n">sk</span><span class="o">-</span><span class="n">xxxxxx</span>
+</code></pre></div>
+
+<p>Now, create a <code>.env</code> file, copy contents of the <code>.env.template</code> there and just replace the placeholder with your api key to openai. Do not ever commit <code>.env</code> file to the repository. <code>.env.template</code> is there with placeholders for a reason.</p>
+<p>Now comes the anticipated part - let's have our API make requests to OpenAI.</p>
+<h2>How to (b)rag - what it's all about</h2>
+<p>But before that. Let's talk a little about what we are going to do. </p>
+<p>This whole RAG thing, what is it. </p>
+<p>Back a while ago I wrote a quick introduction to <a href="https://grski.pl/vdb">Vector DBs, LLM, Embeddings.</a> If you are new to the topic, I recommend you to go check it out. I'll assume you understand some of the topics covered in there from now onwards.</p>
+<p>When we talk about LLM-related applications, there are platitude of different usages and examples. Most cases and applications however, orbit around or consist of the following terms/things:</p>
+<ol>
+<li>Completions - completion is a simple one off message where you provide an input and the model generates a completion based on that. Completion is, as mentioned, in basic form, one off. So in this case we assume that there is no context, no nothing, no past messages. Just one single string and it's completion.</li>
+<li>Chat Completions - similar to plain Completion, except here you usually have contextual conversation enabled, so you keep the history of the conversation in the context and as it is a conversation, you also often have different roles/authors of the message. I mean - if it's a conversation you need to have at least 2 different sides. In LLM world it's usually <strong>user</strong>, <strong>system</strong>, <strong>assistant</strong>. </li>
+</ol>
+<p>Now, both of these are plain ways of interacting with the LLMs. </p>
+<p>All LLMs have limited training data, limited knowledge, training data cutoff point and so on. In order to give the model access to more recent data, or maybe data that's private/unique to you, we've developed a <strong>RAG</strong> - Retrieval Augmented Generation. All it means is that during either Completion or Chat Completion, inside your request, you provide some additional information that is Retrived from somwhere, and then make the model generate the answer based on that particular information, which we put inside the request's context, or simply the string that we send to the model. Now, on a basic level, this is all there's to it. We <strong>Retrieve</strong> some information, to <strong>Augment</strong> our prompt/inquiry/request beofre the <strong>Generation</strong>. More often than not, because of various reasons, the Retrieval part happens through some kind of a <strong>Vector Database</strong>. What it is, how does it work? Go back to the previously mentioned article, if you already haven't. Introduction to <a href="https://grski.pl/vdb">Vector DBs, LLM, Embeddings.</a> </p>
+<p>In the <strong>RAG</strong> type of service, we can single out the following types, which were nicely summed up by one of my former colleagues (Greetings!):</p>
+<ol>
+<li>Document Q&amp;A - this one is usually a simple Q&amp;A service, something akin to Completions. It can have contextual conversation capabilities, but can be also one-off question just like completion. usually the latter. The data over which we do the Q&amp;A is not persisted. It's just a temporary Q&amp;A. </li>
+<li>Knowledge Base Q&amp;A - it's basically Document Q&amp;A, but the data we query is persisted somewhere. It's properly ingested and persisted. In our terminology. So Document Q&amp;A without Contextual Conversation but over persisted data as opposed to temporary data in the Document Q&amp;A.</li>
+<li>Contextual Knowledge Base Q&amp;A - same as above, but rather than being a one-off completion, we keep the context of the conversation in mind and have proper Chat Completions with contextual conversations. Not only we can ask questions over some persisted data, but the app also remembers our previous questions/answers (up to a certain point) and keeps that in mind.</li>
+</ol>
+<p>Now let's start with the most basic stuff - completion. We will create a fairly simple Completion endpoint.</p>
+<h2>Completion</h2>
+<p>Without further ado:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># chat/constants.py</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">StrEnum</span>
+
+
+<span class="k">class</span> <span class="nc">FailureReasonsEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">OPENAI_ERROR</span> <span class="o">=</span> <span class="s2">&quot;OpenAI call failed&quot;</span>
+    <span class="n">STREAM_TIMEOUT</span> <span class="o">=</span> <span class="s2">&quot;Stream timed out&quot;</span>  <span class="c1"># for later</span>
+    <span class="n">FAILED_PROCESSING</span> <span class="o">=</span> <span class="s2">&quot;Post processing failed&quot;</span>  <span class="c1"># for later</span>
+
+
+<span class="k">class</span> <span class="nc">ChatRolesEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">USER</span> <span class="o">=</span> <span class="s2">&quot;user&quot;</span>
+    <span class="n">SYSTEM</span> <span class="o">=</span> <span class="s2">&quot;system&quot;</span>
+    <span class="n">ASSISTANT</span> <span class="o">=</span> <span class="s2">&quot;assistant&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">ModelsEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">GPT4</span> <span class="o">=</span> <span class="s2">&quot;gpt-4-0613&quot;</span>
+
+
+<span class="c1"># chat/models.py</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+
+<span class="kn">from</span> <span class="nn">app.chat.constants</span> <span class="kn">import</span> <span class="n">ChatRolesEnum</span><span class="p">,</span> <span class="n">ModelsEnum</span>
+<span class="kn">from</span> <span class="nn">app.core.models</span> <span class="kn">import</span> <span class="n">TimestampAbstractModel</span>
+
+
+<span class="k">class</span> <span class="nc">BaseMessage</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Base pydantic model that we use to interact with the API.&quot;&quot;&quot;</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">ModelsEnum</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">ModelsEnum</span><span class="o">.</span><span class="n">GPT4</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">class</span> <span class="nc">Message</span><span class="p">(</span><span class="n">TimestampAbstractModel</span><span class="p">,</span> <span class="n">BaseMessage</span><span class="p">):</span>
+    <span class="n">role</span><span class="p">:</span> <span class="n">ChatRolesEnum</span>
+
+
+
+<span class="k">class</span> <span class="nc">Message</span><span class="p">(</span><span class="n">BaseMessage</span><span class="p">):</span>
+    <span class="n">role</span><span class="p">:</span> <span class="n">ChatRolesEnum</span>
+
+<span class="c1"># core/models.py</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+
+
+<span class="c1"># utility base class to add creation time to all the models</span>
+<span class="c1"># usually we would also have updated_at field to denote</span>
+<span class="c1"># when the object was updated, but in our case I doubt we will do</span>
+<span class="c1"># any updates</span>
+<span class="k">class</span> <span class="nc">TimestampAbstractModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">created_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Lastly, let's define the view:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># chat/api.py</span>
+
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span>
+
+<span class="kn">import</span> <span class="nn">openai</span>
+
+<span class="kn">from</span> <span class="nn">app.chat.exceptions</span> <span class="kn">import</span> <span class="n">OpenAIException</span>
+<span class="kn">from</span> <span class="nn">app.chat.models</span> <span class="kn">import</span> <span class="n">BaseMessage</span><span class="p">,</span> <span class="n">Message</span>
+<span class="kn">from</span> <span class="nn">app.chat.services</span> <span class="kn">import</span> <span class="n">OpenAIService</span>
+
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Core Endpoints&quot;</span><span class="p">])</span>
+
+
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/v1/completion&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">completion_create</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">OpenAIService</span><span class="o">.</span><span class="n">chat_completion</span><span class="p">(</span><span class="n">input_message</span><span class="o">=</span><span class="n">input_message</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">openai</span><span class="o">.</span><span class="n">OpenAIError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">OpenAIException</span>
+<span class="c1"># main.py</span>
+<span class="c1"># do not forget to include the new router:</span>
+<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">app.chat.api</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">chat_router</span>
+<span class="kn">from</span> <span class="nn">app.core.api</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">core_router</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">core_router</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">chat_router</span><span class="p">)</span>
+<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Now you might wonder, where's all the code? As mentioned before, in the <code>services.py</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># chat/services.py</span>
+<span class="kn">import</span> <span class="nn">openai</span>
+<span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="n">ChatCompletion</span>
+
+<span class="kn">from</span> <span class="nn">app.chat.constants</span> <span class="kn">import</span> <span class="n">ChatRolesEnum</span>
+<span class="kn">from</span> <span class="nn">app.chat.models</span> <span class="kn">import</span> <span class="n">BaseMessage</span><span class="p">,</span> <span class="n">Message</span>
+<span class="kn">from</span> <span class="nn">app.core.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">settings</span> <span class="kn">import</span> <span class="n">settings</span>
+
+
+<span class="k">class</span> <span class="nc">OpenAIService</span><span class="p">:</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">chat_completion</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received the following completion: </span><span class="si">{</span><span class="n">input_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">completion</span><span class="p">:</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span> <span class="o">=</span> <span class="k">await</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">acreate</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">OPENAI_API_KEY</span><span class="p">,</span>
+            <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">ChatRolesEnum</span><span class="o">.</span><span class="n">ASSISTANT</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_message</span><span class="o">.</span><span class="n">message</span><span class="p">}],</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Got the following response: </span><span class="si">{</span><span class="n">completion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Message</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">extract_response_from_completion</span><span class="p">(</span><span class="n">completion</span><span class="p">),</span>
+            <span class="n">role</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">role</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">extract_response_from_completion</span><span class="p">(</span><span class="n">chat_completion</span><span class="p">:</span> <span class="n">ChatCompletion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">chat_completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;message&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<p>Now if you go over to http://localhost:8000/docs it should work.</p>
+<p>That's just a simple completion though. </p>
+<p>Let's assume we want to stream the response, just like ChatGPT does, which can give the pretense as if we were talking to a human. Now we talking!</p>
+<p>Get ready.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># chats/exceptions.py</span>
+<span class="c1"># here we define some exceptions that will come handy in the future</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">HTTPException</span>
+<span class="kn">from</span> <span class="nn">starlette</span> <span class="kn">import</span> <span class="n">status</span>
+
+<span class="kn">from</span> <span class="nn">app.chat.constants</span> <span class="kn">import</span> <span class="n">FailureReasonsEnum</span><span class="p">,</span> <span class="n">NO_DOCUMENTS_FOUND</span>
+
+
+<span class="k">class</span> <span class="nc">OpenAIException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="n">FailureReasonsEnum</span><span class="o">.</span><span class="n">OPENAI_ERROR</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">OpenAIFailedProcessingException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_503_SERVICE_UNAVAILABLE</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="n">FailureReasonsEnum</span><span class="o">.</span><span class="n">FAILED_PROCESSING</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">OpenAIStreamTimeoutException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_504_GATEWAY_TIMEOUT</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="n">FailureReasonsEnum</span><span class="o">.</span><span class="n">STREAM_TIMEOUT</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">RetrievalNoDocumentsFoundException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="p">)</span>
+
+
+<span class="c1"># chats/streaming.py</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">async_timeout</span>
+
+<span class="kn">from</span> <span class="nn">app.chat.constants</span> <span class="kn">import</span> <span class="n">ChatRolesEnum</span>
+<span class="kn">from</span> <span class="nn">app.chat.exceptions</span> <span class="kn">import</span> <span class="n">OpenAIStreamTimeoutException</span><span class="p">,</span> <span class="n">OpenAIFailedProcessingException</span>
+<span class="kn">from</span> <span class="nn">app.chat.models</span> <span class="kn">import</span> <span class="n">Chunk</span><span class="p">,</span> <span class="n">Message</span>
+<span class="kn">from</span> <span class="nn">app.core.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">settings</span> <span class="kn">import</span> <span class="n">settings</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">stream_generator</span><span class="p">(</span><span class="n">subscription</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In the future if we are paranoid about performance we can pre-allocate a buffer and use it instead of f-string</span>
+<span class="sd">    should save a cycle or two in the processor or be a fun exercise but totally not worth the effort or complexity</span>
+<span class="sd">    currently (in the future too).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">async_timeout</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">GENERATION_TIMEOUT_SEC</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">complete_response</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">subscription</span><span class="p">:</span>
+                <span class="c1"># f-string is faster than concatenation so we use it here</span>
+                <span class="n">complete_response</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">complete_response</span><span class="si">}{</span><span class="n">Chunk</span><span class="o">.</span><span class="n">get_chunk_delta_content</span><span class="p">(</span><span class="n">chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">yield</span> <span class="n">format_to_event_stream</span><span class="p">(</span><span class="n">post_processing</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+            <span class="n">message</span><span class="p">:</span> <span class="n">Message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">chunk</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">complete_response</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">ChatRolesEnum</span><span class="o">.</span><span class="n">ASSISTANT</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Complete Streamed Message: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OpenAIStreamTimeoutException</span>
+
+
+<span class="k">def</span> <span class="nf">format_to_event_stream</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; We format the event to a format more in line with the standard SSE format. &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;event: message</span><span class="se">\n</span><span class="s2">data: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">post_processing</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Chunk: </span><span class="si">{</span><span class="n">chunk</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">formatted_chunk</span> <span class="o">=</span> <span class="n">Chunk</span><span class="o">.</span><span class="n">from_chunk</span><span class="p">(</span><span class="n">chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Formatted Chunk: </span><span class="si">{</span><span class="n">formatted_chunk</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">formatted_chunk</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">OpenAIFailedProcessingException</span>
+
+<span class="c1"># chats/services.py</span>
+<span class="k">class</span> <span class="nc">OpenAIService</span><span class="p">:</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">chat_completion_without_streaming</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+        <span class="n">completion</span><span class="p">:</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span> <span class="o">=</span> <span class="k">await</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">acreate</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">OPENAI_API_KEY</span><span class="p">,</span>
+            <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">ChatRolesEnum</span><span class="o">.</span><span class="n">USER</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_message</span><span class="o">.</span><span class="n">message</span><span class="p">}],</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Got the following response: </span><span class="si">{</span><span class="n">completion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Message</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">extract_response_from_completion</span><span class="p">(</span><span class="n">completion</span><span class="p">),</span>
+            <span class="n">role</span><span class="o">=</span><span class="n">ChatRolesEnum</span><span class="o">.</span><span class="n">ASSISTANT</span><span class="o">.</span><span class="n">value</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">chat_completion_with_streaming</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StreamingResponse</span><span class="p">:</span>
+        <span class="n">subscription</span><span class="p">:</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span> <span class="o">=</span> <span class="k">await</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">acreate</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">OPENAI_API_KEY</span><span class="p">,</span>
+            <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">ChatRolesEnum</span><span class="o">.</span><span class="n">USER</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_message</span><span class="o">.</span><span class="n">message</span><span class="p">}],</span>
+            <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">stream_generator</span><span class="p">(</span><span class="n">subscription</span><span class="p">),</span> <span class="n">media_type</span><span class="o">=</span><span class="s2">&quot;text/event-stream&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">extract_response_from_completion</span><span class="p">(</span><span class="n">chat_completion</span><span class="p">:</span> <span class="n">ChatCompletion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">chat_completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;message&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<p>lastly, the <code>chats/api.py</code> becomes:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span>
+
+<span class="kn">import</span> <span class="nn">openai</span>
+<span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">StreamingResponse</span>
+
+<span class="kn">from</span> <span class="nn">app.chat.exceptions</span> <span class="kn">import</span> <span class="n">OpenAIException</span>
+<span class="kn">from</span> <span class="nn">app.chat.models</span> <span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span> <span class="nn">app.chat.services</span> <span class="kn">import</span> <span class="n">OpenAIService</span>
+
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Chat Endpoints&quot;</span><span class="p">])</span>
+
+
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/v1/completion&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">completion_create</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">OpenAIService</span><span class="o">.</span><span class="n">chat_completion_without_streaming</span><span class="p">(</span><span class="n">input_message</span><span class="o">=</span><span class="n">input_message</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">openai</span><span class="o">.</span><span class="n">OpenAIError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">OpenAIException</span>
+
+
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/v1/completion-stream&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">completion_stream</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StreamingResponse</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Streaming response won&#39;t return json but rather a properly formatted string for SSE.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">OpenAIService</span><span class="o">.</span><span class="n">chat_completion_with_streaming</span><span class="p">(</span><span class="n">input_message</span><span class="o">=</span><span class="n">input_message</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">openai</span><span class="o">.</span><span class="n">OpenAIError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">OpenAIException</span>
+</code></pre></div>
+
+<p>Lots of stuff happening. In order to better understand what's happening where, try to check out the repo.</p>
+<p>Whoa. That escalated quickly. What can I say. This article is indeed supposed to walk you through step by step, but at some points, you also gotta learn how to run. Try to analyse the above code, I think it's verbose enough to easily get the grasp. </p>
+<p>Now. We have a simple Completions, without contextual conversations, but with streaming.</p>
+<p>What next? We either tackle the persistance, contextualisation or augmented generation.</p>
+<p>Let's go with RAG ofc! Before that however...</p>
+<h2>Embeddings - fastembed</h2>
+<p>We will be using  <a href="https://github.com/qdrant/fastembed">fastembed</a> to as our embeddings lib. Why not use the most popular openai's embeddings? Well, let me tel you why.</p>
+<p>Fastebmed is different in that it allows you to locally compute embeddings in a way that's more accurate and faster than default openai embeddings. You can save (tiny amount, but still) money, have better performance, more accuracy and lastly, you avoid making a network call to the API.</p>
+<p>It's especially relevant eg. in azure openai's case, where when ingesting large amounts of data you get Rate Limited hard as they do not support batching so all batches are of size 1 (that might have changed.) </p>
+<p>The lib itself is efficient, no hidden deps to hugging face or other 3rd party, unlike some libs that claim to do this, but underneath they are just wrappers for HF/similar solutions.</p>
+<p>It makes data ingestion using just qdrant-client way easier. It makes the need for complex wrapper (in simple use cases at least, so most of them) disappear.</p>
+<p>It also simplifies the code.</p>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">docs</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s2">&quot;Qdrant has Langchain integrations&quot;</span><span class="p">,</span> 
+  <span class="s2">&quot;Qdrant also has Llama Index integrations&quot;</span>
+<span class="p">]</span>
+<span class="n">client</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+  <span class="n">collection_name</span><span class="o">=</span><span class="s2">&quot;demo_collection&quot;</span><span class="p">,</span>
+  <span class="n">documents</span><span class="o">=</span><span class="n">docs</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">search_result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+  <span class="n">collection_name</span><span class="o">=</span><span class="s2">&quot;demo_collection&quot;</span><span class="p">,</span>
+  <span class="n">query_text</span><span class="o">=</span><span class="s2">&quot;This is a query document&quot;</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Long story short you do not have to bother with specifying what embeddings to use, prepare an api key. It just works. We will leverage that.</p>
+<h2>Setting up our QDRANT locally and in cloud</h2>
+<p>To set up qdrant locally you can just:</p>
+<div class="codehilite"><pre><span></span><code>docker<span class="w"> </span>pull<span class="w"> </span>qdrant/qdrant
+docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">6333</span>:6333<span class="w"> </span>qdrant/qdrant
+</code></pre></div>
+
+<p>or spin up a free instance in their cloud <a href="https://cloud.qdrant.io/login">over here.</a> Then <a href="https://github.com/qdrant/qdrant-client#connect-to-qdrant-server">here is how you can connect to said instance</a></p>
+<p>Otherwise what we have in the repo should work for you out of the box.</p>
+<h2>How to ingest data into our qdrant</h2>
+<h2>Back to RAG - Vector similarity search over qdrant</h2>
+<p>As explained previously, we need to transform our text query into semantically meaningful vectors using embeddings, then do a Vector Similarity Search, Augment the context and do the generation. Sounds terrible, right? Well, it ain't . With qdrant we can basically do it like so:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># settings/base.py</span>
+<span class="k">class</span> <span class="nc">Settings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
+    <span class="n">APP_NAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bRAG&quot;</span>
+    <span class="n">ENVIRONMENT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;ENVIRONMENT&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">Environments</span><span class="o">.</span><span class="n">LOCAL</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="n">DATABASE_URL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;DATABASE_URL&quot;</span><span class="p">)</span>
+    <span class="n">OPENAI_API_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">)</span>
+    <span class="n">GENERATION_TIMEOUT_SEC</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;GENERATION_TIMEOUT_SEC&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+
+    <span class="n">QDRANT_HOST</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;QDRANT_HOST&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">)</span>
+    <span class="n">QDRANT_PORT</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;QDRANT_PORT&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">6333</span><span class="p">)</span>
+    <span class="n">QDRANT_COLLECTION_NAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;QDRANT_COLLECTION_NAME&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_local</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENVIRONMENT</span> <span class="o">==</span> <span class="n">Environments</span><span class="o">.</span><span class="n">LOCAL</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">env_file</span> <span class="o">=</span> <span class="s2">&quot;.env&quot;</span>
+
+
+<span class="c1"># chats/retrieval.py</span>
+<span class="kn">from</span> <span class="nn">qdrant_client</span> <span class="kn">import</span> <span class="n">QdrantClient</span>
+
+<span class="kn">from</span> <span class="nn">app.chat.exceptions</span> <span class="kn">import</span> <span class="n">RetrievalNoDocumentsFoundException</span>
+<span class="kn">from</span> <span class="nn">app.chat.models</span> <span class="kn">import</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span> <span class="nn">settings</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">QdrantClient</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">QDRANT_HOST</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">QDRANT_API_KEY</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">process_retrieval</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseMessage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Search for a given query using vector similarity search. If no documents are found we raise an exception.</span>
+<span class="sd">    If we do find documents we take the top 3 and put them into the context.&quot;&quot;&quot;</span>
+    <span class="n">search_result</span> <span class="o">=</span> <span class="n">search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+    <span class="n">resulting_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Answer based only on the context, nothing else. </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;QUERY:</span><span class="se">\n</span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;CONTEXT:</span><span class="se">\n</span><span class="si">{</span><span class="n">search_result</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">BaseMessage</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">resulting_query</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; This takes our query string, transforms the string into vectors and then searches for the most similar</span>
+<span class="sd">    documents, returning the top 3. If no documents are found we raise an exception - as the user is asking</span>
+<span class="sd">    about something not in the context of our documents.&quot;&quot;&quot;</span>
+    <span class="n">search_result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">QDRANT_COLLECTION_NAME</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">query_text</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">search_result</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">RetrievalNoDocumentsFoundException</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;page_content&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">search_result</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Now, back to <code>chat/services.py</code></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># chat/constants.py</span>
+<span class="n">NO_DOCUMENTS_FOUND</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;No documents found in context. Please try again with a different query.&quot;</span>
+
+<span class="c1"># chat/services.py </span>
+<span class="kn">from</span> <span class="nn">app.chat.constants</span> <span class="kn">import</span> <span class="n">ChatRolesEnum</span><span class="p">,</span> <span class="n">NO_DOCUMENTS_FOUND</span>
+<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="n">OpenAIService</span> <span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">qa_without_stream</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">augmented_message</span><span class="p">:</span> <span class="n">BaseMessage</span> <span class="o">=</span> <span class="n">process_retrieval</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">input_message</span><span class="p">)</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="bp">cls</span><span class="o">.</span><span class="n">chat_completion_without_streaming</span><span class="p">(</span><span class="n">input_message</span><span class="o">=</span><span class="n">augmented_message</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">RetrievalNoDocumentsFoundException</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Message</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">NO_DOCUMENTS_FOUND</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">ChatRolesEnum</span><span class="o">.</span><span class="n">ASSISTANT</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</code></pre></div>
+
+<p>lastly, views:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/v1/qa-create&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">qa_create</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">OpenAIService</span><span class="o">.</span><span class="n">qa_without_stream</span><span class="p">(</span><span class="n">input_message</span><span class="o">=</span><span class="n">input_message</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">openai</span><span class="o">.</span><span class="n">OpenAIError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">OpenAIException</span>
+</code></pre></div>
+
+<p>Now - homework. Add streaming version of this endpoint. Should be fairly doable.</p>
+<p>To test it and actually play around with it you'll need to add certain env variables to settings, .env file and also get qdrant running locally. </p>
+<h2>Persistance - postgres &amp; pugsql</h2>
+<p>Persistance.</p>
+<p>PDF stack - PugSQL + dbMate + FastAPI.</p>
+<p>Todo.</p>
+<h2>CI/CD and other processes</h2>
+<p>We got most of the stuff ready, now what we want to do, is to customise a bit our linters config and so on:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[tool.black]</span>
+<span class="n">line-length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">120</span>
+<span class="n">target-version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&#39;py311&#39;</span><span class="p">]</span>
+<span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;\.pyi?$&#39;</span>
+<span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;&#39;&#39;</span>
+<span class="s">/(</span>
+<span class="s">    \.eggs</span>
+<span class="s">  | \.git</span>
+<span class="s">  | \.hg</span>
+<span class="s">  | \.mypy_cache</span>
+<span class="s">  | \.tox</span>
+<span class="s">  | \.venv</span>
+<span class="s">  | _build</span>
+<span class="s">  | buck-out</span>
+<span class="s">  | build</span>
+<span class="s">  | dist</span>
+<span class="s">  | migrations</span>
+<span class="s">)/</span>
+<span class="s">&#39;&#39;&#39;</span>
+
+<span class="k">[tool.ruff]</span>
+<span class="n">line-length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">120</span>
+<span class="n">select</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;E&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;F&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;I&quot;</span><span class="p">]</span>
+<span class="n">fixable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;A&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;D&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;E&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;F&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;I&quot;</span><span class="p">]</span>
+<span class="n">ignore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;E712&quot;</span><span class="p">]</span>
+<span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s">&quot;.bzr&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.direnv&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.eggs&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.git&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.hg&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.mypy_cache&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.nox&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.pants.d&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.pytype&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.ruff_cache&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.svn&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.tox&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;.venv&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;__pypackages__&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;_build&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;buck-out&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;build&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;dist&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;node_modules&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;venv&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;*migrations*&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="k">[tool.ruff.isort]</span>
+<span class="n">section-order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;fastapi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;future&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;standard-library&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;third-party&quot;</span><span class="p">,</span><span class="w">  </span><span class="s">&quot;first-party&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;local-folder&quot;</span><span class="p">]</span>
+
+<span class="k">[tool.ruff.isort.sections]</span>
+<span class="n">fastapi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;fastapi&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<p>While we are at it - <code>.gitignore</code> file.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Byte-compiled / optimized / DLL files</span>
+<span class="n">__pycache__</span><span class="o">/</span>
+<span class="o">*.</span><span class="n">py</span><span class="p">[</span><span class="n">cod</span><span class="p">]</span>
+<span class="o">*$</span><span class="n">py</span><span class="o">.</span><span class="k">class</span>
+
+<span class="c1"># C extensions</span>
+<span class="o">*.</span><span class="n">so</span>
+<span class="o">.</span><span class="n">idea</span>
+<span class="o">.</span><span class="n">env</span>
+
+<span class="c1"># Distribution / packaging</span>
+<span class="o">.</span><span class="n">Python</span>
+<span class="n">develop</span><span class="o">-</span><span class="n">eggs</span><span class="o">/</span>
+<span class="n">dist</span><span class="o">/</span>
+<span class="n">downloads</span><span class="o">/</span>
+<span class="n">eggs</span><span class="o">/</span>
+<span class="o">.</span><span class="n">eggs</span><span class="o">/</span>
+<span class="n">lib</span><span class="o">/</span>
+<span class="n">lib64</span><span class="o">/</span>
+<span class="n">parts</span><span class="o">/</span>
+<span class="n">sdist</span><span class="o">/</span>
+<span class="k">var</span><span class="o">/</span>
+<span class="n">wheels</span><span class="o">/</span>
+<span class="n">share</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="n">wheels</span><span class="o">/</span>
+<span class="o">*.</span><span class="n">egg</span><span class="o">-</span><span class="n">info</span><span class="o">/</span>
+<span class="o">.</span><span class="n">installed</span><span class="o">.</span><span class="n">cfg</span>
+<span class="o">*.</span><span class="n">egg</span>
+<span class="n">MANIFEST</span>
+
+
+<span class="c1"># Installer logs</span>
+<span class="n">pip</span><span class="o">-</span><span class="nb">log</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pip</span><span class="o">-</span><span class="n">delete</span><span class="o">-</span><span class="n">this</span><span class="o">-</span><span class="n">directory</span><span class="o">.</span><span class="n">txt</span>
+
+<span class="c1"># Unit test / coverage reports</span>
+<span class="n">htmlcov</span><span class="o">/</span>
+<span class="o">.</span><span class="n">tox</span><span class="o">/</span>
+<span class="o">.</span><span class="n">nox</span><span class="o">/</span>
+<span class="o">.</span><span class="n">coverage</span>
+<span class="o">.</span><span class="n">coverage</span><span class="o">.*</span>
+<span class="o">.</span><span class="n">cache</span>
+<span class="n">nosetests</span><span class="o">.</span><span class="n">xml</span>
+<span class="n">coverage</span><span class="o">.</span><span class="n">xml</span>
+<span class="o">*.</span><span class="n">cover</span>
+<span class="o">*.</span><span class="n">py</span><span class="p">,</span><span class="n">cover</span>
+<span class="o">.</span><span class="n">hypothesis</span><span class="o">/</span>
+<span class="o">.</span><span class="n">pytest_cache</span><span class="o">/</span>
+<span class="n">cover</span><span class="o">/</span>
+<span class="n">pytest</span><span class="o">.</span><span class="n">xml</span>
+<span class="n">pytest</span><span class="o">-</span><span class="n">coverage</span><span class="o">.</span><span class="n">txt</span>
+
+<span class="c1"># Translations</span>
+<span class="o">*.</span><span class="n">mo</span>
+<span class="o">*.</span><span class="n">pot</span>
+
+<span class="c1"># Django stuff:</span>
+<span class="o">*.</span><span class="n">log</span>
+<span class="n">local_settings</span><span class="o">.</span><span class="n">py</span>
+<span class="n">db</span><span class="o">.</span><span class="n">sqlite3</span>
+<span class="n">db</span><span class="o">.</span><span class="n">sqlite3</span><span class="o">-</span><span class="n">journal</span>
+
+<span class="n">profile_default</span><span class="o">/</span>
+<span class="n">ipython_config</span><span class="o">.</span><span class="n">py</span>
+<span class="o">.</span><span class="n">python</span><span class="o">-</span><span class="n">version</span>
+
+
+<span class="c1"># PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm</span>
+<span class="n">__pypackages__</span><span class="o">/</span>
+
+<span class="c1"># Environments</span>
+<span class="o">.</span><span class="n">env</span>
+<span class="o">.</span><span class="n">venv</span>
+<span class="n">env</span><span class="o">/</span>
+<span class="n">venv</span><span class="o">/</span>
+<span class="n">ENV</span><span class="o">/</span>
+<span class="n">env</span><span class="o">.</span><span class="n">bak</span><span class="o">/</span>
+<span class="n">venv</span><span class="o">.</span><span class="n">bak</span><span class="o">/</span>
+
+<span class="c1"># Spyder project settings</span>
+<span class="o">.</span><span class="n">spyderproject</span>
+<span class="o">.</span><span class="n">spyproject</span>
+
+<span class="c1"># Rope project settings</span>
+<span class="o">.</span><span class="n">ropeproject</span>
+
+<span class="c1"># mkdocs documentation</span>
+<span class="o">/</span><span class="n">site</span>
+<span class="c1"># Pyre type checker</span>
+<span class="o">.</span><span class="n">pyre</span><span class="o">/</span>
+<span class="c1"># pytype static type analyzer</span>
+<span class="o">.</span><span class="n">pytype</span><span class="o">/</span>
+<span class="c1"># Cython debug symbols</span>
+<span class="n">cython_debug</span><span class="o">/</span>
+<span class="c1"># Ruff</span>
+<span class="o">.</span><span class="n">ruff_cache</span><span class="o">/</span>
+</code></pre></div>
+
+<h2>Summary</h2>
+<h2>Homework - Ideas for further development</h2>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>

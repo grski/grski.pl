@@ -1,4 +1,4 @@
-Title: NO, YOU DO NOT LANGCHAIN
+Title: NO, YOU DO NOT NEED LANGCHAIN
 Description: Observations from using langchain to develop a little more complex project and state of llm-based development.
 Date: 2023-09-15
 Authors: Olaf Górski
