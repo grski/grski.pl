@@ -1075,7 +1075,7 @@ as for the .env file in relation to `DATABASE_URL`:
 it should look like this:
 
 ```bash
-DATABASE_URL="postgres://application:secret_pass@database:5432/application?sslmode=disable"
+DATABASE_URL="postgresql://application:secret_pass@database:5432/application?sslmode=disable"
 # or
 protocol://username:password@host:port/database_name?options
 

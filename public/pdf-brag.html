@@ -952,7 +952,7 @@ sudo chmod +x /usr/local/bin/dbmate</p>
 <p>or even put it into the Dockerfile itself. Possibilities are endless.</p>
 <p>as for the .env file in relation to <code>DATABASE_URL</code>:</p>
 <p>it should look like this:</p>
-<div class="codehilite"><pre><span></span><code><span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">&quot;postgres://application:secret_pass@database:5432/application?sslmode=disable&quot;</span>
+<div class="codehilite"><pre><span></span><code><span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">&quot;postgresql://application:secret_pass@database:5432/application?sslmode=disable&quot;</span>
 <span class="c1"># or</span>
 protocol://username:password@host:port/database_name?options
 
