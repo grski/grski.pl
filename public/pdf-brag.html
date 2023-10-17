@@ -3,19 +3,19 @@
 <html lang="en">
 
 <head>
-    <title>Build your own LLM RAG API without langchain using openai and qdrant. [WIP] - Olaf Górski</title>
+    <title>Build your own LLM RAG API without langchain using OpenAI, qdrant and PDF stack - Olaf Górski</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Want to travel the road less traveled? Well, here we go." />
+    <meta name="description" content="Want to go down the road less travelled while building LLM RAG API without langchain using just Qdrant and PDF-stack? I sure do." />
 
     <meta name="robots" content="index, follow">
-    <meta property="og:title" content="The Engineer">
-    <meta property="og:description" content="Want to travel the road less traveled? Well, here we go.">
+    <meta property="og:title" content="Build your own LLM RAG API without langchain using OpenAI, qdrant and PDF stack">
+    <meta property="og:description" content="Want to go down the road less travelled while building LLM RAG API without langchain using just Qdrant and PDF-stack? I sure do.">
     <meta property="og:url" content="https://grski.pl/">
-    <meta property="og:site_name" content="grski.pl">
+    <meta property="og:site_name" content="Build your own LLM RAG API without langchain using OpenAI, qdrant and PDF stack - Olaf Górski">
     <meta property="og:type" content="website">
     <meta property="article:section" content="">
-    <meta property="og:updated_time" content="2023-10-015T00:00:00Z" />
+    <meta property="og:updated_time" content="2023-10-15T00:00:00Z" />
 
     <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
     <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
@@ -67,15 +67,15 @@
                 <div class="subtitle tags is-6 is-pulled-right">
              <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
                 </div>
-                <h3 class="subtitle is-6 date">2023-10-015</h3>
-                <h1 class="title"><a href="https://grski.pl/">Build your own LLM RAG API without langchain using openai and qdrant. [WIP]</a></h1>
+                <h3 class="subtitle is-6 date">2023-10-15</h3>
+                <h1 class="title"><a href="https://grski.pl/">Build your own LLM RAG API without langchain using OpenAI, qdrant and PDF stack</a></h1>
                 <div class="content">
-                    <p>Let's see what happens. </p>
+                    <p>Assumption is the mother of fuckup. Let's see when we get rid of most of them regarding our tech stack choice. Let's get rid of Langchain, ORM and see what comes out.</p>
 <h2>Well, that escalated quickly</h2>
 <p>Long story short, in my last post I mentioned that well,<a href="https://grski.pl/no-langchain"> you do not need langchain</a>. 
 Somehow it kinda ended up with a comment from <a href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7108316710566260736?commentUrn=urn%3Ali%3Acomment%3A%28ugcPost%3A7108316710566260736%2C7111512324414324736%29&amp;dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287111512324414324736%2Curn%3Ali%3AugcPost%3A7108316710566260736%29">Langchain's CEO</a>. Whoops. TBH gotta admit, Harrison's comment was very humble and understanding. <strong>I was amazed by how profesionally he took the feedback, even though I was a bit biased.</strong> Impressive.</p>
 <p>To be fair, I've taken a look at Langchain again and <strong>changed my opinion on some points - they've improved tramendously,</strong> however, my general point still stands - <strong>in my case, Langchain isn't preferred.</strong> 
-What to use instead though? Good question. Let's find out what mr. smarty here went with and create a <strong>B</strong>asic Retrieval <strong>A</strong>ugmented Generation API.</p>
+What to use instead though? Good question. Let's find out what mr. smarty here went with and create a <strong>B</strong>asic <strong>R</strong>etrieval <strong>A</strong>ugmented Generation API or bRAG for short. <a href="https://github.com/grski/brag">Here you can find the github repo with complete codebase.</a></p>
 <p>Beware though. This post will be long, it will cover lots of aspects and go beyond just plugging openai into fastapi endpoints.
 We will pimp it up a bit.</p>
 <p>We will use:</p>
@@ -87,7 +87,7 @@ We will pimp it up a bit.</p>
 <li>no ORM for us. Instead we will roll with <a href="https://github.com/mcfunley/pugsql">pugsql</a></li>
 <li>migrations will be done using plain sql and <a href="https://github.com/mcfunley/pugsql">dbMate</a>.</li>
 <li>instead of poetry, we will go for <a href="https://github.com/pyenv/pyenv">pyenv</a> + <a href="https://github.com/jazzband/pip-tools">pip-tools</a></li>
-<li>on the db front - <a href="https://www.postgresql.org/">postgres</a></li>
+<li>on the db/persistance front - <a href="https://www.postgresql.org/">postgres</a></li>
 <li>lastly, the app will be containerised - <a href="https://www.docker.com/">docker</a></li>
 </ol>
 <p>Does that sound weird to you? Because it is! </p>
@@ -146,7 +146,8 @@ Let's define <code>pyproject.toml</code>. </p>
 <span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;brag&quot;</span>
 <span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0.0.1&quot;</span>
 <span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&gt;=3.11&quot;</span>
-<span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;fastapi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;openai&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pydantic-settings&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;uvicorn&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gunicorn&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;qdrant-client[fastembed]&quot;</span><span class="p">]</span>
+<span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;fastapi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;openai&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pydantic-settings&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;uvicorn&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gunicorn&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;qdrant-client[fastembed]&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sentry-sdk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pugsql&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;psycopg2-binary&quot;</span><span class="p">]</span>
+
 
 <span class="k">[project.optional-dependencies]</span>
 <span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;ruff&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;black&quot;</span><span class="p">]</span>
@@ -712,6 +713,8 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
 </code></pre></div>
 
 <p>Long story short you do not have to bother with specifying what embeddings to use, prepare an api key. It just works. We will leverage that.</p>
+<p>But... before we proceed.</p>
+<p>The code starts to get long. I won't be copying it all from the repo now, instead I'll provide brief commentary over how we realised it in code, or will just paste pieces of it.</p>
 <h2>Setting up our QDRANT locally and in cloud</h2>
 <p>To set up qdrant locally you can just:</p>
 <div class="codehilite"><pre><span></span><code>docker<span class="w"> </span>pull<span class="w"> </span>qdrant/qdrant
@@ -720,7 +723,40 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 
 <p>or spin up a free instance in their cloud <a href="https://cloud.qdrant.io/login">over here.</a> Then <a href="https://github.com/qdrant/qdrant-client#connect-to-qdrant-server">here is how you can connect to said instance</a></p>
 <p>Otherwise what we have in the repo should work for you out of the box.</p>
+<p>Make note that in the docker-compose qdrant is included by default.</p>
 <h2>How to ingest data into our qdrant</h2>
+<p>In our <code>ingest.py</code> file we take a very naive approach - we simply ingest a couple of static texts. More on this topic we will talk about in coming articles. This one will be too long as it is already.</p>
+<p>For testing it can look something like:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">qdrant_client</span> <span class="kn">import</span> <span class="n">QdrantClient</span>
+
+<span class="kn">from</span> <span class="nn">settings</span> <span class="kn">import</span> <span class="n">settings</span>
+
+
+<span class="k">def</span> <span class="nf">test_populate_vector_db</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">QdrantClient</span><span class="p">):</span>
+    <span class="c1"># Prepare your documents, metadata, and IDs</span>
+    <span class="n">docs</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;LoremIpsum sit dolorem&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Completely random phrase&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Another random phrase&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pdf-BRAG is awesome.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;Olaf&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;grski&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;Olaf&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;grski&quot;</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">42</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+
+    <span class="c1"># Use the new add method</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+        <span class="n">collection_name</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">QDRANT_COLLECTION_NAME</span><span class="p">,</span>
+        <span class="n">documents</span><span class="o">=</span><span class="n">docs</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+        <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+
 <h2>Back to RAG - Vector similarity search over qdrant</h2>
 <p>As explained previously, we need to transform our text query into semantically meaningful vectors using embeddings, then do a Vector Similarity Search, Augment the context and do the generation. Sounds terrible, right? Well, it ain't . With qdrant we can basically do it like so:</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># settings/base.py</span>
@@ -751,7 +787,10 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <span class="kn">from</span> <span class="nn">app.chat.models</span> <span class="kn">import</span> <span class="n">BaseMessage</span>
 <span class="kn">from</span> <span class="nn">settings</span> <span class="kn">import</span> <span class="n">settings</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">QdrantClient</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">QDRANT_HOST</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">QDRANT_API_KEY</span><span class="p">)</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">QdrantClient</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">QDRANT_HOST</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">QDRANT_PORT</span><span class="p">)</span>
+
+<span class="c1"># ONLY FOR TEST PURPOSE (you may call this func by hand or let it be)</span>
+<span class="n">test_populate_vector_db</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">process_retrieval</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseMessage</span><span class="p">:</span>
@@ -763,6 +802,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
         <span class="sa">f</span><span class="s2">&quot;QUERY:</span><span class="se">\n</span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="sa">f</span><span class="s2">&quot;CONTEXT:</span><span class="se">\n</span><span class="si">{</span><span class="n">search_result</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resulting Query: </span><span class="si">{</span><span class="n">resulting_query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">BaseMessage</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">resulting_query</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
 
 
@@ -805,12 +845,326 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 
 <p>Now - homework. Add streaming version of this endpoint. Should be fairly doable.</p>
 <p>To test it and actually play around with it you'll need to add certain env variables to settings, .env file and also get qdrant running locally. </p>
-<h2>Persistance - postgres &amp; pugsql</h2>
-<p>Persistance.</p>
-<p>PDF stack - PugSQL + dbMate + FastAPI.</p>
-<p>Todo.</p>
-<h2>CI/CD and other processes</h2>
-<p>We got most of the stuff ready, now what we want to do, is to customise a bit our linters config and so on:</p>
+<h2>Persistance, migrations - postgres &amp; dbmate</h2>
+<p>We probably will want to persist our Messages, right? Well, ask no further. We will do that using plain SQL, wrapped with pugSQL and with the migrations run using dbMate. Weird choice? It is indeed, my dear.</p>
+<p><strong>PDF-stack</strong>. <strong>P</strong>ugSQL, dbMate &amp; <strong>F</strong>astAPI. I came to like it quite much. I've never seen this name before, so for now I'll assume to be the father of this acronym.</p>
+<p><strong>pdF-bRAG.</strong> Now that's cool! </p>
+<p>To check out how all of that is ran, I encourage you to read pugsql &amp; dbmate's documentation.</p>
+<p>In short, dbmate is a tool that runs our sql across our databases and makes sure the migrations go as planned, everything is nice and dandy. If they fail, it cleans up.</p>
+<p>Who generates the migrations and based on what? Well, you do! You write them in plain SQL. YUP. Feeling the 90s vibes yet? Hope you do.</p>
+<p>Now, install dbmate. It's a single binary as it's a project written in go. You can just download it and...</p>
+<p>```bashor go with 
+sudo curl -fsSL -o /usr/local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64
+sudo chmod +x /usr/local/bin/dbmate</p>
+<div class="codehilite"><pre><span></span><code><span class="ow">or</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">mac</span><span class="w"> </span><span class="k">go</span><span class="w"> </span><span class="k">with</span><span class="err">:</span>
+
+<span class="err">```</span><span class="n">bash</span>
+<span class="n">brew</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">dbmate</span>
+</code></pre></div>
+
+<p>That's about it.</p>
+<p>Now navigate to our project's root dir and type:</p>
+<div class="codehilite"><pre><span></span><code>dbmate<span class="w"> </span>new<span class="w"> </span>create_models<span class="w"> </span><span class="c1"># dbmate new &lt;desciprtion_of_the_migrations&gt;</span>
+</code></pre></div>
+
+<p>Which will create <code>db/migrations/</code> directory that'll contain our migrations.</p>
+<p>Inside of it you'll find a new file.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">-- migrate:up</span>
+<span class="o">&lt;</span><span class="n">migration</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">goes</span><span class="w"> </span><span class="n">here</span><span class="o">&gt;</span>
+
+<span class="c1">-- migrate:down</span>
+<span class="o">&lt;</span><span class="k">rollback</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">goes</span><span class="w"> </span><span class="n">here</span><span class="o">&gt;</span>
+</code></pre></div>
+
+<p>Surprisingly empty, right? Well, as previously mentioned, you need to write the migrations yourself. In our case, It'll be fairly simple.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">-- migrate:up</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">model</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
+<span class="w">    </span><span class="k">role</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
+<span class="w">    </span><span class="n">message</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="n">TIMESTAMPTZ</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span>
+<span class="p">);</span>
+
+<span class="c1">-- migrate:down</span>
+
+<span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">message</span><span class="p">;</span>
+</code></pre></div>
+
+<p>and that's about it.</p>
+<p>Now we need to run our postgres. How? You can install it locally or as a part of docker-compose.yml</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="nt">database</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres:15-alpine</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pg-data:/var/lib/postgresql/data</span>
+<span class="w">    </span><span class="nt">healthcheck</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="s">&quot;CMD-SHELL&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;pg_isready</span><span class="nv"> </span><span class="s">-U</span><span class="nv"> </span><span class="s">application&quot;</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5s</span>
+<span class="w">      </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5s</span>
+<span class="w">      </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">POSTGRES_USER</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">application</span>
+<span class="w">      </span><span class="nt">POSTGRES_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret_pass</span>
+<span class="w">      </span><span class="nt">POSTGRES_DB</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">application</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5432:5432&quot;</span>
+</code></pre></div>
+
+<p>and then</p>
+<div class="codehilite"><pre><span></span><code>dbmate<span class="w"> </span>up
+</code></pre></div>
+
+<p>BOOM. Done.dbmate will look for a DATABASE_URL env inside .env file and apply the migrations to that db.</p>
+<p>For more fancy approach - to automatically run our dbmate migrations when our postgres starts, we can add something like this (think if you need it):</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="nt">dbmate</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">amacneil/dbmate:latest</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;up&quot;</span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">database</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service_healthy</span>
+</code></pre></div>
+
+<p>Also, instead of creating a separate service we may want to do the migration in our main container, it'll look like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="nt">api</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">database</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service_healthy</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+<span class="w">    </span><span class="nt">deploy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8000:8000&quot;</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.:/code/</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;bash&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;-c&quot;</span><span class="p p-Indicator">,</span><span class="s">&quot;dbmate</span><span class="nv"> </span><span class="s">up</span><span class="nv"> </span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">gunicorn</span><span class="nv"> </span><span class="s">-c</span><span class="nv"> </span><span class="s">settings/gunicorn.conf.py</span><span class="nv"> </span><span class="s">app.main:app&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">env_file</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.env</span>
+</code></pre></div>
+
+<p>or even put it into the Dockerfile itself. Possibilities are endless.</p>
+<p>as for the .env file in relation to <code>DATABASE_URL</code>:</p>
+<p>it should look like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">&quot;postgres://application:secret_pass@database:5432/application?sslmode=disable&quot;</span>
+<span class="c1"># or</span>
+protocol://username:password@host:port/database_name?options
+
+<span class="c1">#make note that instead of `database` you might need to tpye in `localhost` depending where you are running - on localhost or inside docker container/network</span>
+</code></pre></div>
+
+<p>note: When connecting to Postgres, you may need to add the <code>sslmode=disable</code> option to your connection string, as dbmate by default requires a TLS connection (some other frameworks/languages allow unencrypted connections by default). For local stuff this is fine, for production workload it's best to serve the trafic over ssl - this is the default for dbmate.</p>
+<p>Now when we run:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_tables</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">schemaname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;public&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>inside our database (google how to connect to your postgres instance) we should be able to see:</p>
+<div class="codehilite"><pre><span></span><code>public,schema_migrations,application,,true,false,false,false
+public,message,application,,true,false,false,false
+</code></pre></div>
+
+<p>which tells us our <code>message</code> table got created. Yay! </p>
+<p>Migrations done, time for...</p>
+<h2>ORMs and their shenanigans - pugSQL for the win</h2>
+<p>We won't be using an ORM. Why? Just because! No real reason. </p>
+<p>In my case I decided for this becase </p>
+<ol>
+<li>pugsql is an awesome project with an awesome name </li>
+<li>i need to refresh my sql knowledge</li>
+<li>it's good to get back to the basics</li>
+<li>it allows you to have precise control over everything</li>
+</ol>
+<p>So in this project, we won't be using one. You can check out sqlmodel, sqlalchemy or whatever. I used sqlmodel in the past, but it's stuck in development, not supporting Pydantic v2. Tiangalo seems to have become a bottleneck not quite yet willing to give up control over his children to the community. Well, happens. Be it as it may, for now it ain't a viable choice.</p>
+<p>So.</p>
+<p>How does this thing work? Let me demonstrate with a simple example.</p>
+<p>We have our <code>db</code> directory, right? Well, inside we have 'migrations' directory, right? Now just create <code>queries/messages</code> next to it.</p>
+<div class="codehilite"><pre><span></span><code><span class="o">#</span><span class="w"> </span><span class="n">db</span><span class="o">/</span><span class="n">queries</span><span class="o">/</span><span class="n">messages</span><span class="o">/</span><span class="n">select_all</span><span class="p">.</span><span class="k">sql</span>
+<span class="c1">-- :name select_all :many</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">DESC</span>
+
+<span class="o">#</span><span class="w"> </span><span class="n">db</span><span class="o">/</span><span class="n">queries</span><span class="o">/</span><span class="n">messages</span><span class="o">/</span><span class="k">insert</span><span class="p">.</span><span class="k">sql</span>
+<span class="c1">-- :name insert :insert</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="k">role</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(:</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="k">role</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">message</span><span class="p">);</span>
+</code></pre></div>
+
+<p>This sql should be quite self-explonatory, right?</p>
+<p>If not, in short it just either lists all messages or creates a new one.</p>
+<p>Now a bit of python:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># app/db.py</span>
+<span class="kn">import</span> <span class="nn">pugsql</span>
+
+<span class="n">messages_queries</span> <span class="o">=</span> <span class="n">pugsql</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="s2">&quot;db/queries/messages&quot;</span><span class="p">)</span>
+<span class="n">messages_connection</span> <span class="o">=</span> <span class="n">messages_queries</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">DATABASE_URL</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Now how to use it?</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span>
+
+<span class="kn">import</span> <span class="nn">openai</span>
+<span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">StreamingResponse</span>
+
+<span class="kn">from</span> <span class="nn">app.chats.exceptions</span> <span class="kn">import</span> <span class="n">OpenAIException</span>
+<span class="kn">from</span> <span class="nn">app.chats.models</span> <span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span> <span class="nn">app.chats.services</span> <span class="kn">import</span> <span class="n">OpenAIService</span>
+<span class="kn">from</span> <span class="nn">app.db</span> <span class="kn">import</span> <span class="n">messages_queries</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Chat Endpoints&quot;</span><span class="p">])</span>
+
+
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/v1/messages&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_messages</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
+    <span class="c1"># a bit messy as we might want to move this to a service</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Message</span><span class="p">(</span><span class="o">**</span><span class="n">message</span><span class="p">)</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages_queries</span><span class="o">.</span><span class="n">select_all</span><span class="p">()]</span>
+</code></pre></div>
+
+<p>or for create:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">OpenAIService</span><span class="p">:</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">chat_completion_without_streaming</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+        <span class="n">completion</span><span class="p">:</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span> <span class="o">=</span> <span class="k">await</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">acreate</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">OPENAI_API_KEY</span><span class="p">,</span>
+            <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">ChatRolesEnum</span><span class="o">.</span><span class="n">USER</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_message</span><span class="o">.</span><span class="n">message</span><span class="p">}],</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Got the following response: </span><span class="si">{</span><span class="n">completion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">extract_response_from_completion</span><span class="p">(</span><span class="n">completion</span><span class="p">),</span>
+            <span class="n">role</span><span class="o">=</span><span class="n">ChatRolesEnum</span><span class="o">.</span><span class="n">ASSISTANT</span><span class="o">.</span><span class="n">value</span>
+        <span class="p">)</span>
+        <span class="n">messages_queries</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">message</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">role</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">message</span>
+<span class="c1"># or for saving the complete response after streaming:</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">async_timeout</span><span class="o">.</span><span class="n">timeout</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">GENERATION_TIMEOUT_SEC</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">complete_response</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">subscription</span><span class="p">:</span>
+                <span class="c1"># f-string is faster than concatenation so we use it here</span>
+                <span class="n">complete_response</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">complete_response</span><span class="si">}{</span><span class="n">Chunk</span><span class="o">.</span><span class="n">get_chunk_delta_content</span><span class="p">(</span><span class="n">chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">yield</span> <span class="n">format_to_event_stream</span><span class="p">(</span><span class="n">post_processing</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+            <span class="n">message</span><span class="p">:</span> <span class="n">Message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">chunk</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">complete_response</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">ChatRolesEnum</span><span class="o">.</span><span class="n">ASSISTANT</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">messages_queries</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">message</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">role</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Complete Streamed Message: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OpenAIStreamTimeoutException</span>
+</code></pre></div>
+
+<p>This is just an example.</p>
+<p>Try it out. Create a new completion, then for example try to list them.</p>
+<p>Bloody stuff works ay! We managed to:</p>
+<ol>
+<li>Set up migrations with pure SQL and dbMate</li>
+<li>Get ourselves a nice way to query our database without ORM using pugSQL</li>
+<li>See how we can ingest text data using fastembed</li>
+<li>And store it into qdrant</li>
+<li>Do very crude, but still RAG, using just openai and qdrant</li>
+<li>Enable streaming in our API</li>
+<li>Add persistance</li>
+<li>Prepare local development environment to be quite easy to bring up (1-click deployment)</li>
+<li>Include plenty of dev-ex tools</li>
+</ol>
+<p>BOOM. That's nice.</p>
+<h2>CI/CD and other processes - making life easier</h2>
+<p>On top of what you already got, let's include a bit more stuff that will come in handy:</p>
+<div class="codehilite"><pre><span></span><code><span class="c"># Dockerfile</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">python:3.11.6</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="s">server</span>
+<span class="k">RUN</span><span class="w"> </span>curl<span class="w"> </span>-fsSL<span class="w"> </span>-o<span class="w"> </span>/usr/local/bin/dbmate<span class="w"> </span>https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/dbmate
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--upgrade<span class="w"> </span>pip
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/project</span>
+<span class="k">COPY</span><span class="w"> </span>/requirements/requirements.txt<span class="w"> </span>/project/requirements.txt
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--upgrade<span class="w"> </span>-r<span class="w"> </span>/project/requirements.txt
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>/project
+<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;bash&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-c&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;dbmate up &amp; gunicorn -c settings/gunicorn.conf.py app.main:app&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="c1"># pre-commit-config.yaml</span>
+<span class="nt">repos</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w">   </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/psf/black</span>
+<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">23.3.0</span>
+<span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">black</span>
+<span class="w">      </span><span class="nt">language_version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python3.11</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/charliermarsh/ruff-pre-commit</span>
+<span class="w">  </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;v0.0.274&#39;</span>
+<span class="w">  </span><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff</span>
+<span class="w">      </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;--fix&quot;</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+
+<p>Makefile for utility stuff:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">PATH</span><span class="w">  </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>PATH<span class="k">)</span>
+<span class="nv">SHELL</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span>/bin/bash
+
+<span class="nf">black</span><span class="o">:</span>
+<span class="w">    </span>black<span class="w"> </span>.
+
+<span class="nf">ruff</span><span class="o">:</span>
+<span class="w">    </span>ruff<span class="w"> </span>check<span class="w"> </span>.<span class="w"> </span>--fix
+
+<span class="nf">lint</span><span class="o">:</span>
+<span class="w">    </span>make<span class="w"> </span>black
+<span class="w">    </span>make<span class="w"> </span>ruff
+
+<span class="nf">pre-commit</span><span class="o">:</span>
+<span class="w">    </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+
+<span class="nf">test-without-clean</span><span class="o">:</span>
+<span class="w">    </span><span class="nb">set</span><span class="w"> </span>-o<span class="w"> </span>pipefail<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>pytest<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--color<span class="o">=</span>yes<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--junitxml<span class="o">=</span>pytest.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--cov-report<span class="o">=</span>term-missing:skip-covered<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--cov<span class="o">=</span>app<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>tests<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>pytest-coverage.txt
+
+<span class="nf">test</span><span class="o">:</span>
+<span class="w">    </span>make<span class="w"> </span>test-without-clean
+<span class="w">    </span>make<span class="w"> </span>clean
+
+<span class="nf">upgrade</span><span class="o">:</span>
+<span class="w">    </span>make<span class="w"> </span>pip-compile-upgrade
+<span class="w">    </span>make<span class="w"> </span>pip-compile-dev-upgrade
+
+
+<span class="nf">compile</span><span class="o">:</span>
+<span class="w">    </span>make<span class="w"> </span>pip-compile
+<span class="w">    </span>make<span class="w"> </span>pip-compile-dev
+
+<span class="nf">sync</span><span class="o">:</span>
+<span class="w">    </span>pip-sync<span class="w"> </span>requirements/requirements.txt
+<span class="nf">sync-dev</span><span class="o">:</span>
+<span class="w">    </span>pip-sync<span class="w"> </span>requirements/requirements.txt<span class="w"> </span>requirements/requirements-dev.txt
+
+<span class="nf">pip-compile</span><span class="o">:</span>
+<span class="w">    </span>pip-compile<span class="w"> </span>-o<span class="w"> </span>requirements/requirements.txt<span class="w"> </span>pyproject.toml
+<span class="nf">pip-compile-dev</span><span class="o">:</span>
+<span class="w">    </span>pip-compile<span class="w"> </span>--extra<span class="w"> </span>dev<span class="w"> </span>-o<span class="w"> </span>requirements/requirements-dev.txt<span class="w"> </span>pyproject.toml
+
+<span class="nf">pip-compile-upgrade</span><span class="o">:</span>
+<span class="w">    </span>pip-compile<span class="w"> </span>--strip-extras<span class="w"> </span>--upgrade<span class="w"> </span>-o<span class="w"> </span>requirements/requirements.txt<span class="w"> </span>pyproject.toml
+<span class="nf">pip-compile-dev-upgrade</span><span class="o">:</span>
+<span class="w">    </span>pip-compile<span class="w"> </span>--extra<span class="w"> </span>dev<span class="w"> </span>--upgrade<span class="w"> </span>-o<span class="w"> </span>requirements/requirement-dev.txt<span class="w"> </span>pyproject.toml
+
+<span class="nf">run</span><span class="o">:</span>
+<span class="w">    </span>python<span class="w"> </span>-m<span class="w"> </span>gunicorn<span class="w"> </span>-c<span class="w"> </span>settings/gunicorn.conf.py<span class="w"> </span>app.main:app
+
+<span class="nf">run-dev</span><span class="o">:</span>
+<span class="w">    </span>python<span class="w"> </span>-m<span class="w"> </span>uvicorn<span class="w"> </span>--reload<span class="w"> </span>app.main:app
+
+<span class="nf">clean</span><span class="o">:</span>
+<span class="w">    </span>rm<span class="w"> </span>-f<span class="w"> </span>pytest.xml
+<span class="w">    </span>rm<span class="w"> </span>-f<span class="w"> </span>pytest-coverage.txt
+</code></pre></div>
+
+<p>(Now you can just do stuff like <code>make run-dev</code> or <code>make pip-compile</code> or <code>make sync</code>)</p>
 <div class="codehilite"><pre><span></span><code><span class="k">[tool.black]</span>
 <span class="n">line-length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">120</span>
 <span class="n">target-version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&#39;py311&#39;</span><span class="p">]</span>

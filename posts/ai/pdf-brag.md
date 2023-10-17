@@ -1,11 +1,11 @@
-Title: Build your own LLM RAG API without langchain using openai and qdrant. [WIP]
-Description: Want to travel the road less traveled? Well, here we go.
-Date: 2023-10-015
+Title: Build your own LLM RAG API without langchain using OpenAI, qdrant and PDF stack
+Description: Want to go down the road less travelled while building LLM RAG API without langchain using just Qdrant and PDF-stack? I sure do.
+Date: 2023-10-15
 Authors: Olaf Górski
 Slug: pdf-brag
 Language: en
 
-Let's see what happens. 
+Assumption is the mother of fuckup. Let's see when we get rid of most of them regarding our tech stack choice. Let's get rid of Langchain, ORM and see what comes out.
 
 
 ## Well, that escalated quickly
@@ -14,7 +14,7 @@ Long story short, in my last post I mentioned that well,[ you do not need langch
 Somehow it kinda ended up with a comment from [Langchain's CEO](https://www.linkedin.com/feed/update/urn:li:ugcPost:7108316710566260736?commentUrn=urn%3Ali%3Acomment%3A%28ugcPost%3A7108316710566260736%2C7111512324414324736%29&dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287111512324414324736%2Curn%3Ali%3AugcPost%3A7108316710566260736%29). Whoops. TBH gotta admit, Harrison's comment was very humble and understanding. **I was amazed by how profesionally he took the feedback, even though I was a bit biased.** Impressive.
 
 To be fair, I've taken a look at Langchain again and **changed my opinion on some points - they've improved tramendously,** however, my general point still stands - **in my case, Langchain isn't preferred.** 
-What to use instead though? Good question. Let's find out what mr. smarty here went with and create a **B**asic Retrieval **A**ugmented Generation API.
+What to use instead though? Good question. Let's find out what mr. smarty here went with and create a **B**asic **R**etrieval **A**ugmented Generation API or bRAG for short. [Here you can find the github repo with complete codebase.](https://github.com/grski/brag)
 
 Beware though. This post will be long, it will cover lots of aspects and go beyond just plugging openai into fastapi endpoints.
 We will pimp it up a bit.
@@ -28,7 +28,7 @@ We will use:
 5. no ORM for us. Instead we will roll with [pugsql](https://github.com/mcfunley/pugsql)
 6. migrations will be done using plain sql and [dbMate](https://github.com/mcfunley/pugsql).
 7. instead of poetry, we will go for [pyenv](https://github.com/pyenv/pyenv) + [pip-tools](https://github.com/jazzband/pip-tools)
-8. on the db front - [postgres](https://www.postgresql.org/)
+8. on the db/persistance front - [postgres](https://www.postgresql.org/)
 9. lastly, the app will be containerised - [docker](https://www.docker.com/)
 
 Does that sound weird to you? Because it is! 
@@ -114,7 +114,8 @@ Let's define `pyproject.toml`.
 name = "brag"
 version = "0.0.1"
 requires-python = ">=3.11"
-dependencies = ["fastapi", "openai", "pydantic-settings", "uvicorn", "gunicorn", "qdrant-client[fastembed]"]
+dependencies = ["fastapi", "openai", "pydantic-settings", "uvicorn", "gunicorn", "qdrant-client[fastembed]", "sentry-sdk", "pugsql", "psycopg2-binary"]
+
 
 [project.optional-dependencies]
 dev = ["ruff", "black"]
@@ -779,6 +780,10 @@ search_result = client.query(
 
 Long story short you do not have to bother with specifying what embeddings to use, prepare an api key. It just works. We will leverage that.
 
+But... before we proceed.
+
+The code starts to get long. I won't be copying it all from the repo now, instead I'll provide brief commentary over how we realised it in code, or will just paste pieces of it.
+
 ## Setting up our QDRANT locally and in cloud
 
 To set up qdrant locally you can just:
@@ -792,13 +797,48 @@ or spin up a free instance in their cloud [over here.](https://cloud.qdrant.io/l
 
 Otherwise what we have in the repo should work for you out of the box.
 
+Make note that in the docker-compose qdrant is included by default.
+
 ## How to ingest data into our qdrant
+
+In our `ingest.py` file we take a very naive approach - we simply ingest a couple of static texts. More on this topic we will talk about in coming articles. This one will be too long as it is already.
+
+For testing it can look something like:
+
+```python
+from qdrant_client import QdrantClient
+
+from settings import settings
+
+
+def test_populate_vector_db(client: QdrantClient):
+    # Prepare your documents, metadata, and IDs
+    docs = (
+        "LoremIpsum sit dolorem",
+        "Completely random phrase",
+        "Another random phrase",
+        "pdf-BRAG is awesome.",
+    )
+    metadata = (
+        {"source": "Olaf"},
+        {"source": "grski"},
+        {"source": "Olaf"},
+        {"source": "grski"},
+    )
+    ids = [42, 2, 3, 5]
+
+    # Use the new add method
+    client.add(
+        collection_name=settings.QDRANT_COLLECTION_NAME,
+        documents=docs,
+        metadata=metadata,
+        ids=ids,
+    )
+```
 
 
 
 ## Back to RAG - Vector similarity search over qdrant
-
-
 
 As explained previously, we need to transform our text query into semantically meaningful vectors using embeddings, then do a Vector Similarity Search, Augment the context and do the generation. Sounds terrible, right? Well, it ain't . With qdrant we can basically do it like so:
 
@@ -831,7 +871,10 @@ from app.chat.exceptions import RetrievalNoDocumentsFoundException
 from app.chat.models import BaseMessage
 from settings import settings
 
-client = QdrantClient(host=settings.QDRANT_HOST, api_key=settings.QDRANT_API_KEY)
+client = QdrantClient(settings.QDRANT_HOST, port=settings.QDRANT_PORT)
+
+# ONLY FOR TEST PURPOSE (you may call this func by hand or let it be)
+test_populate_vector_db(client=client)
 
 
 def process_retrieval(message: BaseMessage) -> BaseMessage:
@@ -843,6 +886,7 @@ def process_retrieval(message: BaseMessage) -> BaseMessage:
         f"QUERY:\n{message.message}\n"
         f"CONTEXT:\n{search_result}"
     )
+    logger.info(f"Resulting Query: {resulting_query}")
     return BaseMessage(message=resulting_query, model=message.model)
 
 
@@ -893,24 +937,401 @@ Now - homework. Add streaming version of this endpoint. Should be fairly doable.
 
 To test it and actually play around with it you'll need to add certain env variables to settings, .env file and also get qdrant running locally. 
 
+## Persistance, migrations - postgres & dbmate
+
+We probably will want to persist our Messages, right? Well, ask no further. We will do that using plain SQL, wrapped with pugSQL and with the migrations run using dbMate. Weird choice? It is indeed, my dear.
+
+**PDF-stack**. **P**ugSQL, dbMate & **F**astAPI. I came to like it quite much. I've never seen this name before, so for now I'll assume to be the father of this acronym.
+
+**pdF-bRAG.** Now that's cool! 
+
+To check out how all of that is ran, I encourage you to read pugsql & dbmate's documentation.
+
+In short, dbmate is a tool that runs our sql across our databases and makes sure the migrations go as planned, everything is nice and dandy. If they fail, it cleans up.
+
+Who generates the migrations and based on what? Well, you do! You write them in plain SQL. YUP. Feeling the 90s vibes yet? Hope you do.
+
+Now, install dbmate. It's a single binary as it's a project written in go. You can just download it and...
+
+```bashor go with 
+sudo curl -fsSL -o /usr/local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64
+sudo chmod +x /usr/local/bin/dbmate
+```
+
+or on mac go with:
+
+```bash
+brew install dbmate
+```
+
+That's about it.
+
+Now navigate to our project's root dir and type:
+
+```bash
+dbmate new create_models # dbmate new <desciprtion_of_the_migrations>
+```
+
+Which will create `db/migrations/` directory that'll contain our migrations.
+
+Inside of it you'll find a new file.
+
+```sql
+-- migrate:up
+<migration code goes here>
+
+-- migrate:down
+<rollback code goes here>
+
+```
+
+Surprisingly empty, right? Well, as previously mentioned, you need to write the migrations yourself. In our case, It'll be fairly simple.
+
+```sql
+-- migrate:up
+
+CREATE TABLE message (
+    id SERIAL PRIMARY KEY,
+    model VARCHAR(255),
+    role VARCHAR(255),
+    message TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+);
+
+-- migrate:down
+
+DROP TABLE IF EXISTS message;
+
+```
+
+and that's about it.
+
+Now we need to run our postgres. How? You can install it locally or as a part of docker-compose.yml
+
+```yaml
+  database:
+    restart: always
+    image: postgres:15-alpine
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U application" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: application
+      POSTGRES_PASSWORD: secret_pass
+      POSTGRES_DB: application
+    ports:
+      - "5432:5432"
+```
+
+and then
+
+```bash 
+dbmate up
+```
+
+BOOM. Done.dbmate will look for a DATABASE_URL env inside .env file and apply the migrations to that db.
+
+For more fancy approach - to automatically run our dbmate migrations when our postgres starts, we can add something like this (think if you need it):
+
+```yaml
+  dbmate:
+    image: amacneil/dbmate:latest
+    command:
+      - "up"
+    depends_on:
+      database:
+        condition: service_healthy
+```
+
+Also, instead of creating a separate service we may want to do the migration in our main container, it'll look like this:
+
+```yaml
+  api:
+    build:
+      context: .
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: always
+    deploy:
+      replicas: 1
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code/
+    command: ["bash", "-c","dbmate up && gunicorn -c settings/gunicorn.conf.py app.main:app"]
+    env_file:
+      - .env
+```
+
+or even put it into the Dockerfile itself. Possibilities are endless.
+
+as for the .env file in relation to `DATABASE_URL`:
+
+it should look like this:
+
+```bash
+DATABASE_URL="postgres://application:secret_pass@database:5432/application?sslmode=disable"
+# or
+protocol://username:password@host:port/database_name?options
+
+#make note that instead of `database` you might need to tpye in `localhost` depending where you are running - on localhost or inside docker container/network
+
+```
+
+note: When connecting to Postgres, you may need to add the `sslmode=disable` option to your connection string, as dbmate by default requires a TLS connection (some other frameworks/languages allow unencrypted connections by default). For local stuff this is fine, for production workload it's best to serve the trafic over ssl - this is the default for dbmate.
+
+Now when we run:
+
+```sql
+SELECT * FROM pg_tables WHERE schemaname = 'public';
+```
+
+inside our database (google how to connect to your postgres instance) we should be able to see:
+
+```bash
+public,schema_migrations,application,,true,false,false,false
+public,message,application,,true,false,false,false
+
+```
+
+which tells us our `message` table got created. Yay! 
+
+Migrations done, time for...
+
+## ORMs and their shenanigans - pugSQL for the win
+
+We won't be using an ORM. Why? Just because! No real reason. 
+
+In my case I decided for this becase 
+
+1. pugsql is an awesome project with an awesome name 
+2. i need to refresh my sql knowledge
+3. it's good to get back to the basics
+4.  it allows you to have precise control over everything
+
+So in this project, we won't be using one. You can check out sqlmodel, sqlalchemy or whatever. I used sqlmodel in the past, but it's stuck in development, not supporting Pydantic v2. Tiangalo seems to have become a bottleneck not quite yet willing to give up control over his children to the community. Well, happens. Be it as it may, for now it ain't a viable choice.
+
+So.
+
+How does this thing work? Let me demonstrate with a simple example.
+
+We have our `db` directory, right? Well, inside we have 'migrations' directory, right? Now just create `queries/messages` next to it.
+
+```sql
+# db/queries/messages/select_all.sql
+-- :name select_all :many
+SELECT * FROM message ORDER BY created_at DESC
+
+# db/queries/messages/insert.sql
+-- :name insert :insert
+INSERT INTO message (model, role, message)
+VALUES (:model, :role, :message);
+
+```
+
+This sql should be quite self-explonatory, right?
+
+If not, in short it just either lists all messages or creates a new one.
+
+Now a bit of python:
+
+```python
+# app/db.py
+import pugsql
+
+messages_queries = pugsql.module("db/queries/messages")
+messages_connection = messages_queries.connect(settings.DATABASE_URL)
+
+```
+
+Now how to use it?
+
+```python
+from fastapi import APIRouter
+
+import openai
+from starlette.responses import StreamingResponse
+
+from app.chats.exceptions import OpenAIException
+from app.chats.models import Message, BaseMessage
+from app.chats.services import OpenAIService
+from app.db import messages_queries
+
+router = APIRouter(tags=["Chat Endpoints"])
 
 
-## Persistance - postgres & pugsql
+@router.get("/v1/messages")
+async def get_messages() -> list[Message]:
+    # a bit messy as we might want to move this to a service
+    return [Message(**message) for message in messages_queries.select_all()]
+```
 
-Persistance.
+or for create:
 
-PDF stack - PugSQL + dbMate + FastAPI.
+```python
+class OpenAIService:
+    @classmethod
+    async def chat_completion_without_streaming(cls, input_message: BaseMessage) -> Message:
+        completion: openai.ChatCompletion = await openai.ChatCompletion.acreate(
+            model=input_message.model,
+            api_key=settings.OPENAI_API_KEY,
+            messages=[{"role": ChatRolesEnum.USER.value, "content": input_message.message}],
+        )
+        logger.info(f"Got the following response: {completion}")
+        message = Message(
+            model=input_message.model,
+            message=cls.extract_response_from_completion(completion),
+            role=ChatRolesEnum.ASSISTANT.value
+        )
+        messages_queries.insert(model=message.model, message=message.message, role=message.role)
+        return message
+# or for saving the complete response after streaming:
 
-Todo.
+    async with async_timeout.timeout(settings.GENERATION_TIMEOUT_SEC):
+        try:
+            complete_response: str = ""
+            async for chunk in subscription:
+                # f-string is faster than concatenation so we use it here
+                complete_response = f"{complete_response}{Chunk.get_chunk_delta_content(chunk=chunk)}"
+                yield format_to_event_stream(post_processing(chunk))
+            message: Message = Message(model=chunk.model, message=complete_response, role=ChatRolesEnum.ASSISTANT.value)
+            messages_queries.insert(model=message.model, message=message.message, role=message.role)
+            logger.info(f"Complete Streamed Message: {message}")
+        except asyncio.TimeoutError:
+            raise OpenAIStreamTimeoutException
+```
+
+This is just an example.
+
+Try it out. Create a new completion, then for example try to list them.
+
+Bloody stuff works ay! We managed to:
+
+1. Set up migrations with pure SQL and dbMate
+2. Get ourselves a nice way to query our database without ORM using pugSQL
+3. See how we can ingest text data using fastembed
+4. And store it into qdrant
+5. Do very crude, but still RAG, using just openai and qdrant
+6. Enable streaming in our API
+7. Add persistance
+8. Prepare local development environment to be quite easy to bring up (1-click deployment)
+9. Include plenty of dev-ex tools
+
+BOOM. That's nice.
 
 
 
 
 
-## CI/CD and other processes
+## CI/CD and other processes - making life easier
+
+On top of what you already got, let's include a bit more stuff that will come in handy:
+
+```docker
+# Dockerfile
+FROM python:3.11.6 as server
+RUN curl -fsSL -o /usr/local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64 && \
+    chmod +x /usr/local/bin/dbmate
+RUN pip install --no-cache-dir --upgrade pip
+WORKDIR /project
+COPY /requirements/requirements.txt /project/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /project/requirements.txt
+COPY . /project
+CMD ["bash", "-c", "dbmate up & gunicorn -c settings/gunicorn.conf.py app.main:app"]
+
+```
+
+```yaml
+# pre-commit-config.yaml
+repos:
+-   repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+    - id: black
+      language_version: python3.11
+
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  rev: 'v0.0.274'
+  hooks:
+    - id: ruff
+      args: ["--fix"]
+
+```
+
+Makefile for utility stuff:
+
+```makefile
+PATH  := $(PATH)
+SHELL := /bin/bash
+
+black:
+	black .
+
+ruff:
+	ruff check . --fix
+
+lint:
+	make black
+	make ruff
+
+pre-commit:
+	pre-commit run --all-files
+
+test-without-clean:
+	set -o pipefail; \
+	pytest \
+	  --color=yes \
+	  --junitxml=pytest.xml \
+	  --cov-report=term-missing:skip-covered \
+	  --cov=app \
+	  tests \
+	  | tee pytest-coverage.txt
+
+test:
+	make test-without-clean
+	make clean
+
+upgrade:
+	make pip-compile-upgrade
+	make pip-compile-dev-upgrade
 
 
-We got most of the stuff ready, now what we want to do, is to customise a bit our linters config and so on:
+compile:
+	make pip-compile
+	make pip-compile-dev
+
+sync:
+	pip-sync requirements/requirements.txt
+sync-dev:
+	pip-sync requirements/requirements.txt requirements/requirements-dev.txt
+
+pip-compile:
+	pip-compile -o requirements/requirements.txt pyproject.toml
+pip-compile-dev:
+	pip-compile --extra dev -o requirements/requirements-dev.txt pyproject.toml
+
+pip-compile-upgrade:
+	pip-compile --strip-extras --upgrade -o requirements/requirements.txt pyproject.toml
+pip-compile-dev-upgrade:
+	pip-compile --extra dev --upgrade -o requirements/requirement-dev.txt pyproject.toml
+
+run:
+	python -m gunicorn -c settings/gunicorn.conf.py app.main:app
+
+run-dev:
+	python -m uvicorn --reload app.main:app
+
+clean:
+	rm -f pytest.xml
+	rm -f pytest-coverage.txt
+```
+
+(Now you can just do stuff like `make run-dev` or `make pip-compile` or `make sync`)
 
 ```toml
 [tool.black]
