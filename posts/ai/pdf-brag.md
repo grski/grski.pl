@@ -1492,4 +1492,14 @@ cython_debug/
 
 ## Summary
 
+Too tired to write it. This post was long af! 
+
 ## Homework - Ideas for further development
+
+1. add chat capabilities
+2. add the concept of a user to the application
+3. add registration
+4. add magic-link login for the user
+5. tie messages in 'chats'
+6. make chats assosciated with particular users
+7. what about context windows and their size? read about it
