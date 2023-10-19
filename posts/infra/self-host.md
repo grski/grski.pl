@@ -8,9 +8,8 @@ Language: en
 
 This will be a feisty juicy article, a bit controversial. I think more than a half of the users of the cloud/kubernetes would be better off without it. AWS should stand for `how to have people pay for our infra we need once per year during black friday and actually make money out of it`. Declouding is a nice trend I'm seeing now. 37signals have some good stuff on it. I'll ad my share as to why what has once been something cool has evolved into an abomination that often adds more complexity and problems than it brings, at least for some people. 
 
-```
+
 ![meme about the cloud](https://grski.pl/static/articles/cloud/fools.png)
-```
 
 Sure it has it's uses at a certain scale and so on. The problem is almost no one is at such a scale and never will be, but we are blindly following a trend, pretending it's not the reality. 
 
