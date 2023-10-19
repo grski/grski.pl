@@ -1,0 +1,593 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Stop going to the cloud and getting scammed. $200 infra to serve your startup till 100k monthly users in 15 minutes. Self-hosted Postgres, caddyserver and docker-compose FTW. - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="An example of how you can save money, simplify your architecture and speed up the development by going back to the basics and ditching the cloud, kubernetes and whatnot." />
+
+    <meta name="robots" content="index, follow">
+    <meta name="title" property="og:title" content="Stop going to the cloud and getting scammed. $200 infra to serve your startup till 100k monthly users in 15 minutes. Self-hosted Postgres, caddyserver and docker-compose FTW.">
+    <meta name="description" property="og:description" content="An example of how you can save money, simplify your architecture and speed up the development by going back to the basics and ditching the cloud, kubernetes and whatnot.">
+    <meta name="author" content="Olaf Górski">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="The Engineer - Olaf Górski">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2023-10-20T00:00:00Z" />
+    <meta property="og:published_time" content="2023-10-20T00:00:00Z" />
+    <meta property="article:published_time" content="2023-10-20T00:00:00Z" />
+    <meta property="article:modified_time" content="2023-10-20T00:00:00Z" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    The Engineer by Olaf Górski - on Python & AI
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2023-10-20</h3>
+                <h1 class="title"><a href="https://grski.pl/">Stop going to the cloud and getting scammed. $200 infra to serve your startup till 100k monthly users in 15 minutes. Self-hosted Postgres, caddyserver and docker-compose FTW.</a></h1>
+                <div class="content">
+                    <h2>STOP DOING CLOUD</h2>
+<p>This will be a feisty juicy article, a bit controversial. I think more than a half of the users of the cloud/kubernetes would be better off without it. AWS should stand for <code>how to have people pay for our infra we need once per year during black friday and actually make money out of it</code>. Declouding is a nice trend I'm seeing now. 37signals have some good stuff on it. I'll ad my share as to why what has once been something cool has evolved into an abomination that often adds more complexity and problems than it brings, at least for some people. </p>
+<div class="codehilite"><pre><span></span><code>![meme about the cloud](https://grski.pl/static/articles/cloud/fools.png)
+</code></pre></div>
+
+<p>Sure it has it's uses at a certain scale and so on. The problem is almost no one is at such a scale and never will be, but we are blindly following a trend, pretending it's not the reality. </p>
+<p>Why not try... Simplicty? Boring old stuff that just works, is easily debuggable and that even one person can grasp? </p>
+<p>No your startup with 100k monthly users probably doesn't need all the stuff AWS excells at. To be honest most of you will be fine running a single dedicated bare-metal server.</p>
+<p>Cloud pricing is unclear often, performance is not that dependable, especially on shared resources. To bring down costs you need to often sign up for long-term plans. So on so forth. Layers of abstractions upon abstractions.</p>
+<p>I still do use the cloud in some of my work, but there's an alternative people have forgotten about - actually hosting your shit. Owning your data. Your architecture. Everything. Today I'll show you an example how we can do that. In this article we will go through setting up a self-hosted postgres instance, replicated/scalable API, load balancer, automatic ssl management, simple deployment that can be automated in 10 minutes and lastly, we will do that for under $200 per month and within 15 minutes. With this setup in some cases I'd argue you can handle up to 1M monthly active users without a hitch. See why the cloud providers and gurus have...</p>
+<h2>They have played us for absolute fools.</h2>
+<p>In the article I assume you have a server running somewhere. Preferable a dedicated one. In my case it's 80 core 128 gb hetzner, that I got for $200 per month.</p>
+<p>Before starting let's install some utils we will need and update our server.</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>upgrade
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>gnupg2<span class="w"> </span>wget<span class="w"> </span>vim<span class="w"> </span>ca-certificates<span class="w"> </span>curl<span class="w"> </span>gnupg<span class="w"> </span>lsb-release
+</code></pre></div>
+
+<h2>Installing postgres</h2>
+<h3>Installing needed packages</h3>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo &quot;deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main&quot; &gt; /etc/apt/sources.list.d/pgdg.list&#39;</span>
+curl<span class="w"> </span>-fsSL<span class="w"> </span>https://www.postgresql.org/media/keys/ACCC4CF8.asc<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>gpg<span class="w"> </span>--dearmor<span class="w"> </span>-o<span class="w"> </span>/etc/apt/trusted.gpg.d/postgresql.gpg
+sudo<span class="w"> </span>apt-get<span class="w"> </span>--purge<span class="w"> </span>remove<span class="w"> </span>postgresql<span class="w"> </span>postgresql-*<span class="w"> </span><span class="c1"># IF YOU HAD POSTGRES PREVIOUSLY</span>
+sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>postgresql-16<span class="w"> </span>postgresql-contrib-16
+sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>postgresql
+sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>postgresql
+</code></pre></div>
+
+<p>Let's quickly walk through what we did here. We've added newest postgres repos so that our server knows what and where to install from. In case of ubuntu 22.04, the default postgres version that the distro repos come with is postgres 14. We want the new fancy shiny stuff, so we had to make that extra step.</p>
+<p>Then, we optionally uninstall previous postgres versions. I doubt you had any, but adding this step as it might be helpful for some of you. Be careful though. That <code>--purge</code> thing will purge a lot of stuff. Your data from databases included. If you want to ugprade from existing postgres installation, this guide is not for you.</p>
+<p>After that we update our sources and install postgres + some needed packages. </p>
+<p>Lastly we start the postgresql service and make it enabled - so it boots after startup. </p>
+<p>Now, we have to... Well, actually that's it. AWS marketers have done a good job in making you think installing and running a database was hard and a complex task. In some cases it is, indeed. But for the average IT Joe/startup? I wouldn't say so.</p>
+<h3>Creating new database and user</h3>
+<p>Now we need to do a little bit of setup on our database. In order to do that, let's connect to it using <code>psql</code>. How?</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>-u<span class="w"> </span>postgres<span class="w"> </span>psql
+</code></pre></div>
+
+<p>now you should see something like:</p>
+<div class="codehilite"><pre><span></span><code>psql<span class="w"> </span><span class="o">(</span><span class="m">16</span>.0<span class="w"> </span><span class="o">(</span>Ubuntu<span class="w"> </span><span class="m">16</span>.0-1.pgdg22.04+1<span class="o">))</span>
+Type<span class="w"> </span><span class="s2">&quot;help&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>help.
+
+<span class="nv">postgres</span><span class="o">=</span><span class="c1">#</span>
+</code></pre></div>
+
+<p>Boom. There we are. To test if our efforts in installing the newest postgres version have not failed, type:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">psql</span><span class="w"> </span><span class="p">(</span><span class="mi">16</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="p">(</span><span class="n">Ubuntu</span><span class="w"> </span><span class="mi">16</span><span class="p">.</span><span class="mi">0</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="n">pgdg22</span><span class="p">.</span><span class="mi">04</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+<span class="k">Type</span><span class="w"> </span><span class="ss">&quot;help&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">help</span><span class="p">.</span>
+
+<span class="n">postgres</span><span class="o">=#</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">version</span><span class="p">();</span>
+<span class="w">                                                              </span><span class="k">version</span>
+<span class="c1">-----------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="w"> </span><span class="n">PostgreSQL</span><span class="w"> </span><span class="mi">16</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="p">(</span><span class="n">Ubuntu</span><span class="w"> </span><span class="mi">16</span><span class="p">.</span><span class="mi">0</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="n">pgdg22</span><span class="p">.</span><span class="mi">04</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">x86_64</span><span class="o">-</span><span class="n">pc</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gnu</span><span class="p">,</span><span class="w"> </span><span class="n">compiled</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">gcc</span><span class="w"> </span><span class="p">(</span><span class="n">Ubuntu</span><span class="w"> </span><span class="mi">11</span><span class="p">.</span><span class="mi">4</span><span class="p">.</span><span class="mi">0</span><span class="o">-</span><span class="mi">1</span><span class="n">ubuntu1</span><span class="o">~</span><span class="mi">22</span><span class="p">.</span><span class="mi">04</span><span class="p">)</span><span class="w"> </span><span class="mi">11</span><span class="p">.</span><span class="mi">4</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="o">-</span><span class="nb">bit</span>
+<span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="p">)</span>
+</code></pre></div>
+
+<p>As you can see, <code>PostgreSQL 16.0</code>. Congrats, we made it brahs. </p>
+<p>Currently you are inside your postgres, running as the default allmighty postgres user on postgres database. Now - we DO NOT EVER want to run our apps on this database. Don't be a lazy bum. It's a big security breach potentailly. So what do we do instead one might ask? That is a trivial question - we need to create a seprate database and a separate user for that database. Usually you have separate db (or multiple dbs actually) for an app/service couple with user just for that db.</p>
+<p>That way if someone ever manages to break into your DB, in case you are hosting multiple dbs with data from multiple apps, they only get access to that one particular db. Is it hard? Nope. Check this out:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">postgres</span><span class="o">=#</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">yourdbname</span><span class="p">;</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span>
+<span class="n">postgres</span><span class="o">=#</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">youruser</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">ENCRYPTED</span><span class="w"> </span><span class="n">PASSWORD</span><span class="w"> </span><span class="s1">&#39;yourpass&#39;</span><span class="p">;</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">ROLE</span>
+<span class="n">postgres</span><span class="o">=#</span><span class="w"> </span><span class="k">GRANT</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">PRIVILEGES</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">yourdbname</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">youruser</span><span class="p">;</span>
+<span class="k">GRANT</span>
+<span class="n">postgres</span><span class="o">=#</span><span class="w"> </span><span class="k">ALTER</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">yourdbname</span><span class="w"> </span><span class="k">OWNER</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">youruser</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">DATABASE</span>
+</code></pre></div>
+
+<p>We created a new user with a particular password, created a new database. Then we assigned the user privilages to perform all operations on said database, but only on that database.</p>
+<p>The last line is needed because we created the database as the postgres user. Which means that while the user can perform actions on the database, he can only perform actions on the database objects that are his own. Because we created the database as the postgres user, and during db creation it gets created with some default schemas/tables, by default the owner of these is the user that created it. In our case - postgres. So other than allowing our new user to perform any action on the said database, we need to now make him an owner of the stuff that's already existing in the database so he can modify it too if needed, and it will be. </p>
+<p>By the way interesting concept right? Even when you create an empty database, it's already populated with some stuff, so it ain't empty. IT, right?</p>
+<p>That's pretty much it. Or is it? </p>
+<h3>Connecting to postgres from outside of localhost</h3>
+<p>Postgres, by default, only allows you to connect to itself from localhost/local machine to simplify. Meaning - any connections from other ips, networks etc. will be rejected. It's a very needed security measure that prevents random people from the internet to try and brute force their way into your database. That is the last thing you want.</p>
+<p>However we live in a world where everything is running in a container. Containers have their own networks (usually) and when we make requests from inside of the container, the network we are in will be a bit different, meaning we won't be 'marked' as localhost, which in turn currently will make postgres reject our connection, even if we specify correct credentials.</p>
+<p>I know it may sound tricky - how come, we are on the same machine, local machine. Why is our request treated as it isn't? This relats to how docker, containers and their networking works. Docker has it's own private network for all the stuff it does, sometimes sharing it with the host (in the host network mode) or having a 'bridge' that acts as a, well, bridge, between the local network and docker network, which allows you to, for example, call services hosted on the host machine, from within docker container.</p>
+<p>This way you can have multiple docker containers or docker-composes running, some of which internally are using the same ports, without conflicts and so on. They are usually put in other networks created eg. per docker-compose (unless you specify otherwise).</p>
+<p>It's a great thing, however in this case it complicates stuff for us, but not by much. What do we have to do?</p>
+<p>Well, first of all, install docker! It'll come in handy, right?</p>
+<h2>Installing docker on ubuntu 22.04</h2>
+<p>First off, again - if you tried to install something before hand you might want to do this to purge everything and have a clean slate. Again - be careful.</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>remove<span class="w"> </span>docker-desktop
+rm<span class="w"> </span>-r<span class="w"> </span><span class="nv">$HOME</span>/.docker/desktop
+sudo<span class="w"> </span>rm<span class="w"> </span>/usr/local/bin/com.docker.cli
+sudo<span class="w"> </span>apt<span class="w"> </span>purge<span class="w"> </span>docker-desktop
+</code></pre></div>
+
+<p>Once we have that, we will add new sources to our repos, this time for docker, similarly as we did for our postgres.</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://download.docker.com/linux/ubuntu/gpg<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>gpg<span class="w"> </span>--dearmor<span class="w"> </span>-o<span class="w"> </span>/etc/apt/keyrings/docker.gpg
+<span class="nb">echo</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;deb [arch=</span><span class="k">$(</span>dpkg<span class="w"> </span>--print-architecture<span class="k">)</span><span class="s2"> signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \</span>
+<span class="s2">  </span><span class="k">$(</span>lsb_release<span class="w"> </span>-cs<span class="k">)</span><span class="s2"> stable&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/apt/sources.list.d/docker.list<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+sudo<span class="w"> </span>apt<span class="w"> </span>update
+</code></pre></div>
+
+<p>Now, let's see what versions are available to us:</p>
+<div class="codehilite"><pre><span></span><code>apt-cache<span class="w"> </span>madison<span class="w"> </span>docker-ce<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{ print $3 }&#39;</span>
+<span class="m">5</span>:24.0.6-1~ubuntu.22.04~jammy
+<span class="m">5</span>:24.0.5-1~ubuntu.22.04~jammy
+<span class="m">5</span>:24.0.4-1~ubuntu.22.04~jammy
+<span class="m">5</span>:24.0.3-1~ubuntu.22.04~jammy
+<span class="m">5</span>:24.0.2-1~ubuntu.22.04~jammy
+<span class="m">5</span>:24.0.1-1~ubuntu.22.04~jammy
+<span class="m">5</span>:24.0.0-1~ubuntu.22.04~jammy
+<span class="m">5</span>:23.0.6-1~ubuntu.22.04~jammy
+<span class="m">5</span>:23.0.5-1~ubuntu.22.04~jammy
+<span class="m">5</span>:23.0.4-1~ubuntu.22.04~jammy
+<span class="m">5</span>:23.0.3-1~ubuntu.22.04~jammy
+<span class="m">5</span>:23.0.2-1~ubuntu.22.04~jammy
+<span class="m">5</span>:23.0.1-1~ubuntu.22.04~jammy
+<span class="o">(</span>...<span class="o">)</span>
+</code></pre></div>
+
+<p>I decided to go with the newest one, if you for some reason want to install another, feel free.</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">VERSION_STRING</span><span class="o">=</span><span class="m">5</span>:24.0.6-1~ubuntu.22.04~jammy
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>docker-ce<span class="o">=</span><span class="nv">$VERSION_STRING</span><span class="w"> </span>docker-ce-cli<span class="o">=</span><span class="nv">$VERSION_STRING</span><span class="w"> </span>containerd.io<span class="w"> </span>docker-compose-plugin
+</code></pre></div>
+
+<p>aaand done. Let's test our docker installation.</p>
+<div class="codehilite"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>hello-world
+Unable<span class="w"> </span>to<span class="w"> </span>find<span class="w"> </span>image<span class="w"> </span><span class="s1">&#39;hello-world:latest&#39;</span><span class="w"> </span>locally
+latest:<span class="w"> </span>Pulling<span class="w"> </span>from<span class="w"> </span>library/hello-world
+719385e32844:<span class="w"> </span>Pull<span class="w"> </span><span class="nb">complete</span>
+Digest:<span class="w"> </span>sha256:88ec0acaa3ec199d3b7eaf73588f4518c25f9d34f58ce9a0df68429c5af48e8d
+Status:<span class="w"> </span>Downloaded<span class="w"> </span>newer<span class="w"> </span>image<span class="w"> </span><span class="k">for</span><span class="w"> </span>hello-world:latest
+
+Hello<span class="w"> </span>from<span class="w"> </span>Docker!
+This<span class="w"> </span>message<span class="w"> </span>shows<span class="w"> </span>that<span class="w"> </span>your<span class="w"> </span>installation<span class="w"> </span>appears<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>working<span class="w"> </span>correctly.
+
+To<span class="w"> </span>generate<span class="w"> </span>this<span class="w"> </span>message,<span class="w"> </span>Docker<span class="w"> </span>took<span class="w"> </span>the<span class="w"> </span>following<span class="w"> </span>steps:
+<span class="w"> </span><span class="m">1</span>.<span class="w"> </span>The<span class="w"> </span>Docker<span class="w"> </span>client<span class="w"> </span>contacted<span class="w"> </span>the<span class="w"> </span>Docker<span class="w"> </span>daemon.
+<span class="w"> </span><span class="m">2</span>.<span class="w"> </span>The<span class="w"> </span>Docker<span class="w"> </span>daemon<span class="w"> </span>pulled<span class="w"> </span>the<span class="w"> </span><span class="s2">&quot;hello-world&quot;</span><span class="w"> </span>image<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>Docker<span class="w"> </span>Hub.
+<span class="w">    </span><span class="o">(</span>amd64<span class="o">)</span>
+<span class="w"> </span><span class="m">3</span>.<span class="w"> </span>The<span class="w"> </span>Docker<span class="w"> </span>daemon<span class="w"> </span>created<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>container<span class="w"> </span>from<span class="w"> </span>that<span class="w"> </span>image<span class="w"> </span>which<span class="w"> </span>runs<span class="w"> </span>the
+<span class="w">    </span>executable<span class="w"> </span>that<span class="w"> </span>produces<span class="w"> </span>the<span class="w"> </span>output<span class="w"> </span>you<span class="w"> </span>are<span class="w"> </span>currently<span class="w"> </span>reading.
+<span class="w"> </span><span class="m">4</span>.<span class="w"> </span>The<span class="w"> </span>Docker<span class="w"> </span>daemon<span class="w"> </span>streamed<span class="w"> </span>that<span class="w"> </span>output<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>Docker<span class="w"> </span>client,<span class="w"> </span>which<span class="w"> </span>sent<span class="w"> </span>it
+<span class="w">    </span>to<span class="w"> </span>your<span class="w"> </span>terminal.
+
+To<span class="w"> </span>try<span class="w"> </span>something<span class="w"> </span>more<span class="w"> </span>ambitious,<span class="w"> </span>you<span class="w"> </span>can<span class="w"> </span>run<span class="w"> </span>an<span class="w"> </span>Ubuntu<span class="w"> </span>container<span class="w"> </span>with:
+<span class="w"> </span>$<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>ubuntu<span class="w"> </span>bash
+
+Share<span class="w"> </span>images,<span class="w"> </span>automate<span class="w"> </span>workflows,<span class="w"> </span>and<span class="w"> </span>more<span class="w"> </span>with<span class="w"> </span>a<span class="w"> </span>free<span class="w"> </span>Docker<span class="w"> </span>ID:
+<span class="w"> </span>https://hub.docker.com/
+
+For<span class="w"> </span>more<span class="w"> </span>examples<span class="w"> </span>and<span class="w"> </span>ideas,<span class="w"> </span>visit:
+<span class="w"> </span>https://docs.docker.com/get-started/
+</code></pre></div>
+
+<p>Seems to be working. How about <code>docker-compose</code>?</p>
+<div class="codehilite"><pre><span></span><code>docker-compose
+Command<span class="w"> </span><span class="s1">&#39;docker-compose&#39;</span><span class="w"> </span>not<span class="w"> </span>found,<span class="w"> </span>but<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>installed<span class="w"> </span>with:
+apt<span class="w"> </span>install<span class="w"> </span>docker-compose
+</code></pre></div>
+
+<p>Not there, weird? Nope. Some of you might be still used to the old <code>docker-compose</code> thingy, however some time ago it got moved to be a part of the docker itself, which means that now instead of <code>docker-compose</code> you do:</p>
+<div class="codehilite"><pre><span></span><code>docker<span class="w"> </span>compose
+
+Usage:<span class="w">  </span>docker<span class="w"> </span>compose<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND
+
+Define<span class="w"> </span>and<span class="w"> </span>run<span class="w"> </span>multi-container<span class="w"> </span>applications<span class="w"> </span>with<span class="w"> </span>Docker.
+</code></pre></div>
+
+<p>Alright! We set. Almost.</p>
+<p>Currently, if you sshed on a clean server, which I assume you did, you are running as the root user. You can check this by typing:</p>
+<div class="codehilite"><pre><span></span><code>whoami
+root
+</code></pre></div>
+
+<p>The problem with that is similar to the situation with our postgres and the almighty postgres user. </p>
+<p>Ideally, we do not want to run our containers as root, to prevent attackers from being able to do bad stuff to the whole server. Let's create a new user where we will be running our containers. You can have user per app or service, but not sure if you need that. Just not running on root is usually good enough.</p>
+<p>How?</p>
+<h3>Running docker on non-user or rootless docker</h3>
+<p>That's all quite simple.</p>
+<p>We need to create a new user, add it to the sudoers grup, set a password for it and lastly add it to the docker group. In our case we will create a prod user and then add it to the sudo group and docker group.</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>useradd<span class="w"> </span>prod
+sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> </span>prod
+sudo<span class="w"> </span>passwd<span class="w"> </span>prod
+sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>docker<span class="w"> </span>docker
+</code></pre></div>
+
+<p>That's quite much it for now.</p>
+<h3>Enabling docker containers to connect to host postgres</h3>
+<p>The sane way. Some people deal with the issue described before, the one regarding connections from outside of localhost, by allowing <code>*</code> which means any and all networks/ips. This is a NO GO for production, really. The sane way is, as mentioned, to only allow specific networks. In our case docker network. How to do that?</p>
+<p>We have to find out what is the local ip address that our docker network got assigned and simply allow traffic from that network to access. Sounds tricky, but ain't.</p>
+<p>Now, before we proceed, I'm not that proficient in networking to be frank. Which means that my solution, while working, might not be the ideal one. Happy for feedback from someone more knowledgeable in the topic.</p>
+<p>We want to add our docker network to those permitted inside our postgres. This implies we need to know the docker network address. How to get it?</p>
+<div class="codehilite"><pre><span></span><code>ip<span class="w"> </span>addr<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>docker
+<span class="m">3</span>:<span class="w"> </span>docker0:<span class="w"> </span>&lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt;<span class="w"> </span>mtu<span class="w"> </span><span class="m">1500</span><span class="w"> </span>qdisc<span class="w"> </span>noqueue<span class="w"> </span>state<span class="w"> </span>DOWN<span class="w"> </span>group<span class="w"> </span>default
+<span class="w">    </span>inet<span class="w"> </span><span class="m">172</span>.17.0.1/16<span class="w"> </span>brd<span class="w"> </span><span class="m">172</span>.17.255.255<span class="w"> </span>scope<span class="w"> </span>global<span class="w"> </span>docker0
+</code></pre></div>
+
+<p><code>172.17.0.1</code> in this case is the network address we need. It'll probably be the same in your case, but doesn't have to be. Now that we have it, let's move on. How to edit postgres config?</p>
+<p>First, my young padawan, we will need to find the location of our postgresql.conf file - which, surprisingly, is the file used to configure postgres.</p>
+<p>We can do that with:</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>find<span class="w"> </span>/<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-name<span class="w"> </span>postgresql.conf
+/etc/postgresql/16/main/postgresql.conf
+</code></pre></div>
+
+<p>In my case it's in <code>/etc/postgresql/16/main/postgresql.conf</code>. The probability of it being the same for you, if you are running ubuntu 22.04 and followed this guide, as the probability of us living in a simulation or being at the beginning of an AI bubble. Get back to the topic Olaf. Gosh.</p>
+<p>Okay, we know where the file is, we need to edit it. Type in:</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>vim<span class="w"> </span>/etc/postgresql/16/main/postgresql.conf
+</code></pre></div>
+
+<p>and look for <code>listen_addresses</code> part. In vim you can do a search by typing <code>/{phrase}</code> so <code>/listen_addresses</code> should navigate you to the proper line. In my case it looks like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">#</span><span class="nx">listen_addresses</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="err">&#39;</span><span class="nx">localhost</span><span class="err">&#39;</span><span class="w">         </span><span class="err">#</span><span class="w"> </span><span class="nx">what</span><span class="w"> </span><span class="nx">IP</span><span class="w"> </span><span class="nx">address</span><span class="p">(</span><span class="nx">es</span><span class="p">)</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">listen</span><span class="w"> </span><span class="nx">on</span><span class="p">;</span>
+</code></pre></div>
+
+<p>we need to uncomment the line and edit it so it allows connections from our docker network ip. So:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">listen_addresses</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;localhost,172.17.0.1&quot;</span>
+</code></pre></div>
+
+<p>then <code>:wq</code> and done.</p>
+<p>Now we also need to edit <code>pg_hba.conf</code> to also allow this particular network to acces our database while authenticating with a password.</p>
+<p>First let's find it:</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>find<span class="w"> </span>/<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-name<span class="w"> </span>pg_hba.conf
+/etc/postgresql/16/main/pg_hba.conf
+</code></pre></div>
+
+<p>and edit it with:</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>vim<span class="w"> </span>/etc/postgresql/16/main/pg_hba.conf
+</code></pre></div>
+
+<p>now again, navigate to a section containing "IPv4 local connections":</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># IPv4 local connections:</span>
+host<span class="w">    </span>all<span class="w">             </span>all<span class="w">             </span><span class="m">127</span>.0.0.1/32<span class="w">            </span>scram-sha-256
+<span class="c1"># IPv6 local connections:</span>
+host<span class="w">    </span>all<span class="w">             </span>all<span class="w">             </span>::1/128<span class="w">                 </span>scram-sha-256
+</code></pre></div>
+
+<p>we need to edit the IPv4 section to look like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># IPv4 local connections:</span>
+host<span class="w">    </span>all<span class="w">             </span>all<span class="w">             </span><span class="m">127</span>.0.0.1/32<span class="w">            </span>scram-sha-256
+host<span class="w">    </span>all<span class="w">             </span>all<span class="w">             </span><span class="m">172</span>.17.0.0/16<span class="w">           </span>scram-sha-256
+</code></pre></div>
+
+<p>What does the /16 after the netowrk address mean? Match the first 16 bytes of the address, so the 2 first. numbers, rest can change.</p>
+<p>Now, let's restart our postgres.</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>/etc/init.d/postgresql<span class="w"> </span>restart
+</code></pre></div>
+
+<p>Important note. You might need to add something like this to your docker-compose:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="nt">extra_hosts</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;host.docker.internal:172.17.0.1&quot;</span>
+</code></pre></div>
+
+<p>For each service that will access it, and edit the connection string for postgres host to be: host.docker.internal. Either that or just use 172.17.0.1 value directly.</p>
+<p>With docker and postgres set up, the world is yours to take. But is this it? I wouldn't be myself if i just ended with this. Let's take it up a notch. I mean we usually want to have something in front of our API, some reverse proxy, maybe capability to scale, have multiple replicas and so on. Performance and scaling stuff. Simple solution for that too.</p>
+<h2>BUT MUH SCALABILITY, LOAD BALANCING, SSL and whatnot</h2>
+<p>Ye I hear you, all the folks with 1k monthly active users, serving up to 2 requests per second, usually screaming about scalability the loudest. WHERE"S KUBERNETES? WHERE"S MY CLOUD SCALING STUFF, REEE!!one! AND THE DEVOPS TEAM? ARE YOU A FOOL?</p>
+<p>I'll give you some love too, fret not.</p>
+<p>For the database, the case is simple. With a dedicated bare metal server that I recommend you get, unless you do some horrendeous things in the schema or query, well, you can handle TONS of data &amp; traffic on a single machine.With just one instance of $200 ARM Hetzner with 80 dedicated cores, 128 GB of RAM, 2TB NVME PCIe SSD, how much more do you need in most cases? </p>
+<p>Yeah, availability zones and so on, but let's take a step back. How many of you are truly running multi region &amp; multi availability zones DB deployments? HMMM? Thought so. Sorry to break it to you, but hype/conference driven development isn't the only way to go. I'd argue that at least 90-95% of current startups could probably run just fine with this single instance only. Okay, maybe some of you would need something like S3 (Cloudflare R2 maybe?). Outgrowing this setup will probably mean you already got enough tracton, customers and money to actually start your own colocation thingy with a dedicated team. Backups? Survavibility? We'll talk about that part later.</p>
+<p>So, in this post, we won't cover how to horizontally scale the db, as I think it's simply not needed for the audience i target this too. What is needed though, is probably replication of the apis/scaling them and then reverse proxy/managing ssl/load balancing. That's what we will do. Let's start with replicating our api to an arbitrary size. How can we do that?</p>
+<p>Docker-compose lol.</p>
+<h2>Ditch Kubernetes, docker compose for the win</h2>
+<p>This part will be quite short, sweet and simple. Probably not many of you know, but docker compose supports replication out of the box. Why wouldn't it. How do we go about it?</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="nt">api</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">database</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service_healthy</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+<span class="w">    </span><span class="nt">deploy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8000-8003:8000&quot;</span>
+</code></pre></div>
+
+<p>the key part here being:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="nt">deploy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8000-8003:8000&quot;</span>
+</code></pre></div>
+
+<p>after that, just do <code>docker compose up</code>. And then boom. You done. Multiple replicas of your api service up and running. With 4 lines of code, 2 of them you already probably have in your code.</p>
+<p>Remember what we said - we do not want to run docker as root, so ssh/login into the user we created <code>prod</code> for this purpose.</p>
+<p>once you there, just clone the repo and docker compose up.</p>
+<p>You'll be amazed how fast the deployments can happen. Also about the secrets. 1password offers some nice options here for such use cases, or in fact, you can even just create .env file, specify it in the docker-compose and be done with it.</p>
+<p>Logs can be easily checked with a simple <code>docker compose logs</code> + docker saves them to a file iether way.</p>
+<p>But, what about load balancing, reverse proxy and ssl stuff? </p>
+<h2>Load Balancing &amp; automatic ssl with Caddyserver</h2>
+<p>We will use caddyserver to act as a reverse proxy, load balancer and to automatically take care of the certificates for us. It's a bit less performant than nginx, true, but the ease of use and convenience it provides is well worth it. That plus usually it's not the proxy that will die first. Quite the opposite.</p>
+<p>So how do we go about this? Probably complicated? Nope.</p>
+<p>We will let ansible handle all the work for us. Ansible? Yes, you read that right. Not terraform.</p>
+<p>In order to do that we will need to create a new user for our ansible to run on, enable ssh access and do a bit of ansible dev. Let's go. You already know the drill.</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>useradd<span class="w"> </span>ingres
+sudo<span class="w"> </span>passwd<span class="w"> </span>ingres
+sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> </span>ingres
+</code></pre></div>
+
+<p>Now, a small change to what we did before.</p>
+<p>We make sure our user can do sudo operations without password. How?</p>
+<div class="codehilite"><pre><span></span><code>visudo
+</code></pre></div>
+
+<p>then find this piece:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># User privilege specification</span>
+root<span class="w">    </span><span class="nv">ALL</span><span class="o">=(</span>ALL:ALL<span class="o">)</span><span class="w"> </span>ALL
+</code></pre></div>
+
+<p>and add this below (or at the bottom of the file):</p>
+<div class="codehilite"><pre><span></span><code>ingres<span class="w"> </span><span class="nv">ALL</span><span class="o">=(</span>ALL<span class="o">)</span><span class="w"> </span>NOPASSWD:<span class="w"> </span>ALL
+</code></pre></div>
+
+<p>We could be more granular about permissions here and what it has access to, but that could come in a 2nd iteration, I consider this good enough.</p>
+<p>Let's enable SSH access now. This might not be needed on your machine, depends on the server. I had to do it on my hetzner.</p>
+<p>We need to edit the sshd_config file. How to find where it is? You should know by now ;) </p>
+<div class="codehilite"><pre><span></span><code>vim<span class="w"> </span>/etc/ssh/sshd_config
+</code></pre></div>
+
+<p>and find something like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">#AuthorizedKeysFile      .ssh/authorized_keys</span>
+</code></pre></div>
+
+<p>turn it into:</p>
+<div class="codehilite"><pre><span></span><code>AuthorizedKeysFile<span class="w">      </span>.ssh/authorized_keys
+AllowUsers<span class="w"> </span>root<span class="w"> </span>prod<span class="w"> </span>dev
+</code></pre></div>
+
+<p>add your ssh key to <code>/home/ingres/.ssh/authorized_keys</code> in order to do that and eg. add the same ssh key you use for your root account (not ideal):</p>
+<p>```bashand lastly:
+su ingres  # we switch the user to make it the owner of the directory we create
+mkdir -p /home/ingres/.ssh
+cat ~/.ssh/authorized_keys &gt; /home/ingres/.ssh/authorized_keys</p>
+<div class="codehilite"><pre><span></span><code>aaand lastly:
+
+```bash
+service sshd restart
+</code></pre></div>
+
+<p>Setup done. Time to install caddy with ansible. But before that, we need to setup ansible.</p>
+<p>I'll assume you have pyenv installed and set up running on your local machine. You can read about that <a href="https://grski.pl/pyenv-en">here</a> in my article, or <a href="https://grski.pl/pdf-brag">here</a>.</p>
+<p>With that we can:</p>
+<div class="codehilite"><pre><span></span><code>pyenv<span class="w"> </span>virtualenv<span class="w"> </span><span class="m">3</span>.11<span class="w"> </span>infrastructure-deployment-3-11
+mkdir<span class="w"> </span>infrastructure-deployment
+<span class="nb">cd</span><span class="w"> </span>infrastructure-deployment
+pyenv<span class="w"> </span><span class="nb">local</span><span class="w"> </span>infrastructure-deployment-3-11
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>ansible
+</code></pre></div>
+
+<p>Pyenv set up. Ansible set up. We will need one more thing - install custom role from ansible galaxy.</p>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>ansible<span class="w"> </span>galaxy<span class="w"> </span>role<span class="w"> </span>install<span class="w"> </span>caddy_ansible.caddy_ansible<span class="w">  </span>
+</code></pre></div>
+
+<p>Now inside our <code>infrastructure-deployment</code> directory on our local machine create a file called <code>inventory.yml</code></p>
+<div class="codehilite"><pre><span></span><code><span class="nt">all</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">bare-metal-hetzner</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">ansible_host</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your-host-ip&quot;</span>
+<span class="w">      </span><span class="nt">ansible_user</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ingres&quot;</span>
+<span class="w">      </span><span class="nt">ansible_port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22</span>
+</code></pre></div>
+
+<p>aaand <code>caddy_install.yml</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nn">---</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install Caddy Server</span>
+<span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<span class="w">  </span><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">roles</span><span class="p">:</span>
+<span class="w">     </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">caddy_ansible.caddy_ansible</span>
+<span class="w">       </span><span class="nt">caddy_conf_filename</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Caddyfile</span>
+<span class="w">       </span><span class="nt">caddy_update</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">       </span><span class="nt">caddy_systemd_capabilities_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">       </span><span class="nt">caddy_systemd_capabilities</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;CAP_NET_BIND_SERVICE&quot;</span>
+<span class="w">       </span><span class="nt">caddy_config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">your-fancy-startup-domain.com {                 </span>
+<span class="w">          </span><span class="no"># Compress responses according to Accept-Encoding headers</span>
+<span class="w">          </span><span class="no">encode gzip zstd</span>
+
+<span class="w">          </span><span class="no"># Send API requests to backend</span>
+<span class="w">          </span><span class="no">reverse_proxy 127.0.0.1:8000 127.0.0.1:8301 127.0.0.1:8302 127.0.0.1:8303</span>
+<span class="w">        </span><span class="no">}</span>
+</code></pre></div>
+
+<p>run </p>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>ansible<span class="w"> </span>playbook<span class="w"> </span>-i<span class="w"> </span>inventory.yml<span class="w"> </span>caddy_install.yml<span class="w">   </span>
+</code></pre></div>
+
+<p>aaand done.</p>
+<p>Now if you go to your-fancy-startup-domain.com, given that proper docker containers are running, you'll get them.</p>
+<p>Automatic SSL. Automatic load balancing. EVERYTHING WORKS.</p>
+<h2>BACKUPS, SURVAVIBILITY</h2>
+<p>You can have hourly backups with BorgBackup. How? Brilliant tutorial can be found in <a href="https://community.hetzner.com/tutorials/install-and-configure-borgbackup">hetzner docs</a>. Go read them.</p>
+<p>On top of that add $4 1 TB <a href="https://www.hetzner.com/storage/storage-box">Hetzner Storage Box</a> linked to your server. Boom. Done. You might want to think about adding pg_dump, but IMO just the BorgBackup for starters is ok.</p>
+<p>My borg-backup script looks more or less like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="c1">#!/bin/sh</span>
+<span class="c1"># First init the repo</span>
+<span class="c1"># ssh -p23 ssh://xxxxx.your-storagebox.de mkdir /home/backup</span>
+<span class="c1"># ssh -p23 ssh://xxxxx@xxxxx.your-storagebox.de mkdir /home/backup/main</span>
+<span class="c1"># borg init --encryption=repokey ssh://xxxxx@xxxxx.your-storagebox.de:23/~/backup/main</span>
+<span class="c1"># Setting this, so the repo does not need to be given on the commandline:</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BORG_REPO</span><span class="o">=</span>ssh://x@x.your-storagebox.de:23/~/backup/main
+
+<span class="c1"># See the section &quot;Passphrase notes&quot; for more infos.</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BORG_PASSPHRASE</span><span class="o">=</span>
+
+<span class="c1"># some helpers and error handling:</span>
+info<span class="o">()</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;\n%s %s\n\n&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="w"> </span>date<span class="w"> </span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$*</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span><span class="p">;</span><span class="w"> </span><span class="o">}</span>
+<span class="nb">trap</span><span class="w"> </span><span class="s1">&#39;echo $( date ) Backup interrupted &gt;&amp;2; exit 2&#39;</span><span class="w"> </span>INT<span class="w"> </span>TERM
+
+info<span class="w"> </span><span class="s2">&quot;Starting backup&quot;</span>
+
+<span class="c1"># Backup the most important directories into an archive named after</span>
+<span class="c1"># the machine this script is currently running on:</span>
+
+borg<span class="w"> </span>create<span class="w">                         </span><span class="se">\</span>
+<span class="w">    </span>--verbose<span class="w">                       </span><span class="se">\</span>
+<span class="w">    </span>--filter<span class="w"> </span>AME<span class="w">                    </span><span class="se">\</span>
+<span class="w">    </span>--list<span class="w">                          </span><span class="se">\</span>
+<span class="w">    </span>--stats<span class="w">                         </span><span class="se">\</span>
+<span class="w">    </span>--show-rc<span class="w">                       </span><span class="se">\</span>
+<span class="w">    </span>--compression<span class="w"> </span>lz4<span class="w">               </span><span class="se">\</span>
+<span class="w">    </span>--exclude-caches<span class="w">                </span><span class="se">\</span>
+<span class="w">    </span>--exclude<span class="w"> </span><span class="s1">&#39;home/*/.cache/*&#39;</span><span class="w">     </span><span class="se">\</span>
+<span class="w">    </span>--exclude<span class="w"> </span><span class="s1">&#39;var/tmp/*&#39;</span><span class="w">           </span><span class="se">\</span>
+<span class="w">    </span>--exclude<span class="w"> </span><span class="s1">&#39;*__pycache__*&#39;</span><span class="w">       </span><span class="se">\</span>
+<span class="w">    </span>--exclude<span class="w"> </span><span class="s1">&#39;*.pyenv*&#39;</span><span class="w">            </span><span class="se">\</span>
+<span class="w">                                    </span><span class="se">\</span>
+<span class="w">    </span>::<span class="s1">&#39;{hostname}-{now}&#39;</span><span class="w">            </span><span class="se">\</span>
+<span class="w">    </span>/etc<span class="w">                            </span><span class="se">\</span>
+<span class="w">    </span>/home<span class="w">                           </span><span class="se">\</span>
+<span class="w">    </span>/root<span class="w">                           </span><span class="se">\</span>
+<span class="w">    </span>/var
+
+<span class="nv">backup_exit</span><span class="o">=</span><span class="nv">$?</span>
+
+info<span class="w"> </span><span class="s2">&quot;Pruning repository&quot;</span>
+
+<span class="c1"># Use the `prune` subcommand to maintain 7 daily, 4 weekly and 6 monthly</span>
+<span class="c1"># archives of THIS machine. The &#39;{hostname}-*&#39; matching is very important to</span>
+<span class="c1"># limit prune&#39;s operation to this machine&#39;s archives and not apply to</span>
+<span class="c1"># other machines&#39; archives also:</span>
+
+borg<span class="w"> </span>prune<span class="w">                          </span><span class="se">\</span>
+<span class="w">    </span>--list<span class="w">                          </span><span class="se">\</span>
+<span class="w">    </span>--glob-archives<span class="w"> </span><span class="s1">&#39;{hostname}-*&#39;</span><span class="w">  </span><span class="se">\</span>
+<span class="w">    </span>--show-rc<span class="w">                       </span><span class="se">\</span>
+<span class="w">    </span>--keep-daily<span class="w">    </span><span class="m">7</span><span class="w">               </span><span class="se">\</span>
+<span class="w">    </span>--keep-weekly<span class="w">   </span><span class="m">4</span><span class="w">               </span><span class="se">\</span>
+<span class="w">    </span>--keep-monthly<span class="w">  </span><span class="m">6</span>
+
+<span class="nv">prune_exit</span><span class="o">=</span><span class="nv">$?</span>
+
+<span class="c1"># actually free repo disk space by compacting segments</span>
+
+info<span class="w"> </span><span class="s2">&quot;Compacting repository&quot;</span>
+
+borg<span class="w"> </span>compact
+
+<span class="nv">compact_exit</span><span class="o">=</span><span class="nv">$?</span>
+
+<span class="c1"># use highest exit code as global exit code</span>
+<span class="nv">global_exit</span><span class="o">=</span><span class="k">$((</span><span class="w"> </span><span class="nv">backup_exit</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">prune_exit</span><span class="w"> </span>?<span class="w"> </span><span class="nv">backup_exit</span><span class="w"> </span>:<span class="w"> </span><span class="nv">prune_exit</span><span class="w"> </span><span class="k">))</span>
+<span class="nv">global_exit</span><span class="o">=</span><span class="k">$((</span><span class="w"> </span><span class="nv">compact_exit</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">global_exit</span><span class="w"> </span>?<span class="w"> </span><span class="nv">compact_exit</span><span class="w"> </span>:<span class="w"> </span><span class="nv">global_exit</span><span class="w"> </span><span class="k">))</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="si">${</span><span class="nv">global_exit</span><span class="si">}</span><span class="w"> </span>-eq<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span>info<span class="w"> </span><span class="s2">&quot;Backup, Prune, and Compact finished successfully&quot;</span>
+<span class="k">elif</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="si">${</span><span class="nv">global_exit</span><span class="si">}</span><span class="w"> </span>-eq<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span>info<span class="w"> </span><span class="s2">&quot;Backup, Prune, and/or Compact finished with warnings&quot;</span>
+<span class="k">else</span>
+<span class="w">    </span>info<span class="w"> </span><span class="s2">&quot;Backup, Prune, and/or Compact finished with errors&quot;</span>
+<span class="k">fi</span>
+
+<span class="nb">exit</span><span class="w"> </span><span class="si">${</span><span class="nv">global_exit</span><span class="si">}</span>
+</code></pre></div>
+
+<p>To run it periodically type in <code>crontab -e</code></p>
+<p>and then</p>
+<div class="codehilite"><pre><span></span><code><span class="m">00</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>/root/borg-backup.sh
+</code></pre></div>
+
+<h2>Potential improvements</h2>
+<p>Ofcourse the permissions here and there could be more fine-grained for sure. </p>
+<p>We could also add a bastion in front of the server. </p>
+<p>Automate the deployment so that after each merge stuff gets built &amp; deployed. </p>
+<p>Add monitoring, observability, alerts. (Ain't that hard tbh, we will explore that one day)</p>
+<p>There's much more than that ofcourse but these are the starters.</p>
+<h2>Summary</h2>
+<p>We have set up: </p>
+<ol>
+<li>self-hosted postgres instance with passable initail configuration</li>
+<li>replicated api-service with as many replicas as we want</li>
+<li>proper load balancing and reverse proxy in front of them</li>
+<li>https everywhere</li>
+<li>proper certifcates, all handled automatically</li>
+<li>1 click deployment of our reverse proxy</li>
+<li>blazing fast deployments/build times in the future (for now manual, but can easily be automated)</li>
+<li>ability to potentially handle hundreds of thousands of users</li>
+<li>very predictable cost &amp; performance</li>
+<li>regular FULL backups</li>
+<li>no additional deployment code</li>
+<li>Absolutely stunning performance with 80 dedicated cores, 128 gb of ram, 2 TB NVMe SSD (you'd be amazed)</li>
+</ol>
+<p>What more can I say. Cloud IS NOT the solution for everything. Sometimes you can try the alternative path.</p>
+<p>Similar setup on AWS would be probably $6-10k upwards just for the postgres. That plus it wouldn't match the performance we have here. One thing not covered here is how much performance you gain when all the services are within one network. No calls outside your network == blazing fast shit.</p>
+<p>All of this in 15 minutes and for $200 monthly. </p>
+<p>Want some copium cloud bro? </p>
+<p>Ofcourse this doesn't adhere to some of you and your companies, but you know that. I've simplified lots of things or generlised. However, for the general public and their needs, I think it's worth rethink the whole cloud sometimes.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2023</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>
