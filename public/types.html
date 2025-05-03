@@ -9,17 +9,14 @@
     <meta name="description" content="Opis podstawowych typów danych w Pythonie oraz najpopularniejszych operacji na nich." />
 
     <meta name="robots" content="index, follow">
-    <meta name="title" property="og:title" content="Typy danych w Pythonie i ich krótka charakterystyka">
-    <meta name="description" property="og:description" content="Opis podstawowych typów danych w Pythonie oraz najpopularniejszych operacji na nich.">
-    <meta name="author" content="Olaf Górski">
+    <meta property="og:title" content="Typy danych w Pythonie i ich krótka charakterystyka">
+    <meta property="og:description" content="Opis podstawowych typów danych w Pythonie oraz najpopularniejszych operacji na nich.">
     <meta property="og:url" content="https://grski.pl/">
     <meta property="og:site_name" content="The Engineer - Olaf Górski">
     <meta property="og:type" content="website">
     <meta property="article:section" content="">
     <meta property="og:updated_time" content="2023-01-27T00:00:00Z" />
-    <meta property="og:published_time" content="2023-01-27T00:00:00Z" />
-    <meta property="article:published_time" content="2023-01-27T00:00:00Z" />
-    <meta property="article:modified_time" content="2023-01-27T00:00:00Z" />
+
     <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
     <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
     <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
@@ -410,7 +407,7 @@
 <p>Anyway, wróćmy do głównego tematu.</p>
 <p>Tak definiowane stringi muszą się mieścić w jednej linijce. Jeśli chcemy, by nasz tekst był wielolinijkowy w kodzie, to musimy użyć Potrójnego znaku - zatem albo <code>"""</code> albo <code>'''</code> zamiast jednego. To spowoduje, ze python będzie czytał nie tylko do końca linii ale aż do znalezienia znaku zamykającego, który może być już w innej linii.</p>
 <p>Warto też zaznaczyć, że do komentowania w kodzie używamy do jednolinijkowych komentarzy używamy <code>#</code> a wielolinijkowych stringów jako wielolinijkowych komentarzy.</p>
-<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">RedirectMixin</span><span class="p">:</span>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RedirectMixin</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mixin that is used for the purpose of...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -904,7 +901,7 @@ int<span class="w"> </span>size:<span class="w"> </span><span class="m">4</span>
 
 <p>Warto na to uważać, zwłaszcza przy np. wybieraniu argumentów dla funkcji czy ustanawianiu wartości domyślnych. Pass by reference -&gt; zwracamy adres i tam następuje modyfikacja danego obiektu. Pass by value -&gt; zwracamy samą wartość i następuje jej 'skopiowanie' na świeżo zamiast modyfikować zmienną pod danym adresem, otrzymujemy nową. Kolejny przykład:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">student</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Putler&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
-<span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">student</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span><span class="n">student</span><span class="p">):</span>
     <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Wołodia&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;CzłowiekMałpa&quot;</span><span class="p">:</span> <span class="mi">21</span><span class="p">}</span>
     <span class="n">student</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wewnątrz funkcji&quot;</span><span class="p">,</span> <span class="n">student</span><span class="p">)</span>
@@ -914,7 +911,7 @@ int<span class="w"> </span>size:<span class="w"> </span><span class="m">4</span>
 
 <p>Jak widać wyżej dict przekazywany jest poprzez referencje, czyli adres tak jakby. Python zatem idzie pod dany adres i modyfikuje obiekt przez co zmiany są rozpowszechnione w miejscach, gdzie niewprawiony programista mógłby się niespodziewać. W przypadku przekazania wartości sprawa ma się inaczej. Orginalny obiekt nie jest modyfikowany, jedynie jego kopia.</p>
 <div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">student_name</span> <span class="o">=</span> <span class="s2">&quot;NAFO&quot;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">name_name</span><span class="p">):</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span><span class="n">name_name</span><span class="p">):</span>
 <span class="o">...</span>     <span class="n">student_name</span> <span class="o">=</span> <span class="n">name_name</span> <span class="o">+</span> <span class="s2">&quot; &lt;3&quot;</span>
 <span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wewnątrz: &quot;</span><span class="p">,</span> <span class="n">student_name</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">student_name</span>
@@ -1014,7 +1011,7 @@ int<span class="w"> </span>size:<span class="w"> </span><span class="m">4</span>
 
 <footer class="section">
     <div class="container has-text-centered">
-        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2024</p>
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2025</p>
 
         <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
 

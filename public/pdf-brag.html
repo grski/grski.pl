@@ -9,17 +9,14 @@
     <meta name="description" content="Want to go down the road less travelled while building LLM RAG API without langchain using just Qdrant and PDF-stack? I sure do." />
 
     <meta name="robots" content="index, follow">
-    <meta name="title" property="og:title" content="Build your own LLM RAG API without langchain using OpenAI, qdrant and PDF stack">
-    <meta name="description" property="og:description" content="Want to go down the road less travelled while building LLM RAG API without langchain using just Qdrant and PDF-stack? I sure do.">
-    <meta name="author" content="Olaf Górski">
+    <meta property="og:title" content="Build your own LLM RAG API without langchain using OpenAI, qdrant and PDF stack">
+    <meta property="og:description" content="Want to go down the road less travelled while building LLM RAG API without langchain using just Qdrant and PDF-stack? I sure do.">
     <meta property="og:url" content="https://grski.pl/">
     <meta property="og:site_name" content="The Engineer - Olaf Górski">
     <meta property="og:type" content="website">
     <meta property="article:section" content="">
     <meta property="og:updated_time" content="2023-10-15T00:00:00Z" />
-    <meta property="og:published_time" content="2023-10-15T00:00:00Z" />
-    <meta property="article:published_time" content="2023-10-15T00:00:00Z" />
-    <meta property="article:modified_time" content="2023-10-15T00:00:00Z" />
+
     <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
     <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
     <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
@@ -237,7 +234,7 @@ You wanna make sure that the app is built the same way regardless of where and w
 
 <p>The minimum we can start with is (ofc we could skip logging but...):</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># app/core/logs.py</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
 <span class="c1"># we are setting the logging level to log everything at level info and above</span>
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
@@ -252,9 +249,9 @@ You wanna make sure that the app is built the same way regardless of where and w
 
 
 <span class="c1"># main.py - at the top level of the project</span>
-<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
 
-<span class="kn">from</span> <span class="nn">app.core.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.core.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 <span class="c1"># in here we just initialise the fastapi app, without defining</span>
 <span class="c1"># any endpoints</span>
@@ -265,7 +262,7 @@ You wanna make sure that the app is built the same way regardless of where and w
 <p>that doesn't do much. does it though? Let's expand it at least a little bit to, for example, include the version of our app.</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># __init__.py - at the top level of the project</span>
 <span class="c1"># read-only tomllib is now part of python core, so we do not need to install it</span>
-<span class="kn">import</span> <span class="nn">tomllib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tomllib</span>
 
 <span class="c1"># we get the version from pyproject.toml and put it into a variable</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -274,10 +271,10 @@ You wanna make sure that the app is built the same way regardless of where and w
 
 
 <span class="c1"># main.py - at the top level of the project</span>
-<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
 
-<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">version</span>
-<span class="kn">from</span> <span class="nn">app.core.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.core.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
 
@@ -287,24 +284,24 @@ You wanna make sure that the app is built the same way regardless of where and w
 <p>Still not much, but at least it's something - our FastApi knows which version of the api we currently are serving.</p>
 <p>Let's create first real endpoint. Usually we like to have an endpoint in our application that allows us to tell if it's running and healthy. In our case it'll be trivial to implement, so let's do that.</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># core/api.py</span>
-<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span>
 
-<span class="kn">from</span> <span class="nn">starlette</span> <span class="kn">import</span> <span class="n">status</span>
-<span class="kn">from</span> <span class="nn">starlette.requests</span> <span class="kn">import</span> <span class="n">Request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">starlette</span><span class="w"> </span><span class="kn">import</span> <span class="n">status</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">starlette.requests</span><span class="w"> </span><span class="kn">import</span> <span class="n">Request</span>
 
 <span class="c1"># we define a router to hold all our core endpoints together</span>
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Core Endpoints&quot;</span><span class="p">])</span>  
 
 <span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/healthcheck&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">healthcheck</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">healthcheck</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">version</span><span class="p">}</span>
 
 <span class="c1"># main.py</span>
-<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
 
-<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">version</span>
-<span class="kn">from</span> <span class="nn">app.core.api</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">core_router</span>
-<span class="kn">from</span> <span class="nn">app.core.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.core.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">core_router</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.core.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">core_router</span><span class="p">)</span>
@@ -360,7 +357,7 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
 <p>It's much more secure if done properly, however it's a bit more complext. I mean saving a string to the code is easy, this requires a bit more overhead, but it's well worth it. How to do it?</p>
 <p>Pydantic-settings to the rescue.</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># core/constants.py</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">StrEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
 
 <span class="c1"># on local we just need 1 worker, no need to spawn multiple threads</span>
 <span class="n">DEFAULT_NUMBER_OF_WORKERS_ON_LOCAL</span> <span class="o">=</span> <span class="mi">1</span>  
@@ -369,33 +366,33 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
 <span class="c1"># we could have any number of environments here, this is useful when</span>
 <span class="c1"># defining settings/behavior per environment - eg on production</span>
 <span class="c1"># you probably do not want debug enabled and so on.</span>
-<span class="k">class</span> <span class="nc">Environments</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Environments</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
     <span class="n">LOCAL</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span>
     <span class="n">PRODUCTION</span> <span class="o">=</span> <span class="s2">&quot;production&quot;</span>
 
 <span class="c1"># settings/base.py</span>
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">pydantic_settings</span> <span class="kn">import</span> <span class="n">BaseSettings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic_settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSettings</span>
 
-<span class="kn">from</span> <span class="nn">app.core.constants</span> <span class="kn">import</span> <span class="n">Environments</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.core.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">Environments</span>
 
 
-<span class="k">class</span> <span class="nc">Settings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
     <span class="n">APP_NAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bRAG&quot;</span>
     <span class="n">ENVIRONMENT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;ENVIRONMENT&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">Environments</span><span class="o">.</span><span class="n">LOCAL</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
     <span class="n">OPENAI_API_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_local</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_local</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENVIRONMENT</span> <span class="o">==</span> <span class="n">Environments</span><span class="o">.</span><span class="n">LOCAL</span><span class="o">.</span><span class="n">value</span>
 
     <span class="c1"># this will make it so that pydantic will look for our env variables</span>
     <span class="c1"># in a file called .env and automatically load them as such</span>
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">:</span>
         <span class="n">env_file</span> <span class="o">=</span> <span class="s2">&quot;.env&quot;</span>
 
 <span class="c1"># settings/__init__.py</span>
-<span class="kn">from</span> <span class="nn">settings.base</span> <span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">settings.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
 
 <span class="c1"># this enables us to easily import settings later by going </span>
 <span class="c1"># from settings import settings</span>
@@ -429,77 +426,77 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
 <h2>Completion</h2>
 <p>Without further ado:</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># chat/constants.py</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">StrEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
 
 
-<span class="k">class</span> <span class="nc">FailureReasonsEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FailureReasonsEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
     <span class="n">OPENAI_ERROR</span> <span class="o">=</span> <span class="s2">&quot;OpenAI call failed&quot;</span>
     <span class="n">STREAM_TIMEOUT</span> <span class="o">=</span> <span class="s2">&quot;Stream timed out&quot;</span>  <span class="c1"># for later</span>
     <span class="n">FAILED_PROCESSING</span> <span class="o">=</span> <span class="s2">&quot;Post processing failed&quot;</span>  <span class="c1"># for later</span>
 
 
-<span class="k">class</span> <span class="nc">ChatRolesEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChatRolesEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
     <span class="n">USER</span> <span class="o">=</span> <span class="s2">&quot;user&quot;</span>
     <span class="n">SYSTEM</span> <span class="o">=</span> <span class="s2">&quot;system&quot;</span>
     <span class="n">ASSISTANT</span> <span class="o">=</span> <span class="s2">&quot;assistant&quot;</span>
 
 
-<span class="k">class</span> <span class="nc">ModelsEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ModelsEnum</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
     <span class="n">GPT4</span> <span class="o">=</span> <span class="s2">&quot;gpt-4-0613&quot;</span>
 
 
 <span class="c1"># chat/models.py</span>
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 
-<span class="kn">from</span> <span class="nn">app.chat.constants</span> <span class="kn">import</span> <span class="n">ChatRolesEnum</span><span class="p">,</span> <span class="n">ModelsEnum</span>
-<span class="kn">from</span> <span class="nn">app.core.models</span> <span class="kn">import</span> <span class="n">TimestampAbstractModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatRolesEnum</span><span class="p">,</span> <span class="n">ModelsEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.core.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimestampAbstractModel</span>
 
 
-<span class="k">class</span> <span class="nc">BaseMessage</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseMessage</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Base pydantic model that we use to interact with the API.&quot;&quot;&quot;</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">ModelsEnum</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">ModelsEnum</span><span class="o">.</span><span class="n">GPT4</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
     <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
 
 
-<span class="k">class</span> <span class="nc">Message</span><span class="p">(</span><span class="n">TimestampAbstractModel</span><span class="p">,</span> <span class="n">BaseMessage</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Message</span><span class="p">(</span><span class="n">TimestampAbstractModel</span><span class="p">,</span> <span class="n">BaseMessage</span><span class="p">):</span>
     <span class="n">role</span><span class="p">:</span> <span class="n">ChatRolesEnum</span>
 
 
 
-<span class="k">class</span> <span class="nc">Message</span><span class="p">(</span><span class="n">BaseMessage</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Message</span><span class="p">(</span><span class="n">BaseMessage</span><span class="p">):</span>
     <span class="n">role</span><span class="p">:</span> <span class="n">ChatRolesEnum</span>
 
 <span class="c1"># core/models.py</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 
 
 <span class="c1"># utility base class to add creation time to all the models</span>
 <span class="c1"># usually we would also have updated_at field to denote</span>
 <span class="c1"># when the object was updated, but in our case I doubt we will do</span>
 <span class="c1"># any updates</span>
-<span class="k">class</span> <span class="nc">TimestampAbstractModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TimestampAbstractModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">created_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Lastly, let's define the view:</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># chat/api.py</span>
 
-<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span>
 
-<span class="kn">import</span> <span class="nn">openai</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openai</span>
 
-<span class="kn">from</span> <span class="nn">app.chat.exceptions</span> <span class="kn">import</span> <span class="n">OpenAIException</span>
-<span class="kn">from</span> <span class="nn">app.chat.models</span> <span class="kn">import</span> <span class="n">BaseMessage</span><span class="p">,</span> <span class="n">Message</span>
-<span class="kn">from</span> <span class="nn">app.chat.services</span> <span class="kn">import</span> <span class="n">OpenAIService</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIException</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span><span class="p">,</span> <span class="n">Message</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIService</span>
 
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Core Endpoints&quot;</span><span class="p">])</span>
 
 
 <span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/v1/completion&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">completion_create</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">completion_create</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">OpenAIService</span><span class="o">.</span><span class="n">chat_completion</span><span class="p">(</span><span class="n">input_message</span><span class="o">=</span><span class="n">input_message</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">openai</span><span class="o">.</span><span class="n">OpenAIError</span><span class="p">:</span>
@@ -507,8 +504,8 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
 <span class="c1"># main.py</span>
 <span class="c1"># do not forget to include the new router:</span>
 <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">app.chat.api</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">chat_router</span>
-<span class="kn">from</span> <span class="nn">app.core.api</span> <span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">core_router</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">chat_router</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.core.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">core_router</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
 <span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">core_router</span><span class="p">)</span>
@@ -518,18 +515,18 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
 
 <p>Now you might wonder, where's all the code? As mentioned before, in the <code>services.py</code>.</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># chat/services.py</span>
-<span class="kn">import</span> <span class="nn">openai</span>
-<span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="n">ChatCompletion</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openai</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatCompletion</span>
 
-<span class="kn">from</span> <span class="nn">app.chat.constants</span> <span class="kn">import</span> <span class="n">ChatRolesEnum</span>
-<span class="kn">from</span> <span class="nn">app.chat.models</span> <span class="kn">import</span> <span class="n">BaseMessage</span><span class="p">,</span> <span class="n">Message</span>
-<span class="kn">from</span> <span class="nn">app.core.logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">settings</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatRolesEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span><span class="p">,</span> <span class="n">Message</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.core.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 
 
-<span class="k">class</span> <span class="nc">OpenAIService</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OpenAIService</span><span class="p">:</span>
     <span class="nd">@classmethod</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">chat_completion</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">chat_completion</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received the following completion: </span><span class="si">{</span><span class="n">input_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">completion</span><span class="p">:</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span> <span class="o">=</span> <span class="k">await</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">acreate</span><span class="p">(</span>
             <span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
@@ -544,7 +541,7 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
         <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">extract_response_from_completion</span><span class="p">(</span><span class="n">chat_completion</span><span class="p">:</span> <span class="n">ChatCompletion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_response_from_completion</span><span class="p">(</span><span class="n">chat_completion</span><span class="p">:</span> <span class="n">ChatCompletion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">chat_completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;message&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>
 </code></pre></div>
 
@@ -554,46 +551,46 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
 <p>Get ready.</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># chats/exceptions.py</span>
 <span class="c1"># here we define some exceptions that will come handy in the future</span>
-<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">HTTPException</span>
-<span class="kn">from</span> <span class="nn">starlette</span> <span class="kn">import</span> <span class="n">status</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPException</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">starlette</span><span class="w"> </span><span class="kn">import</span> <span class="n">status</span>
 
-<span class="kn">from</span> <span class="nn">app.chat.constants</span> <span class="kn">import</span> <span class="n">FailureReasonsEnum</span><span class="p">,</span> <span class="n">NO_DOCUMENTS_FOUND</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FailureReasonsEnum</span><span class="p">,</span> <span class="n">NO_DOCUMENTS_FOUND</span>
 
 
-<span class="k">class</span> <span class="nc">OpenAIException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OpenAIException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="n">FailureReasonsEnum</span><span class="o">.</span><span class="n">OPENAI_ERROR</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">OpenAIFailedProcessingException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OpenAIFailedProcessingException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_503_SERVICE_UNAVAILABLE</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="n">FailureReasonsEnum</span><span class="o">.</span><span class="n">FAILED_PROCESSING</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">OpenAIStreamTimeoutException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OpenAIStreamTimeoutException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_504_GATEWAY_TIMEOUT</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="n">FailureReasonsEnum</span><span class="o">.</span><span class="n">STREAM_TIMEOUT</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">RetrievalNoDocumentsFoundException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RetrievalNoDocumentsFoundException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="p">)</span>
 
 
 <span class="c1"># chats/streaming.py</span>
-<span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 
-<span class="kn">import</span> <span class="nn">async_timeout</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">async_timeout</span>
 
-<span class="kn">from</span> <span class="nn">app.chat.constants</span> <span class="kn">import</span> <span class="n">ChatRolesEnum</span>
-<span class="kn">from</span> <span class="nn">app.chat.exceptions</span> <span class="kn">import</span> <span class="n">OpenAIStreamTimeoutException</span><span class="p">,</span> <span class="n">OpenAIFailedProcessingException</span>
-<span class="kn">from</span> <span class="nn">app.chat.models</span> <span class="kn">import</span> <span class="n">Chunk</span><span class="p">,</span> <span class="n">Message</span>
-<span class="kn">from</span> <span class="nn">app.core.logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">settings</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatRolesEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIStreamTimeoutException</span><span class="p">,</span> <span class="n">OpenAIFailedProcessingException</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chunk</span><span class="p">,</span> <span class="n">Message</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.core.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">stream_generator</span><span class="p">(</span><span class="n">subscription</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">stream_generator</span><span class="p">(</span><span class="n">subscription</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;In the future if we are paranoid about performance we can pre-allocate a buffer and use it instead of f-string</span>
 <span class="sd">    should save a cycle or two in the processor or be a fun exercise but totally not worth the effort or complexity</span>
 <span class="sd">    currently (in the future too).</span>
@@ -611,12 +608,12 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
             <span class="k">raise</span> <span class="n">OpenAIStreamTimeoutException</span>
 
 
-<span class="k">def</span> <span class="nf">format_to_event_stream</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">format_to_event_stream</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; We format the event to a format more in line with the standard SSE format. &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;event: message</span><span class="se">\n</span><span class="s2">data: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">post_processing</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">post_processing</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Chunk: </span><span class="si">{</span><span class="n">chunk</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">formatted_chunk</span> <span class="o">=</span> <span class="n">Chunk</span><span class="o">.</span><span class="n">from_chunk</span><span class="p">(</span><span class="n">chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">)</span>
@@ -626,9 +623,9 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
         <span class="k">raise</span> <span class="n">OpenAIFailedProcessingException</span>
 
 <span class="c1"># chats/services.py</span>
-<span class="k">class</span> <span class="nc">OpenAIService</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OpenAIService</span><span class="p">:</span>
     <span class="nd">@classmethod</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">chat_completion_without_streaming</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">chat_completion_without_streaming</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
         <span class="n">completion</span><span class="p">:</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span> <span class="o">=</span> <span class="k">await</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">acreate</span><span class="p">(</span>
             <span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
             <span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">OPENAI_API_KEY</span><span class="p">,</span>
@@ -642,7 +639,7 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
         <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">chat_completion_with_streaming</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StreamingResponse</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">chat_completion_with_streaming</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StreamingResponse</span><span class="p">:</span>
         <span class="n">subscription</span><span class="p">:</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span> <span class="o">=</span> <span class="k">await</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">acreate</span><span class="p">(</span>
             <span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
             <span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">OPENAI_API_KEY</span><span class="p">,</span>
@@ -652,26 +649,26 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
         <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">stream_generator</span><span class="p">(</span><span class="n">subscription</span><span class="p">),</span> <span class="n">media_type</span><span class="o">=</span><span class="s2">&quot;text/event-stream&quot;</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">extract_response_from_completion</span><span class="p">(</span><span class="n">chat_completion</span><span class="p">:</span> <span class="n">ChatCompletion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_response_from_completion</span><span class="p">(</span><span class="n">chat_completion</span><span class="p">:</span> <span class="n">ChatCompletion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">chat_completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;message&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>
 </code></pre></div>
 
 <p>lastly, the <code>chats/api.py</code> becomes:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span>
 
-<span class="kn">import</span> <span class="nn">openai</span>
-<span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">StreamingResponse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openai</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">starlette.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamingResponse</span>
 
-<span class="kn">from</span> <span class="nn">app.chat.exceptions</span> <span class="kn">import</span> <span class="n">OpenAIException</span>
-<span class="kn">from</span> <span class="nn">app.chat.models</span> <span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">BaseMessage</span>
-<span class="kn">from</span> <span class="nn">app.chat.services</span> <span class="kn">import</span> <span class="n">OpenAIService</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIException</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIService</span>
 
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Chat Endpoints&quot;</span><span class="p">])</span>
 
 
 <span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/v1/completion&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">completion_create</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">completion_create</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">OpenAIService</span><span class="o">.</span><span class="n">chat_completion_without_streaming</span><span class="p">(</span><span class="n">input_message</span><span class="o">=</span><span class="n">input_message</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">openai</span><span class="o">.</span><span class="n">OpenAIError</span><span class="p">:</span>
@@ -679,7 +676,7 @@ Before we do that, we will need something. Ah right, a way to store our secrets/
 
 
 <span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/v1/completion-stream&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">completion_stream</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StreamingResponse</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">completion_stream</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StreamingResponse</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Streaming response won&#39;t return json but rather a properly formatted string for SSE.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">OpenAIService</span><span class="o">.</span><span class="n">chat_completion_with_streaming</span><span class="p">(</span><span class="n">input_message</span><span class="o">=</span><span class="n">input_message</span><span class="p">)</span>
@@ -730,12 +727,12 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <h2>How to ingest data into our qdrant</h2>
 <p>In our <code>ingest.py</code> file we take a very naive approach - we simply ingest a couple of static texts. More on this topic we will talk about in coming articles. This one will be too long as it is already.</p>
 <p>For testing it can look something like:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">qdrant_client</span> <span class="kn">import</span> <span class="n">QdrantClient</span>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">qdrant_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">QdrantClient</span>
 
-<span class="kn">from</span> <span class="nn">settings</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 
 
-<span class="k">def</span> <span class="nf">test_populate_vector_db</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">QdrantClient</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_populate_vector_db</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">QdrantClient</span><span class="p">):</span>
     <span class="c1"># Prepare your documents, metadata, and IDs</span>
     <span class="n">docs</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s2">&quot;LoremIpsum sit dolorem&quot;</span><span class="p">,</span>
@@ -763,7 +760,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <h2>Back to RAG - Vector similarity search over qdrant</h2>
 <p>As explained previously, we need to transform our text query into semantically meaningful vectors using embeddings, then do a Vector Similarity Search, Augment the context and do the generation. Sounds terrible, right? Well, it ain't . With qdrant we can basically do it like so:</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># settings/base.py</span>
-<span class="k">class</span> <span class="nc">Settings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
     <span class="n">APP_NAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bRAG&quot;</span>
     <span class="n">ENVIRONMENT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;ENVIRONMENT&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">Environments</span><span class="o">.</span><span class="n">LOCAL</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
@@ -776,19 +773,19 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
     <span class="n">QDRANT_COLLECTION_NAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="s2">&quot;QDRANT_COLLECTION_NAME&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_local</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_local</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENVIRONMENT</span> <span class="o">==</span> <span class="n">Environments</span><span class="o">.</span><span class="n">LOCAL</span><span class="o">.</span><span class="n">value</span>
 
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">:</span>
         <span class="n">env_file</span> <span class="o">=</span> <span class="s2">&quot;.env&quot;</span>
 
 
 <span class="c1"># chats/retrieval.py</span>
-<span class="kn">from</span> <span class="nn">qdrant_client</span> <span class="kn">import</span> <span class="n">QdrantClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qdrant_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">QdrantClient</span>
 
-<span class="kn">from</span> <span class="nn">app.chat.exceptions</span> <span class="kn">import</span> <span class="n">RetrievalNoDocumentsFoundException</span>
-<span class="kn">from</span> <span class="nn">app.chat.models</span> <span class="kn">import</span> <span class="n">BaseMessage</span>
-<span class="kn">from</span> <span class="nn">settings</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetrievalNoDocumentsFoundException</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 
 <span class="n">client</span> <span class="o">=</span> <span class="n">QdrantClient</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">QDRANT_HOST</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">QDRANT_PORT</span><span class="p">)</span>
 
@@ -796,7 +793,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <span class="n">test_populate_vector_db</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">process_retrieval</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseMessage</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_retrieval</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseMessage</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Search for a given query using vector similarity search. If no documents are found we raise an exception.</span>
 <span class="sd">    If we do find documents we take the top 3 and put them into the context.&quot;&quot;&quot;</span>
     <span class="n">search_result</span> <span class="o">=</span> <span class="n">search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
@@ -809,7 +806,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
     <span class="k">return</span> <span class="n">BaseMessage</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">resulting_query</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; This takes our query string, transforms the string into vectors and then searches for the most similar</span>
 <span class="sd">    documents, returning the top 3. If no documents are found we raise an exception - as the user is asking</span>
 <span class="sd">    about something not in the context of our documents.&quot;&quot;&quot;</span>
@@ -824,12 +821,12 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 <span class="n">NO_DOCUMENTS_FOUND</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;No documents found in context. Please try again with a different query.&quot;</span>
 
 <span class="c1"># chat/services.py </span>
-<span class="kn">from</span> <span class="nn">app.chat.constants</span> <span class="kn">import</span> <span class="n">ChatRolesEnum</span><span class="p">,</span> <span class="n">NO_DOCUMENTS_FOUND</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chat.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatRolesEnum</span><span class="p">,</span> <span class="n">NO_DOCUMENTS_FOUND</span>
 <span class="p">(</span><span class="o">...</span><span class="p">)</span>
 
 <span class="n">OpenAIService</span> <span class="p">(</span><span class="o">...</span><span class="p">)</span>
     <span class="nd">@classmethod</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">qa_without_stream</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">qa_without_stream</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">augmented_message</span><span class="p">:</span> <span class="n">BaseMessage</span> <span class="o">=</span> <span class="n">process_retrieval</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">input_message</span><span class="p">)</span>
             <span class="k">return</span> <span class="k">await</span> <span class="bp">cls</span><span class="o">.</span><span class="n">chat_completion_without_streaming</span><span class="p">(</span><span class="n">input_message</span><span class="o">=</span><span class="n">augmented_message</span><span class="p">)</span>
@@ -839,7 +836,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </sp
 
 <p>lastly, views:</p>
 <div class="codehilite"><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/v1/qa-create&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">qa_create</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">qa_create</span><span class="p">(</span><span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">OpenAIService</span><span class="o">.</span><span class="n">qa_without_stream</span><span class="p">(</span><span class="n">input_message</span><span class="o">=</span><span class="n">input_message</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">openai</span><span class="o">.</span><span class="n">OpenAIError</span><span class="p">:</span>
@@ -998,36 +995,36 @@ public,message,application,,true,false,false,false
 <p>If not, in short it just either lists all messages or creates a new one.</p>
 <p>Now a bit of python:</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># app/db.py</span>
-<span class="kn">import</span> <span class="nn">pugsql</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pugsql</span>
 
 <span class="n">messages_queries</span> <span class="o">=</span> <span class="n">pugsql</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="s2">&quot;db/queries/messages&quot;</span><span class="p">)</span>
 <span class="n">messages_connection</span> <span class="o">=</span> <span class="n">messages_queries</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">DATABASE_URL</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Now how to use it?</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span>
 
-<span class="kn">import</span> <span class="nn">openai</span>
-<span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">StreamingResponse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openai</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">starlette.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamingResponse</span>
 
-<span class="kn">from</span> <span class="nn">app.chats.exceptions</span> <span class="kn">import</span> <span class="n">OpenAIException</span>
-<span class="kn">from</span> <span class="nn">app.chats.models</span> <span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">BaseMessage</span>
-<span class="kn">from</span> <span class="nn">app.chats.services</span> <span class="kn">import</span> <span class="n">OpenAIService</span>
-<span class="kn">from</span> <span class="nn">app.db</span> <span class="kn">import</span> <span class="n">messages_queries</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chats.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIException</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chats.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.chats.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIService</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">messages_queries</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Chat Endpoints&quot;</span><span class="p">])</span>
 
 
 <span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/v1/messages&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">get_messages</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_messages</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
     <span class="c1"># a bit messy as we might want to move this to a service</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Message</span><span class="p">(</span><span class="o">**</span><span class="n">message</span><span class="p">)</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages_queries</span><span class="o">.</span><span class="n">select_all</span><span class="p">()]</span>
 </code></pre></div>
 
 <p>or for create:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">OpenAIService</span><span class="p">:</span>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">OpenAIService</span><span class="p">:</span>
     <span class="nd">@classmethod</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">chat_completion_without_streaming</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">chat_completion_without_streaming</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_message</span><span class="p">:</span> <span class="n">BaseMessage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
         <span class="n">completion</span><span class="p">:</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span> <span class="o">=</span> <span class="k">await</span> <span class="n">openai</span><span class="o">.</span><span class="n">ChatCompletion</span><span class="o">.</span><span class="n">acreate</span><span class="p">(</span>
             <span class="n">model</span><span class="o">=</span><span class="n">input_message</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
             <span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">OPENAI_API_KEY</span><span class="p">,</span>
@@ -1342,7 +1339,7 @@ public,message,application,,true,false,false,false
 
 <footer class="section">
     <div class="container has-text-centered">
-        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2024</p>
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2025</p>
 
         <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
 

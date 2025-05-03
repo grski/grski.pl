@@ -9,17 +9,14 @@
     <meta name="description" content="O PEP 572, czyli propozycji dodania operatora przypisywania zmiennych w do Pythona 3.8." />
 
     <meta name="robots" content="index, follow">
-    <meta name="title" property="og:title" content="PEP 572 - czyli co ciekawego może znaleźć się w Pythonie 3.8 - przypisywanie zmiennej w wyrażeniach">
-    <meta name="description" property="og:description" content="O PEP 572, czyli propozycji dodania operatora przypisywania zmiennych w do Pythona 3.8.">
-    <meta name="author" content="Olaf Górski">
+    <meta property="og:title" content="PEP 572 - czyli co ciekawego może znaleźć się w Pythonie 3.8 - przypisywanie zmiennej w wyrażeniach">
+    <meta property="og:description" content="O PEP 572, czyli propozycji dodania operatora przypisywania zmiennych w do Pythona 3.8.">
     <meta property="og:url" content="https://grski.pl/">
     <meta property="og:site_name" content="The Engineer - Olaf Górski">
     <meta property="og:type" content="website">
     <meta property="article:section" content="">
     <meta property="og:updated_time" content="2018-07-02T00:00:00Z" />
-    <meta property="og:published_time" content="2018-07-02T00:00:00Z" />
-    <meta property="article:published_time" content="2018-07-02T00:00:00Z" />
-    <meta property="article:modified_time" content="2018-07-02T00:00:00Z" />
+
     <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
     <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
     <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
@@ -164,9 +161,9 @@ Jak można by go poprawić? </p>
 
 <p>Czyli używanie keyword-arguments i przypisania w wyrażeniu jednocześnie w wywołaniu funkcji. Co z tego wyjdzie, to się okaże. </p>
 <p>Przypisania w wyrażeniu nie będzie można też użyć podczas definiowania domyślnych wartości argumentów funkcji czy też w pośrednich jego wyrażeniach. Co to znaczy?</p>
-<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">answer</span> <span class="o">=</span> <span class="n">p</span> <span class="o">:=</span> <span class="mi">42</span><span class="p">):</span>  <span class="c1"># BŁĄD</span>
-<span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="n">answer</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">:=</span> <span class="mi">42</span><span class="p">)):</span>  <span class="c1"># BŁĄD</span>
-<span class="k">def</span> <span class="nf">baz</span><span class="p">(</span><span class="n">callback</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span> <span class="n">p</span> <span class="o">:=</span> <span class="n">arg</span><span class="p">)):</span>  <span class="c1"># BŁĄD</span>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="n">answer</span> <span class="o">=</span> <span class="n">p</span> <span class="o">:=</span> <span class="mi">42</span><span class="p">):</span>  <span class="c1"># BŁĄD</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bar</span><span class="p">(</span><span class="n">answer</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">:=</span> <span class="mi">42</span><span class="p">)):</span>  <span class="c1"># BŁĄD</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">baz</span><span class="p">(</span><span class="n">callback</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span> <span class="n">p</span> <span class="o">:=</span> <span class="n">arg</span><span class="p">)):</span>  <span class="c1"># BŁĄD</span>
 </code></pre></div>
 
 <p>To chyba tyle, jeśli chodzi o główne przypadki gdzie można, a gdzie nie można będzie użyć <code>:=</code>. Oczywiście, to, że dana konstrukcja jest dozwolona, nie znaczy, że należy jej używać w każdym miejscu, gdyż większość z tych możliwości wymienionych wyżej, jest niepotrzebnie komplikującym elementem kodu i raczej nie powinno się ich tak wykorzystywać, <code>:=</code> powinien byc używany tam, gdzie faktycznie uprości on kod, a nie wszędzie, bo to jakaś fajna nowinka technologiczna.</p>
@@ -202,7 +199,7 @@ Jak można by go poprawić? </p>
 
 <footer class="section">
     <div class="container has-text-centered">
-        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2024</p>
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2025</p>
 
         <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
 
