@@ -2,7 +2,7 @@ Title: One key aspect of AI apps that everyone overlooks
 Description: There's one critical aspect of building all AI apps that everyone is overlooking currently, even though usually it's deemed to be one of the key factors in all applications. What is it?
 Date: 2025-05-04
 Authors: Olaf Górski
-Slug: ai-security
+Slug: unpopular-opinion
 Language: en
 
 Here's an unpopular opinion.
