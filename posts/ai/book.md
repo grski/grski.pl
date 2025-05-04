@@ -3,7 +3,7 @@ Description: Two years ago I published my own book about Python - Junior Python 
 Date: 2025-05-03
 Authors: Olaf Górski
 Slug: book-en
-Language: enp
+Language: en
 
 Two years ago I published my own book about Python - Junior Python Developer. 256 pages of knowledge for those who want to start in Python. Now I'm open sourcing it. You can still buy it if you want to show support, however now it's readily available for free.
 
