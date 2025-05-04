@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Let's talk LLM security & privacy - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="On AI/LLMs, Python, building stuff and my life." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Let's talk LLM security & privacy">
+    <meta property="og:description" content="On AI/LLMs, Python, building stuff and my life.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="The Engineer - Olaf Górski">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2023-07-22T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    The Engineer by Olaf Górski - on Python & AI
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2023-07-22</h3>
+                <h1 class="title"><a href="https://grski.pl/">Let's talk LLM security & privacy</a></h1>
+                <div class="content">
+                    <h1>Let's talk AI &amp; LLM security &amp; privacy.</h1>
+<p>Topic that's not so often brought up, but it should. Why? Let me tell you.</p>
+<p>With all the hype around AI and LLMs in particular.</p>
+<p>Currently you have two main options that are considered in production-grade enterprise use-cases.
+You either roll with OpenAI's API, which can prove to be a bit tricky privacy-wise and compliance-wise. GDPR and stuff. No control over your data. OpenAI is a bit of a black box.
+The data you input in the API by default isn't used for training (as opposed to ChatGPT's data...), but still. We do not know enough about OpenAI and it's data standards to usually roll with it.</p>
+<p>The other option I've seen considered is Azure OpenAI. So, almost the same as OpenAI but hosted within Azure, usually models deployed within your infrastructure.</p>
+<p>So let's draw that disctinction clear. This is way better for privacy. If you want to be sure you are compliant I'd go wtih Azure OpenAI. We trust Microsoft's lawyers a bit more than we do for OpenAI.</p>
+<p>Microsoft offers GDPR-compliance agreements for some of its bigger consumers. You can even get them to disable logs given that you are big enough. Lots of stuff is negotiable.
+You can choose where your data is processed (EU/US/Asia etc.). It's all up to you.</p>
+<p>If you are worried about privacy, go with Azure OpenAI. You can have a model deployed within your Azure infra with some governance over it. Over access, logs and what not. </p>
+<p>There ofcourse are other solutions like hugging face (that you can host on your own, kinda) or competetive solutions but given their popularity and use-cases, I won't go over them. </p>
+<p>Just to sum it up - currently you can either
+1. Go with OpenAI to gain the fastest updates when it comes to new features, but potentially compromise your privacy.
+2. Go with Azure OpenAI, which will always be a bit behind newest OpenAI features, but will enable you a fine grained control over your data, privacy, access and logs.
+3. Self-host any model within your own infrastructure.</p>
+<p>They are ordered privacy-wise.</p>
+<p>If you are a small startup that doesn't have to comply with much regulation -&gt; openai should do you fine. Easiest to integrate &amp; iterate on.
+Are you a company that worries a bit about regulations, data privacy and compliance? Well, Azure OpenAI is your best bet. Sure, you won't get all the newest features right off the bat, but you won't need them either way. 
+Is your use case custom, and you have a strong AI team? Self-host stuff (only reliable and possible in some cases) plus use Azure OpenAI.</p>
+<p>Small startups that iterate fast and are not a subject to sensitive user data -&gt; plain OpenAI.
+Bigger companies or companies that deal with sensitivte data (that should not enter the LLM anyway!) or trade secrets/internal/sensitive stuff? Azure OpenAI. 
+Companies with custom use cases and strong AI team that know what they are doing? Usually self-hosted custom models for certain use cases and Azure OpenAI for the rest.</p>
+<p>Please note by default none of these options (API usage) collect the data for training purposes (ChatGPT does though, watch out there!).</p>
+<h2>Prompt injection</h2>
+<p>Let's take a step back and go back to the good old SQL &amp; traditional Databases. Remember that stuff called sql injection, where if not properly escaped, user inputted string could be used to run arbitrary sql code by the attacker?
+Well here, we have something similar. It's called prompt injection. Long story short the attacker can make it so that our model ignores the instruction in its prompt and generates evil stuff. Stuff that could potentially be malicious or politically incorrect.</p>
+<p>Imagine that an attacker manages to sucessfully hijack your public-facing model and then use it to generate a personalised spamming campaign or racist jokes. That's a very real scenario. I've seen people trying to do prompt injection attacks within days from launch of simialr feature, even though it was deployed to only like 1/100 of our clients.
+Now, if you are a bigger company... Well, think for yourself.</p>
+<p>Other than that the attacker could cause prompt spillage, in certain setups, meaning user data from another session gets spilled to another session if not properly controlled. 
+This shoudln't be bothersome, but it is. Why? We are dealing with user inputted data and sometimes user input things they should not. PCI. PII. You name it. 
+We can't allow such a thing.</p>
+<h2>Hallucinations</h2>
+<p>Sometimes our LLMs can hallucinate, which is normal, given their nature or the fact that they don't actual 'reason' as we understand it, they just predict stuff, guess.
+To LLMs statements that are truthful and false in a human context, can be equally valid output.
+When LLM spews out lies, made up stuff or just outright lies or contradicts itself (it can do that too), we say that it hallucinates.</p>
+<p>Hallucinations can be quite harmful and make your company liable in some cases.</p>
+<p>Lakera</p>
+<p>Gandalf</p>
+<h3>Platform</h3>
+<h4>Security OOB</h4>
+<h4>Prompt-injection protection</h4>
+<h4>Hallucinations protection</h4>
+<h4>Low latency &amp; high performance</h4>
+<h4>Reasonable cost</h4>
+<h4>Ease of integration</h4>
+<h4>Big names</h4>
+<p>Cohere use some of their services :) IF you are in LLM field, this name should ring a bell. What more do I need to say?</p>
+<h4>The team behind it</h4>
+<p>Pleasure to work with.</p>
+<h2>Summary</h2>
+<p>In general, if I were you and was deciding how to approach AI/LLM security/privacy, I'd roll with Azure OpenAI, properly configured (private access, proper logging, permissions and access control) and Lakera at application layer to secure things.
+There are open source solutions for this problem too, that you could use, but I've found none to be so reliable and comprehensive as to what Lakera has to offer.</p>
+<p>No, this post was not sponsored. I just enjoy working with these guys and find their service useful, so spreading the word, but if you deem it nice, I'm always open to some perks ;P </p>
+<p>And to think this is just some of the things you have to tackle when dealing with production-grade LLM usage. There's a lot of research that's usually needed. I give it out to you for free. If you are interested in other topics and you want to stay updated, follow me on LinkedIn for more.
+Written by a human, no part of this was generated by ChatGPT :) </p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2025</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>
