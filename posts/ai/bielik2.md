@@ -1,4 +1,4 @@
-Title: Polacy nie gęsi swój język mają cz. I: Bielik.AI na randce z vLLM, Agentami, MCP, assistant-ui i streamingiem.
+Title: Polacy nie gęsi swój język mają cz. II: Bielik.AI na randce z vLLM, Agentami, MCP, assistant-ui i streamingiem.
 Description: Dziś stworzymy sobie AI Agenta z historią konwersacji, który potrafi korzystać z MCP Servera (sami napiszemy), działającego z Polskim Modelem Językowym, odpalonym lokalnie Bielikiem, to wszystko owiniemy w FastAPI z obsługą Streamingu w formacie Vercel AI SDK v5, podepniemy frontend, który ogarnia collapsible Tool Calle, Streaming i persystencję. Czyli niejako zrobimy klona ChatGPT
 Date: 2025-09-06
 Authors: Olaf Górski
