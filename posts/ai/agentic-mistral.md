@@ -1,9 +1,9 @@
 Title: Building a Simple Agent with MCP, Conversation history, Streaming and Smart Frontend using Locally Deployed Mistral over vLLM
 Description: Today we'll create an AI Agent with conversation history that can use an MCP Server (we'll write it ourselves), working with a Language Model deployed locally - Mistral over vLLM, all wrapped in FastAPI with Streaming support in Vercel AI SDK v5 format, connected to a frontend that handles collapsible Tool Calls, Streaming and persistence. Essentially, we'll make a ChatGPT clone.
-Date: 2025-05-06
+Date: 2025-09-07
 Authors: Olaf Górski
 Slug: agentic-mistral
-Language: pl
+Language: en
 
 In today's post, we'll tackle an ambitious task. We'll create an AI Agent with conversation history that can use MCP Server (we'll write it ourselves), working with a Language Model deployed locally with Mistral, all wrapped in FastAPI with Streaming support in Vercel AI SDK v5 format, connected to a frontend that handles collapsible Tool Calls, Streaming and persistence. Essentially, we'll make a ChatGPT clone. Everything running locally and built from scratch by us, except the frontend, where we'll fortunately use a ready-made solution. Additionally, we'll use two computers simultaneously - one will serve the model, the other for development.
 
