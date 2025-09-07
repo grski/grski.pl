@@ -1,0 +1,1165 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <title>Building a Simple Agent with MCP, Conversation history, Streaming and Smart Frontend using Locally Deployed Mistral over vLLM - Olaf Górski</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Today we'll create an AI Agent with conversation history that can use an MCP Server (we'll write it ourselves), working with a Language Model deployed locally - Mistral over vLLM, all wrapped in FastAPI with Streaming support in Vercel AI SDK v5 format, connected to a frontend that handles collapsible Tool Calls, Streaming and persistence. Essentially, we'll make a ChatGPT clone." />
+
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Building a Simple Agent with MCP, Conversation history, Streaming and Smart Frontend using Locally Deployed Mistral over vLLM">
+    <meta property="og:description" content="Today we'll create an AI Agent with conversation history that can use an MCP Server (we'll write it ourselves), working with a Language Model deployed locally - Mistral over vLLM, all wrapped in FastAPI with Streaming support in Vercel AI SDK v5 format, connected to a frontend that handles collapsible Tool Calls, Streaming and persistence. Essentially, we'll make a ChatGPT clone.">
+    <meta property="og:url" content="https://grski.pl/">
+    <meta property="og:site_name" content="The Engineer - Olaf Górski">
+    <meta property="og:type" content="website">
+    <meta property="article:section" content="">
+    <meta property="og:updated_time" content="2025-05-06T00:00:00Z" />
+
+    <link rel="stylesheet" href="https://grski.pl/static/styles/style.min.css" />
+    <link rel="stylesheet" href="https://grski.pl/static/styles/highlighting.min.css" />
+    <link rel="shortcut icon" type="image/png" href="https://grski.pl/static/favicon.png"/>
+    <meta name="theme-color" content="#ffffff">
+    
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <nav id="nav-main" class="nav">
+            <div id="nav-name" class="nav-left">
+                <a id="nav-anchor" class="title is-4 nav-item" href="https://grski.pl/">
+                    The Engineer by Olaf Górski - on Python & AI
+                </a>
+            </div>
+            <div class="nav-right">
+                <nav id="nav-items" class="nav-item level is-mobile">
+                    
+                    <a class="level-item" aria-label="github" href='https://github.com/grski' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                </svg></i>
+                        </span></a>
+                    
+                    
+                    <a class="level-item" aria-label="linkedin" href='https://www.linkedin.com/in/olafgorski/' target='_blank' rel='noopener'><span class="icon">
+                                <i class><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' aria-hidden='true'>
+                                    <path stroke-width="1.8" d="m5.839218,4.101561c0,1.211972 -0.974141,2.194011 -2.176459,2.194011s-2.176459,-0.982039 -2.176459,-2.194011c0,-1.211094 0.974141,-2.194011 2.176459,-2.194011s2.176459,0.982917 2.176459,2.194011zm0.017552,3.94922l-4.388022,0l0,14.04167l4.388022,0l0,-14.04167zm7.005038,0l-4.359939,0l0,14.04167l4.360816,0l0,-7.370999c0,-4.098413 5.291077,-4.433657 5.291077,0l0,7.370999l4.377491,0l0,-8.89101c0,-6.915523 -7.829986,-6.66365 -9.669445,-3.259423l0,-1.891237z"/>
+                                </svg></i>
+                            </span></a>
+                    
+                </nav>
+            </div>
+        </nav>
+
+        <nav class="nav">
+            <!-- todo -->
+        </nav>
+        
+
+    </div>
+</section>
+
+    <section class="section">
+        <div class="container">
+            <article>
+                <div class="subtitle tags is-6 is-pulled-right">
+             <!--       <a class="subtitle is-6" href="">#html</a> | <a class="subtitle is-6" href="https://themes.gohugo.io//theme/kiss/tags/themes/kiss.j2">#themes</a>-->
+                </div>
+                <h3 class="subtitle is-6 date">2025-05-06</h3>
+                <h1 class="title"><a href="https://grski.pl/">Building a Simple Agent with MCP, Conversation history, Streaming and Smart Frontend using Locally Deployed Mistral over vLLM</a></h1>
+                <div class="content">
+                    <p>In today's post, we'll tackle an ambitious task. We'll create an AI Agent with conversation history that can use MCP Server (we'll write it ourselves), working with a Language Model deployed locally with Mistral, all wrapped in FastAPI with Streaming support in Vercel AI SDK v5 format, connected to a frontend that handles collapsible Tool Calls, Streaming and persistence. Essentially, we'll make a ChatGPT clone. Everything running locally and built from scratch by us, except the frontend, where we'll fortunately use a ready-made solution. Additionally, we'll use two computers simultaneously - one will serve the model, the other for development.</p>
+<p>So here's what we need to do:</p>
+<ol>
+<li>Local deployment of Mistral</li>
+<li>Creating an Agent</li>
+<li>Writing our own MCP</li>
+<li>Adding MCP to the Agent</li>
+<li>Adding Streaming</li>
+<li>Discussing multi-agent setup</li>
+<li>Wrapping this in an agents sdk -&gt; ai sdk v5 output parser with streaming</li>
+<li>Serving via endpoint</li>
+<li>Adding conversation context</li>
+<li>Adding conversation persistence with auto-generated conversation titles</li>
+</ol>
+<p>We'll use vLLM, OpenAI Agents SDK, assistant-ui with vercel ai sdk v5 for this.</p>
+<p>Let's get to work!</p>
+<h2>Running Mistral with vLLM</h2>
+<p>In the past I had some nasty experience installing vLLM and used llama.cpp. Well, I don't give up that easily and decided to try once more, as vLLM is rather recommended. Initially, I decided to approach it as recommended in the docs, where the instructions changed since I last saw them so it got me hopeful:</p>
+<h3>Installing vLLM</h3>
+<div class="codehilite"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/vllm-project/vllm.git
+<span class="nb">cd</span><span class="w"> </span>vllm
+uv<span class="w"> </span>python<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.12
+uv<span class="w"> </span>venv<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.12
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements/cpu.txt
+<span class="c1"># in my case it was necessary to add one flag:</span>
+<span class="c1"># uv pip install --index-strategy unsafe-best-match -r requirements/cpu.txt</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</code></pre></div>
+
+<p>Surprisingly, it worked. However, there's one problem - installing vLLM this way will only be available in a specific virtual environment and I don't want that - I want it available globally. Need to do it differently. Turns out, it can be done simpler and faster.</p>
+<div class="codehilite"><pre><span></span><code>uv<span class="w"> </span>python<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.12
+<span class="c1"># 3.13 doesn&#39;t work</span>
+uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.12<span class="w"> </span>vllm
+</code></pre></div>
+
+<p>Using <code>uv tool</code> will make the vllm command available globally and not just inside a specific uv environment. Just as I'd like.</p>
+<p>We have vllm, we have uv, what else do we need? <a href="https://huggingface.co/">Hugging Face</a>. Why? We'll be pulling the model from there - huggingface.co - it's like a repository with various models.</p>
+<p>Create an account there, then go to Access Tokens and generate an access token with Read access, copy it. Then:</p>
+<div class="codehilite"><pre><span></span><code>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.12<span class="w"> </span>huggingface-hub
+hf<span class="w"> </span>auth<span class="w"> </span>login
+</code></pre></div>
+
+<p>Now go to the Mistral model page that interests us, for example:</p>
+<p>https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3</p>
+<p>And confirm the conditions. Now nothing stops us from running the model locally so our account has download access. There's one more thing.</p>
+<h3>Tool calling support</h3>
+<p>Mistral supports tool calling by default. I suggest using their parser over Hermes.</p>
+<h2>Running Mistral via vLLM</h2>
+<p>Now finally:</p>
+<div class="codehilite"><pre><span></span><code>vllm<span class="w"> </span>serve<span class="w"> </span>mistralai/Mistral-7B-Instruct-v0.3<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--port<span class="w"> </span><span class="m">8000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--enable-auto-tool-choice<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--max-num-batched-tokens<span class="w"> </span><span class="m">32768</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--tool-call-parser<span class="w"> </span>mistral
+</code></pre></div>
+
+<p>I'm GPU and RAM-poor so only the 7B option is viable. The 7B model consumed about 18 GB RAM for me. You could try downloading quantized files, however vLLM and their AWK format don't support poor folks with Macs and M4 chips, so unfortunately that option is out. Too bad, because then I could run larger models.</p>
+<p>What does quantized mean?</p>
+<p>You can think of it as compression. It's like a compressed model that requires fewer resources to run, works maybe SLIGHTLY less accurately, but uses X times fewer resources. A very good compromise. At least that's what I tell myself as GPU-poor. Back to our topic.</p>
+<p>A moment of waiting and...</p>
+<p>It's running beautifully. However, it lags a bit on my single laptop when I also run IDE, browser and other things. What to do about this?</p>
+<h3>On two Macs</h3>
+<p>I have two Macs, one newer, one older. On the newer one I ran the model while doing development on the older one. How to make one talk to the other? If you have one wi-fi, it's quite trivial. On the one where you have the model running, type:</p>
+<div class="codehilite"><pre><span></span><code>ifconfig<span class="w"> </span>en0<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>inet
+inet6<span class="w"> </span>fe80::10b4:3cc6:e4b8:e5ec%en0<span class="w"> </span>prefixlen<span class="w"> </span><span class="m">64</span><span class="w"> </span>secured<span class="w"> </span>scopeid<span class="w"> </span>0xe<span class="w"> </span>
+<span class="w">    </span>inet<span class="w"> </span><span class="m">192</span>.168.100.90<span class="w"> </span>netmask<span class="w"> </span>0xffffff00<span class="w"> </span>broadcast<span class="w"> </span><span class="m">192</span>.168.100.255
+</code></pre></div>
+
+<p>To get the internal IP address in the local network. For me it will be <code>192.168.100.90</code>. The API with the model runs on port 8000. <code>192.168.100.90:8000/docs</code> on the older Mac and... boom! It works. Remember to change my address to the one you receive in the code examples above.</p>
+<p>If you can't connect, check if you have local network access enabled in settings for the application you're running the script from, probably terminal/warp/cursor/pycharm. How?</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Menu</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Settings</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Privacy</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">Security</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kr">Local</span><span class="w"> </span><span class="n">Network</span>
+</code></pre></div>
+
+<h2>Creating our agent with OpenAI Agents SDK</h2>
+<p>Let's move on to coding, finally. Let's start with a small reminder and make a regular chat completions request to our local model.</p>
+<p>Well, almost, because first dependencies:</p>
+<div class="codehilite"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>openai<span class="w"> </span>openai-agents
+</code></pre></div>
+
+<p>Got it. What's with uv etc. Please read up on it yourself. UV is like a successor to poetry+pyenv in one. Plus it's fast and from the same authors as ruff.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># completions.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+
+<span class="n">BASE_URL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;http://192.168.100.90:8000/v1&quot;</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="n">BASE_URL</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span><span class="p">,</span>
+        <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Speak like Shakespeare.&quot;</span><span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;What is the meaning of life?&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+<span class="n">uv</span> <span class="n">run</span> <span class="n">python</span> <span class="n">completions</span><span class="o">.</span><span class="n">py</span>
+</code></pre></div>
+
+<p>Works? Works. And how! A bit slow, but that's fine.</p>
+<p>Time to create our agent.</p>
+<p>We'll do this using OpenAI Agents SDK. There are alternatives like Agno or CrewAI, but we'll use agents sdk. In my opinion, it's quite nice tbh. I have Vietnam flashbacks from early versions of CrewAI.</p>
+<p>But first, what even is an agent:</p>
+<p><strong>Basic definition:</strong> An AI Agent is an autonomous AI system that receives a task to complete and independently plans and executes the steps needed to complete it, using the tools available to it.</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>Gets a goal/task from the user</li>
+<li>Has access to a set of tools (APIs, databases, search engines, etc.)</li>
+<li>Plans a sequence of actions</li>
+<li>Executes them step by step</li>
+<li>Evaluates results and adjusts the plan if necessary</li>
+<li>Continues until it considers the task complete</li>
+</ul>
+<p><strong>Key features:</strong></p>
+<ul>
+<li><strong>Autonomy</strong> - acts independently without constant supervision</li>
+<li><strong>Tools</strong> - can call functions, APIs, search the internet</li>
+<li><strong>Planning</strong> - creates and modifies action plans</li>
+<li><strong>Decision loop</strong> - "thinks, acts, evaluates, plans further"</li>
+</ul>
+<p>It's like having an assistant to whom you say "book me a flight to Berlin" and they check dates, compare prices, book the ticket and hotel themselves, instead of just giving advice on how to do it.</p>
+<p>It differs from a regular chatbot in that it not only responds but actually <strong>performs</strong> tasks in the real world.</p>
+<p>Or in my words, not Claude's, we describe a task to the agent that it should complete itself using the tools available to it. In short, it's just regular chat completions running in a loop, planning, calling tools when needed and making decisions on its own, unless we implement human-in-the-loop, then it asks the human.</p>
+<p>How does this look in code?</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># agent.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">Runner</span><span class="p">,</span> <span class="n">set_default_openai_api</span><span class="p">,</span> <span class="n">set_default_openai_client</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENAI_BASE_URL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;http://192.168.100.90:8000/v1&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;EMPTY&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span>
+
+<span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Tutor&quot;</span><span class="p">,</span>
+    <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;You help with mathematics. You receive a question from the user and answer it. Explain your reasoning and provide examples.&quot;</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="s2">&quot;What is addition?&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final_output</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+
+<p>Doesn't work.</p>
+<p>Why? It turns out we need to define a custom model for our agent if we're running the model locally. How?</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># agent.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">Runner</span><span class="p">,</span> <span class="n">OpenAIResponsesModel</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">openai_client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://192.168.100.90:8000/v1&quot;</span><span class="p">,</span>
+        <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;EMPTY&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Tutor&quot;</span><span class="p">,</span>
+        <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;You help with mathematics. You receive a question from the user and answer it. Explain your reasoning and provide examples.&quot;</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">OpenAIResponsesModel</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span><span class="p">,</span>
+            <span class="n">openai_client</span><span class="o">=</span><span class="n">openai_client</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="s2">&quot;What is addition?&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final_output</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+<span class="n">uv</span> <span class="n">run</span> <span class="n">python</span> <span class="n">agent</span><span class="o">.</span><span class="n">py</span>
+</code></pre></div>
+
+<p>Now it works. The agent we defined isn't very useful, has no tools, doesn't differ from regular chat completions. Time to change that.</p>
+<h2>Adding MCP to the Agent</h2>
+<p>Now it's time to equip our agent with something more - MCP. What is MCP? MCP (Model Context Protocol) is a way for AI to connect with various applications and services - like Gmail, calendar, databases or programming tools. Instead of AI that just talks, it can now actually do things - check emails, add events to the calendar, or run code, or in our case (more on this later) check the current date. It's like giving AI "hands" to work with real tools that we use every day.</p>
+<p>It's function calling wrapped in a fancy protocol that LLMs understand and which has now become the standard.</p>
+<p>To do this, let's first create our own MCP. It will be very simple. First, let's install <code>fastmcp</code>.</p>
+<div class="codehilite"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>fastmcp
+</code></pre></div>
+
+<p>And that's it, now just...</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">fastmcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastMCP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="n">mcp</span> <span class="o">=</span> <span class="n">FastMCP</span><span class="p">(</span><span class="s2">&quot;My MCP Server&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@mcp</span><span class="o">.</span><span class="n">tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_current_date</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the current date&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">mcp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">transport</span><span class="o">=</span><span class="s2">&quot;http&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8001</span><span class="p">)</span>
+</code></pre></div>
+
+<p>How to add this to our agent?</p>
+<ol>
+<li>Change OpenAIResponsesModel to OpenAIChatCompletionsModel as Responses doesn't support tool calling for Mistral.</li>
+<li>Add MCP.</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">Runner</span><span class="p">,</span> <span class="n">OpenAIChatCompletionsModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents.mcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">MCPServerStreamableHttp</span>
+
+
+<span class="n">mcp_helper_server</span> <span class="o">=</span> <span class="n">MCPServerStreamableHttp</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My MCP Server&quot;</span><span class="p">,</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:8001/mcp&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">openai_client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://192.168.100.90:8000/v1&quot;</span><span class="p">,</span>
+        <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;EMPTY&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">mcp_helper_server</span><span class="p">:</span>
+        <span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Date Assistant&quot;</span><span class="p">,</span>
+            <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;You are a helpful assistant that can check the current date. When asked about dates or time, use the get_current_date tool to provide accurate information.&quot;</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">OpenAIChatCompletionsModel</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span><span class="p">,</span>
+                <span class="n">openai_client</span><span class="o">=</span><span class="n">openai_client</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">mcp_servers</span><span class="o">=</span><span class="p">[</span><span class="n">mcp_helper_server</span><span class="p">],</span>
+
+        <span class="p">)</span>
+
+        <span class="c1"># Run the agent</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="s2">&quot;Can you tell me what date it is today using the get_current_date function?&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final_output</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+
+<p>And watch...</p>
+<p>In response we get:</p>
+<div class="codehilite"><pre><span></span><code>**Today<span class="err">&#39;</span>s<span class="w"> </span>date<span class="w"> </span>is:<span class="w"> </span>September<span class="w"> </span><span class="m">7</span>,<span class="w"> </span><span class="m">2025</span>.**
+</code></pre></div>
+
+<p>What does the response look like without MCP?</p>
+<div class="codehilite"><pre><span></span><code>The<span class="w"> </span>current<span class="w"> </span>date<span class="w"> </span>is:<span class="w"> </span><span class="m">2022</span>-03-15
+</code></pre></div>
+
+<p>Why is that?</p>
+<p><strong>Architecture and how it works.</strong> LLMs are trained on data from a specific period and their knowledge is "frozen" at the moment training ends. This means the model has knowledge only up to a certain point (called "knowledge cutoff") and cannot learn new information in real-time. So for an LLM to know what day it is, it must get or retrieve this data from somewhere, e.g., our MCP.</p>
+<p>What happened under the hood?</p>
+<p>The agent was initialized with a specific prompt and a list of tools, which it extracted from our MCP server. It received a question. It analyzed the question. It determined that to answer this question it should use the available tool - today's date. So it did. After receiving the response from the tool, it analyzed whether it had everything to answer the question - it did, so it formulated a response for the user. Sounds non-trivial, right? Because it is. More than one LLM query happened under the hood.</p>
+<p>In more complex workflows, it can do some pretty amazing things. Speaking of which.</p>
+<h2>Multi-agent</h2>
+<p>As our agent/application complexity grows, it will be better to split it into several smaller agents and one that orchestrates the whole gang. Like splitting large functions into smaller ones. In OpenAI Agents SDK this is done very simply. There are two ways - the first is handoff, the second is agent-as-tool. We'll use the latter because it's somewhat simpler.</p>
+<p>What's it about?</p>
+<p>We simply define our agents as if nothing happened and then pass them as tools to the orchestrating agent.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">Runner</span><span class="p">,</span> <span class="n">OpenAIChatCompletionsModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents.mcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">MCPServerStreamableHttp</span>
+
+
+<span class="n">mcp_helper_server</span> <span class="o">=</span> <span class="n">MCPServerStreamableHttp</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My MCP Server&quot;</span><span class="p">,</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:8001/mcp&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">openai_client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://192.168.100.90:8000/v1&quot;</span><span class="p">,</span>
+        <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;EMPTY&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">mcp_helper_server</span><span class="p">:</span>
+        <span class="n">date_time_agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Date and Time Agent&quot;</span><span class="p">,</span>
+            <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;You MUST use the get_current_date tool to answer questions. Always call get_current_date when asked about dates. Do not guess or make up dates.&quot;</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">OpenAIChatCompletionsModel</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span><span class="p">,</span>
+                <span class="n">openai_client</span><span class="o">=</span><span class="n">openai_client</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">mcp_servers</span><span class="o">=</span><span class="p">[</span><span class="n">mcp_helper_server</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">haiku_agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Haiku generator&quot;</span><span class="p">,</span>
+            <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;You generate haiku but only 5 line ones.&quot;</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">OpenAIChatCompletionsModel</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span><span class="p">,</span>
+                <span class="n">openai_client</span><span class="o">=</span><span class="n">openai_client</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">orchestrator</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Orchestrator&quot;</span><span class="p">,</span>
+            <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;You MUST delegate tasks to specialized agents. Use date_time_agent for date questions. Use haiku_agent for haiku generation. Do NOT answer directly.&quot;</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">OpenAIChatCompletionsModel</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span><span class="p">,</span>
+                <span class="n">openai_client</span><span class="o">=</span><span class="n">openai_client</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">tools</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">date_time_agent</span><span class="o">.</span><span class="n">as_tool</span><span class="p">(</span><span class="n">tool_name</span><span class="o">=</span><span class="s2">&quot;date_time_agent&quot;</span><span class="p">,</span> <span class="n">tool_description</span><span class="o">=</span><span class="s2">&quot;Agent that gets current date using get_current_date tool&quot;</span><span class="p">),</span> 
+                <span class="n">haiku_agent</span><span class="o">.</span><span class="n">as_tool</span><span class="p">(</span><span class="n">tool_name</span><span class="o">=</span><span class="s2">&quot;haiku_agent&quot;</span><span class="p">,</span> <span class="n">tool_description</span><span class="o">=</span><span class="s2">&quot;Generates haiku but only 5 line ones.&quot;</span><span class="p">)</span>
+                <span class="p">],</span>
+        <span class="p">)</span>
+        <span class="c1"># Run the agent</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">orchestrator</span><span class="p">,</span> <span class="s2">&quot;Use date_time_agent to get today&#39;s date, then use haiku_agent to create a haiku&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final_output</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+
+<p>And there we go. What did it output?</p>
+<div class="codehilite"><pre><span></span><code>Here<span class="w"> </span>is<span class="w"> </span>a<span class="w"> </span>contemporary<span class="w"> </span>haiku<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span>today<span class="err">&#39;</span>s<span class="w"> </span>date<span class="w"> </span><span class="o">(</span><span class="m">2025</span>-09-06<span class="o">)</span>:
+
+**Clouds<span class="w"> </span>drift<span class="w"> </span>slowly**<span class="w">  </span>
+**Over<span class="w"> </span>the<span class="w"> </span>meadow<span class="w"> </span><span class="k">in</span><span class="w"> </span>silence.**<span class="w">  </span>
+**Sun<span class="w"> </span>slowly<span class="w"> </span>fades.**<span class="w">  </span>
+**Time<span class="w"> </span>to<span class="w"> </span><span class="k">return</span><span class="w"> </span>home.**<span class="w">  </span>
+**Night<span class="w"> </span>always<span class="w"> </span>believes<span class="w"> </span>fully.**
+
+Your<span class="w"> </span>favorite<span class="w"> </span>haiku<span class="w"> </span>situation<span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>included!
+</code></pre></div>
+
+<p>However, I must admit that with a multi-agent setup, the 7B model gets quite confused - sometimes it calls tools/mcp, often not, instead explain gin what to do, so unfortunately I won't explore further and will return to a single agent setup. I noticed it gave the best responses on the first call for a given model run. That is, if I restarted the server responsible for serving the model - the response was good. Each subsequent one was not. I don't know what causes this.</p>
+<p>By the way, most models can even call several tools simultaneously, it's worth knowing, though we won't delve into it because I don't even know if Mistral supports this.</p>
+<h2>Streaming</h2>
+<p>Let's go in another direction.</p>
+<p>We wait a long time for a response. Poor UX. How to improve this? Let's add streaming. We need to change this piece:</p>
+<div class="codehilite"><pre><span></span><code>        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="s2">&quot;....&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final_output</span><span class="p">)</span>
+</code></pre></div>
+
+<p>We change this to:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">Runner</span><span class="p">,</span> <span class="n">OpenAIChatCompletionsModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai.types.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResponseTextDeltaEvent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents.mcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">MCPServerStreamableHttp</span>
+
+
+<span class="n">mcp_helper_server</span> <span class="o">=</span> <span class="n">MCPServerStreamableHttp</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My MCP Server&quot;</span><span class="p">,</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:8001/mcp&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">openai_client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://192.168.100.90:8000/v1&quot;</span><span class="p">,</span>
+        <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;EMPTY&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">mcp_helper_server</span><span class="p">:</span>
+        <span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Date Assistant&quot;</span><span class="p">,</span>
+            <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;You MUST use the get_current_date tool to answer questions. Always call get_current_date when asked about dates. Do not guess or make up dates.&quot;</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">OpenAIChatCompletionsModel</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span><span class="p">,</span>
+                <span class="n">openai_client</span><span class="o">=</span><span class="n">openai_client</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">mcp_servers</span><span class="o">=</span><span class="p">[</span><span class="n">mcp_helper_server</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Runner</span><span class="o">.</span><span class="n">run_streamed</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="s2">&quot;Use get_current_date tool to tell me today&#39;s date&quot;</span><span class="p">)</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">stream_events</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;raw_response_event&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">ResponseTextDeltaEvent</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">delta</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+
+<p>Now instead of the entire response at once, we'll get it piece by piece. Damn, that's cool, right?</p>
+<h2>Frontend - assistant-ui</h2>
+<p>The console is a bit weak, what if we wanted to add some frontend to this? Here's how we do it:</p>
+<div class="codehilite"><pre><span></span><code>npx<span class="w"> </span>assistant-ui@latest<span class="w"> </span>create
+<span class="c1"># as project name we give &#39;frontend&#39;</span>
+<span class="c1"># for this to work we need to have nodejs installed</span>
+</code></pre></div>
+
+<p>Then we modify:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// next.config.ts</span>
+<span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">NextConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;next&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">nextConfig</span><span class="o">:</span><span class="w"> </span><span class="kt">NextConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">rewrites</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">source</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;/stream&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">destination</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;http://localhost:8002/stream&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">];</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">nextConfig</span><span class="p">;</span>
+</code></pre></div>
+
+<p>All we did here was add a proxy to our backend so we don't have to deal with CORS.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// assistant.tsx</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">Assistant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">runtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useChatRuntime</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">transport</span><span class="o">:</span><span class="w"> </span><span class="kt">new</span><span class="w"> </span><span class="nx">AssistantChatTransport</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">api</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/api/chat&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}),</span>
+<span class="w">  </span><span class="p">});</span>
+</code></pre></div>
+
+<p>Change to:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// assistant.tsx</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">Assistant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">runtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useChatRuntime</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">transport</span><span class="o">:</span><span class="w"> </span><span class="kt">new</span><span class="w"> </span><span class="nx">AssistantChatTransport</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">api</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/stream&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}),</span>
+<span class="w">  </span><span class="p">});</span>
+</code></pre></div>
+
+<p>And run:</p>
+<div class="codehilite"><pre><span></span><code>npm<span class="w"> </span>run<span class="w"> </span>dev
+</code></pre></div>
+
+<p>Assistant-ui is awesome.</p>
+<p>On localhost:3000 we should see a nice UI. However, it's not integrated with our backend in any way. How to change that? Simply. First, we need to figure out what payload the frontend sends to know how to implement the backend.</p>
+<p>To find out what format the frontend sends data in, we just need to open Inspect -&gt; Network in Developer Tools before making a query and boom, the entire request is before us, along with payload and headers. Everything becomes clear, the payload we receive is:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;tools&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LCot9rqP2KsYY95f&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;X3FlmLD7Nk2NVzH6&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;What is today&#39;s date?&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;trigger&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;submit-message&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The above is the Vercel AI SDK v5 format. Want to know more? Read about Vercel AI SDK v5. In short:</p>
+<p>Vercel AI SDK v5 Streaming Protocol is a <strong>standard protocol</strong> based on <strong>Server-Sent Events (SSE)</strong> with JSON objects for streaming AI data in real-time.</p>
+<h2><strong>Protocol basics</strong></h2>
+<p><strong>Format:</strong> Server-Sent Events with JSON payloads</p>
+<div class="codehilite"><pre><span></span><code><span class="n">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;event_type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data&quot;</span><span class="p">}</span>
+</code></pre></div>
+
+<p><strong>Header:</strong> Requires <code>x-vercel-ai-ui-message-stream: v1</code></p>
+<h2><strong>Main event types</strong></h2>
+<h3><strong>1. Message lifecycle</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="nx">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;start&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;messageId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;msg_123&quot;</span><span class="p">}</span>
+<span class="nx">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;finish&quot;</span><span class="p">}</span>
+</code></pre></div>
+
+<h3><strong>2. Text streaming (start/delta/end pattern)</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="nx">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;text-start&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;text_block_id&quot;</span><span class="p">}</span>
+<span class="nx">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;text-delta&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;text_block_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;delta&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;fragment&quot;</span><span class="p">}</span>
+<span class="nx">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;text-end&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;text_block_id&quot;</span><span class="p">}</span>
+</code></pre></div>
+
+<h3><strong>3. Tool operations</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="n">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tool-input-start&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;toolCallId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;call_123&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;toolName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;weather&quot;</span><span class="p">}</span>
+<span class="n">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tool-input-delta&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;toolCallId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;call_123&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;inputTextDelta&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;London&quot;</span><span class="p">}</span>
+<span class="n">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tool-input-available&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;toolCallId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;call_123&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;input&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;city&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;London&quot;</span><span class="p">}}</span>
+<span class="n">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tool-output-available&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;toolCallId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;call_123&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;output&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;temp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">}}</span>
+</code></pre></div>
+
+<h3><strong>4. Custom data and sources</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="nx">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;data-weather&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;temperature&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">}}</span>
+<span class="nx">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;source-url&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sourceId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;url1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://example.com&quot;</span><span class="p">}</span>
+<span class="nx">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;file&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://example.com/file.pdf&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;mediaType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;application/pdf&quot;</span><span class="p">}</span>
+</code></pre></div>
+
+<h3><strong>5. Errors and reasoning</strong></h3>
+<div class="codehilite"><pre><span></span><code><span class="nx">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;error&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;errorText&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Connection failed&quot;</span><span class="p">}</span>
+<span class="nx">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;reasoning-start&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;reasoning_123&quot;</span><span class="p">}</span>
+<span class="nx">data</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;reasoning-delta&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;reasoning_123&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;delta&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;thinking...&quot;</span><span class="p">}</span>
+</code></pre></div>
+
+<p>There's quite a bit of it. Fortunately, I'll help you out and give you a ready-made solution that handles most of this.</p>
+<h2>Backend FastAPI</h2>
+<div class="codehilite"><pre><span></span><code>uv<span class="w"> </span>add<span class="w"> </span>fastapi
+</code></pre></div>
+
+<p>The above on our backend will look more or less like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># models.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MessageRole</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="n">USER</span> <span class="o">=</span> <span class="s2">&quot;user&quot;</span>
+    <span class="n">ASSISTANT</span> <span class="o">=</span> <span class="s2">&quot;assistant&quot;</span>
+    <span class="n">SYSTEM</span> <span class="o">=</span> <span class="s2">&quot;system&quot;</span>
+
+
+<span class="c1"># Frontend format models</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MessagePart</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Make text optional to handle tool execution parts</span>
+
+    <span class="c1"># Optional fields for tool execution data</span>
+    <span class="n">tool_call_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;toolCallId&quot;</span><span class="p">)</span>
+    <span class="n">state</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">output</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FrontendMessage</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">role</span><span class="p">:</span> <span class="n">MessageRole</span>   
+    <span class="n">parts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MessagePart</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_text_content</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract text content from parts array.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">part</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parts</span> <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;text&quot;</span> <span class="ow">and</span> <span class="n">part</span><span class="o">.</span><span class="n">text</span><span class="p">])</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">StreamRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">tools</span><span class="p">:</span> <span class="nb">dict</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FrontendMessage</span><span class="p">]</span>
+    <span class="n">trigger</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_input_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert messages to input list format for session.&quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+            <span class="n">text_content</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">get_text_content</span><span class="p">()</span>
+            <span class="c1"># Only include messages that have actual text content</span>
+            <span class="k">if</span> <span class="n">text_content</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">text_content</span><span class="p">,</span> <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="o">.</span><span class="n">role</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">result</span>
+</code></pre></div>
+
+<p>We have models, now we need something to convert what OpenAI Agents SDK returns to what Vercel AI SDK v5 understands. A piece of code:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># streaming/ai_sdk_formatter.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EventTypes</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Event types used in AI SDK streaming.&quot;&quot;&quot;</span>
+    <span class="n">START</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span>
+    <span class="n">TEXT_START</span> <span class="o">=</span> <span class="s2">&quot;text-start&quot;</span>
+    <span class="n">TEXT_DELTA</span> <span class="o">=</span> <span class="s2">&quot;text-delta&quot;</span>
+    <span class="n">TEXT_END</span> <span class="o">=</span> <span class="s2">&quot;text-end&quot;</span>
+    <span class="n">TOOL_INPUT_START</span> <span class="o">=</span> <span class="s2">&quot;tool-input-start&quot;</span>
+    <span class="n">TOOL_INPUT_DELTA</span> <span class="o">=</span> <span class="s2">&quot;tool-input-delta&quot;</span>
+    <span class="n">TOOL_INPUT_AVAILABLE</span> <span class="o">=</span> <span class="s2">&quot;tool-input-available&quot;</span>
+    <span class="n">TOOL_OUTPUT_AVAILABLE</span> <span class="o">=</span> <span class="s2">&quot;tool-output-available&quot;</span>
+    <span class="n">START_STEP</span> <span class="o">=</span> <span class="s2">&quot;start-step&quot;</span>
+    <span class="n">FINISH_STEP</span> <span class="o">=</span> <span class="s2">&quot;finish-step&quot;</span>
+    <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span>
+    <span class="n">FINISH</span> <span class="o">=</span> <span class="s2">&quot;finish&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AiSdkFormatter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Server-Sent Events formatter for AI SDK v5 streaming responses.&quot;&quot;&quot;</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_sse_event</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format data as Server-Sent Event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;data: </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_message_start</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format message start event.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">message_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">message_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;msg_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;messageId&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_text_start</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format text start event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">TEXT_START</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_text_delta</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format text delta event.&quot;&quot;&quot;</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\u2022</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">TEXT_DELTA</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="n">delta</span><span class="p">})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_text_end</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format text end event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">TEXT_END</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_tool_input_start</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tool_call_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format tool input start event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">TOOL_INPUT_START</span><span class="p">,</span> <span class="s2">&quot;toolCallId&quot;</span><span class="p">:</span> <span class="n">tool_call_id</span><span class="p">,</span> <span class="s2">&quot;toolName&quot;</span><span class="p">:</span> <span class="n">tool_name</span><span class="p">})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_tool_input_delta</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tool_call_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">input_text_delta</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format tool input delta event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">TOOL_INPUT_DELTA</span><span class="p">,</span> <span class="s2">&quot;toolCallId&quot;</span><span class="p">:</span> <span class="n">tool_call_id</span><span class="p">,</span> <span class="s2">&quot;inputTextDelta&quot;</span><span class="p">:</span> <span class="n">input_text_delta</span><span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_tool_input_available</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tool_call_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format tool input available event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">TOOL_INPUT_AVAILABLE</span><span class="p">,</span> <span class="s2">&quot;toolCallId&quot;</span><span class="p">:</span> <span class="n">tool_call_id</span><span class="p">,</span> <span class="s2">&quot;toolName&quot;</span><span class="p">:</span> <span class="n">tool_name</span><span class="p">,</span> <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">input_data</span><span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_tool_output_available</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tool_call_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format tool output available event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">TOOL_OUTPUT_AVAILABLE</span><span class="p">,</span> <span class="s2">&quot;toolCallId&quot;</span><span class="p">:</span> <span class="n">tool_call_id</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">output</span><span class="p">})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_start_step</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format start step event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">START_STEP</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">:</span> <span class="n">step</span><span class="p">})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_finish_step</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">finish_reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tool-calls&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format finish step event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">FINISH_STEP</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">:</span> <span class="n">step</span><span class="p">,</span> <span class="s2">&quot;finishReason&quot;</span><span class="p">:</span> <span class="n">finish_reason</span><span class="p">})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_error</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format error event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="n">error</span><span class="p">})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_finish</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format finish event.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">format_sse_event</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">EventTypes</span><span class="o">.</span><span class="n">FINISH</span><span class="p">})</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_done</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format stream termination.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;data: [DONE]</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_tool_call_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate unique tool call ID.&quot;&quot;&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2">_&quot;</span> <span class="k">if</span> <span class="n">tool_name</span> <span class="k">else</span> <span class="s2">&quot;call_&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># streaming/event_processor.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai.types.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResponseTextDeltaEvent</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.ai_sdk_formatter</span><span class="w"> </span><span class="kn">import</span> <span class="n">AiSdkFormatter</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">StreamEventTypes</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Event types from the agent runner stream.&quot;&quot;&quot;</span>
+    <span class="n">RAW_RESPONSE</span> <span class="o">=</span> <span class="s2">&quot;raw_response_event&quot;</span>
+    <span class="n">RUN_ITEM_STREAM</span> <span class="o">=</span> <span class="s2">&quot;run_item_stream_event&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">RunItemTypes</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Types of run items in the stream.&quot;&quot;&quot;</span>
+    <span class="n">TOOL_CALL</span> <span class="o">=</span> <span class="s2">&quot;tool_call_item&quot;</span>
+    <span class="n">TOOL_OUTPUT</span> <span class="o">=</span> <span class="s2">&quot;tool_call_output_item&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AgentsEventProcessor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Processes streaming events from the agent runner.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_id</span> <span class="o">=</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">generate_tool_call_id</span><span class="p">(</span><span class="s2">&quot;msg&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_tool_calls</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Use list to maintain order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_streaming</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">process_events</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Main event processing loop.&quot;&quot;&quot;</span>
+        <span class="n">processor</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+
+        <span class="c1"># Send message start</span>
+        <span class="k">yield</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">format_message_start</span><span class="p">(</span><span class="n">processor</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+
+        <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">stream_events</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">StreamEventTypes</span><span class="o">.</span><span class="n">RAW_RESPONSE</span><span class="p">:</span>
+                <span class="n">chunk</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">_handle_raw_response_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">chunk</span>
+            <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">StreamEventTypes</span><span class="o">.</span><span class="n">RUN_ITEM_STREAM</span><span class="p">:</span>
+                <span class="n">chunk</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">_handle_run_item_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">chunk</span>
+
+        <span class="c1"># End any active text streaming</span>
+        <span class="k">if</span> <span class="n">processor</span><span class="o">.</span><span class="n">text_streaming</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">format_text_end</span><span class="p">(</span><span class="n">processor</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+        <span class="c1"># Send finish event then completion</span>
+        <span class="k">yield</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">format_finish</span><span class="p">()</span>
+        <span class="k">yield</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">format_done</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_raw_response_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle text delta events.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">ResponseTextDeltaEvent</span><span class="p">):</span>
+            <span class="c1"># Start text streaming if not already started</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_streaming</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">text_streaming</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">return</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">format_text_start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span> <span class="o">+</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">format_text_delta</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">delta</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">format_text_delta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_run_item_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle run item events (tool calls and outputs).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">RunItemTypes</span><span class="o">.</span><span class="n">TOOL_CALL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_tool_call_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">RunItemTypes</span><span class="o">.</span><span class="n">TOOL_OUTPUT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_tool_output_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_tool_call_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle tool call events.&quot;&quot;&quot;</span>
+        <span class="c1"># End text streaming if active</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_streaming</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">format_text_end</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_streaming</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">tool_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_tool_name</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">item</span><span class="p">)</span>
+        <span class="n">tool_call_id</span> <span class="o">=</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">generate_tool_call_id</span><span class="p">(</span><span class="n">tool_name</span><span class="p">)</span>
+
+        <span class="c1"># Store tool call info for later output handling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_tool_calls</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">tool_call_id</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">tool_name</span><span class="p">,</span> <span class="s2">&quot;item&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">item</span><span class="p">})</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tool called: </span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2"> with ID: </span><span class="si">{</span><span class="n">tool_call_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Get tool input if available</span>
+        <span class="n">tool_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_tool_input</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">format_tool_input_start</span><span class="p">(</span><span class="n">tool_call_id</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tool_input</span><span class="p">:</span>
+            <span class="c1"># For simplicity, send the entire input as available immediately</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">format_tool_input_available</span><span class="p">(</span><span class="n">tool_call_id</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">,</span> <span class="n">tool_input</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_tool_output_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle tool output events.&quot;&quot;&quot;</span>
+        <span class="c1"># Use FIFO approach - match outputs to calls in order they were made</span>
+        <span class="n">tool_call_info</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Get the first (oldest) pending tool call</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_tool_calls</span><span class="p">:</span>
+            <span class="n">tool_call_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_tool_calls</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Remove from list once matched</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">tool_call_info</span><span class="p">:</span>
+            <span class="c1"># Ultimate fallback if no pending tool calls</span>
+            <span class="n">tool_call_id</span> <span class="o">=</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">generate_tool_call_id</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tool_call_id</span> <span class="o">=</span> <span class="n">tool_call_info</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="s2">&quot;No output&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tool output received: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">output</span><span class="p">))</span><span class="si">}</span><span class="s2"> characters&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Try to parse output as JSON, otherwise use as string</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">output_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">output</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">output_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">output</span><span class="p">)}</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">output_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">output</span><span class="p">)}</span>
+
+        <span class="k">return</span> <span class="n">AiSdkFormatter</span><span class="o">.</span><span class="n">format_tool_output_available</span><span class="p">(</span><span class="n">tool_call_id</span><span class="p">,</span> <span class="n">output_data</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extract_tool_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract tool name from various item structures.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;raw_item&quot;</span><span class="p">):</span>
+            <span class="n">raw_item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">raw_item</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_item</span><span class="p">,</span> <span class="s2">&quot;function&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_item</span><span class="o">.</span><span class="n">function</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">raw_item</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_item</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">raw_item</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_item</span><span class="p">,</span> <span class="s2">&quot;tool_name&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">raw_item</span><span class="o">.</span><span class="n">tool_name</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_item</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">raw_item</span><span class="o">.</span><span class="n">type</span>
+        <span class="k">return</span> <span class="s2">&quot;Unknown Tool&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extract_tool_input</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract tool input from item structure.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;raw_item&quot;</span><span class="p">):</span>
+            <span class="n">raw_item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">raw_item</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_item</span><span class="p">,</span> <span class="s2">&quot;function&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_item</span><span class="o">.</span><span class="n">function</span><span class="p">,</span> <span class="s2">&quot;arguments&quot;</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># Parse JSON arguments</span>
+                    <span class="n">args_str</span> <span class="o">=</span> <span class="n">raw_item</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">arguments</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args_str</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">args_str</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">args_str</span>
+                <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;arguments&quot;</span><span class="p">:</span> <span class="n">args_str</span><span class="p">}</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_item</span><span class="p">,</span> <span class="s2">&quot;arguments&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">raw_item</span><span class="o">.</span><span class="n">arguments</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_item</span><span class="p">,</span> <span class="s2">&quot;input&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">raw_item</span><span class="o">.</span><span class="n">input</span>
+        <span class="k">return</span> <span class="p">{}</span>
+</code></pre></div>
+
+<p>The whole thing could probably be written much more nicely, but Mr. Claude did quite a nice job so I won't correct him anymore.</p>
+<p>Models? We have them. Formatter to Vercel AI SDK v5 format? Also. Processor converting events from OpenAI Agents SDK? Also.</p>
+<p>What's left? The endpoint itself. What will it look like? Almost the same as our agent.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">Request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamingResponse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uvicorn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">streaming.agents_event_processor</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentsEventProcessor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">models</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamRequest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">Runner</span><span class="p">,</span> <span class="n">OpenAIChatCompletionsModel</span><span class="p">,</span> <span class="n">SQLiteSession</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents.mcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">MCPServerStreamableHttp</span>
+
+
+<span class="n">mcp_helper_server</span> <span class="o">=</span> <span class="n">MCPServerStreamableHttp</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My MCP Server&quot;</span><span class="p">,</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:8001/mcp&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+<span class="n">openai_client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://192.168.100.90:8000/v1&quot;</span><span class="p">,</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;EMPTY&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">StreamHandler</span><span class="p">:</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_create_session</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">stream_request</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and initialize a session with stream request.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (session, latest_message)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">SQLiteSession</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;conversation_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">latest_message</span> <span class="o">=</span> <span class="n">stream_request</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+        <span class="c1"># Filter out empty messages before adding to session</span>
+        <span class="n">session_messages</span> <span class="o">=</span> <span class="n">stream_request</span><span class="o">.</span><span class="n">to_input_list</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">session_messages</span><span class="p">)</span>
+        <span class="n">filtered_messages</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_filter_empty_messages</span><span class="p">(</span><span class="n">session_messages</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">add_items</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="n">filtered_messages</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">session</span><span class="p">,</span> <span class="n">latest_message</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_empty_messages</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter out messages with empty content.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">msg</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span> <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/stream&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span><span class="n">stream_request</span><span class="p">:</span> <span class="n">StreamRequest</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">():</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">mcp_helper_server</span><span class="p">:</span>
+            <span class="c1"># Create session with conversation history</span>
+            <span class="n">session</span><span class="p">,</span> <span class="n">latest_message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">StreamHandler</span><span class="o">.</span><span class="n">_create_session</span><span class="p">(</span><span class="n">stream_request</span><span class="p">)</span>
+
+            <span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Date Assistant&quot;</span><span class="p">,</span>
+                <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;You MUST use the get_current_date tool to answer questions. Always call get_current_date when asked about dates. Do not guess or make up dates.&quot;</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">OpenAIChatCompletionsModel</span><span class="p">(</span>
+                    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span><span class="p">,</span>  <span class="c1"># Your model name</span>
+                    <span class="n">openai_client</span><span class="o">=</span><span class="n">openai_client</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">mcp_servers</span><span class="o">=</span><span class="p">[</span><span class="n">mcp_helper_server</span><span class="p">],</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Get input text from latest message</span>
+            <span class="n">input_text</span> <span class="o">=</span> <span class="n">latest_message</span><span class="o">.</span><span class="n">get_text_content</span><span class="p">()</span>
+            <span class="c1"># Run the agent with session</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">Runner</span><span class="o">.</span><span class="n">run_streamed</span><span class="p">(</span>
+                <span class="n">agent</span><span class="p">,</span> 
+                <span class="nb">input</span><span class="o">=</span><span class="n">input_text</span><span class="p">,</span>
+                <span class="n">session</span><span class="o">=</span><span class="n">session</span>
+            <span class="p">)</span>
+            <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">AgentsEventProcessor</span><span class="o">.</span><span class="n">process_events</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">chunk</span>
+
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Cache-Control&quot;</span><span class="p">:</span> <span class="s2">&quot;no-cache&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Connection&quot;</span><span class="p">:</span> <span class="s2">&quot;keep-alive&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;x-vercel-ai-ui-message-stream&quot;</span><span class="p">:</span> <span class="s2">&quot;v1&quot;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">generate</span><span class="p">(),</span> <span class="n">media_type</span><span class="o">=</span><span class="s2">&quot;text/event-stream&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;api_server:app&quot;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8002</span><span class="p">,</span> <span class="n">reload</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+<p>And bang. Around than 400 lines of code and we have this whole Agentic AI. Is there anything more beautiful? Oh yes.</p>
+<p>The code above only handles the latest message, what if we want to include previous messages in the context we pass to the model?</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">Request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamingResponse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uvicorn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">streaming.agents_event_processor</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentsEventProcessor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">models</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamRequest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">Runner</span><span class="p">,</span> <span class="n">OpenAIChatCompletionsModel</span><span class="p">,</span> <span class="n">SQLiteSession</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agents.mcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">MCPServerStreamableHttp</span>
+
+
+<span class="n">mcp_helper_server</span> <span class="o">=</span> <span class="n">MCPServerStreamableHttp</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My MCP Server&quot;</span><span class="p">,</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:8001/mcp&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+<span class="n">openai_client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://192.168.100.90:8000/v1&quot;</span><span class="p">,</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;EMPTY&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">StreamHandler</span><span class="p">:</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_create_session</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">stream_request</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and initialize a session with stream request.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (session, latest_message)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">SQLiteSession</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;conversation_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">latest_message</span> <span class="o">=</span> <span class="n">stream_request</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+        <span class="c1"># Filter out empty messages before adding to session</span>
+        <span class="n">session_messages</span> <span class="o">=</span> <span class="n">stream_request</span><span class="o">.</span><span class="n">to_input_list</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">session_messages</span><span class="p">)</span>
+        <span class="n">filtered_messages</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_filter_empty_messages</span><span class="p">(</span><span class="n">session_messages</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">add_items</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="n">filtered_messages</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">session</span><span class="p">,</span> <span class="n">latest_message</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_empty_messages</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter out messages with empty content.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">msg</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span> <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/stream&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span><span class="n">stream_request</span><span class="p">:</span> <span class="n">StreamRequest</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">():</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">mcp_helper_server</span><span class="p">:</span>
+            <span class="c1"># Create session with conversation history</span>
+            <span class="n">session</span><span class="p">,</span> <span class="n">latest_message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">StreamHandler</span><span class="o">.</span><span class="n">_create_session</span><span class="p">(</span><span class="n">stream_request</span><span class="p">)</span>
+
+            <span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Tutor&quot;</span><span class="p">,</span>
+                <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;You help with date and time.&quot;</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">OpenAIChatCompletionsModel</span><span class="p">(</span>
+                    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.3&quot;</span><span class="p">,</span>
+                    <span class="n">openai_client</span><span class="o">=</span><span class="n">openai_client</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">mcp_servers</span><span class="o">=</span><span class="p">[</span><span class="n">mcp_helper_server</span><span class="p">],</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Get input text from latest message</span>
+            <span class="n">input_text</span> <span class="o">=</span> <span class="n">latest_message</span><span class="o">.</span><span class="n">get_text_content</span><span class="p">()</span>
+            <span class="c1"># Run the agent with session</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">Runner</span><span class="o">.</span><span class="n">run_streamed</span><span class="p">(</span>
+                <span class="n">agent</span><span class="p">,</span> 
+                <span class="nb">input</span><span class="o">=</span><span class="n">input_text</span><span class="p">,</span>
+                <span class="n">session</span><span class="o">=</span><span class="n">session</span>
+            <span class="p">)</span>
+            <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">AgentsEventProcessor</span><span class="o">.</span><span class="n">process_events</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">chunk</span>
+
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Cache-Control&quot;</span><span class="p">:</span> <span class="s2">&quot;no-cache&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Connection&quot;</span><span class="p">:</span> <span class="s2">&quot;keep-alive&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;x-vercel-ai-ui-message-stream&quot;</span><span class="p">:</span> <span class="s2">&quot;v1&quot;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">generate</span><span class="p">(),</span> <span class="n">media_type</span><span class="o">=</span><span class="s2">&quot;text/event-stream&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;api_server:app&quot;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8002</span><span class="p">,</span> <span class="n">reload</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+<p>What if we want persistence? In the simplest case, we can use assistant-ui cloud.</p>
+<h2>assistant-ui cloud</h2>
+<p>Assistant-ui cloud will enable message persistence and automatic generation of conversation titles. They handle everything in their cloud. How?</p>
+<p>https://cloud.assistant-ui.com</p>
+<p>Settings -&gt; api keys -&gt; generate</p>
+<p>And edit assistant.tsx</p>
+<div class="codehilite"><pre><span></span><code><span class="s2">&quot;use client&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">AssistantCloud</span><span class="p">,</span><span class="w"> </span><span class="nx">AssistantRuntimeProvider</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@assistant-ui/react&#39;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">useChatRuntime</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">AssistantChatTransport</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@assistant-ui/react-ai-sdk&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Thread</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/components/assistant-ui/thread&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">SidebarInset</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">SidebarProvider</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">SidebarTrigger</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/components/ui/sidebar&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ThreadListSidebar</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/components/assistant-ui/threadlist-sidebar&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Separator</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/components/ui/separator&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">Breadcrumb</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">BreadcrumbItem</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">BreadcrumbLink</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">BreadcrumbList</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">BreadcrumbPage</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">BreadcrumbSeparator</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/components/ui/breadcrumb&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">cloud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">AssistantCloud</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">baseUrl</span><span class="o">:</span><span class="w"> </span><span class="kt">youraddress</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">anonymous</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span>
+<span class="p">})</span>
+
+
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">Assistant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">runtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useChatRuntime</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">transport</span><span class="o">:</span><span class="w"> </span><span class="kt">new</span><span class="w"> </span><span class="nx">AssistantChatTransport</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">api</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/stream&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}),</span>
+<span class="w">    </span><span class="nx">cloud</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span><span class="p">......</span><span class="w"> </span><span class="nx">rest</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">file</span>
+</code></pre></div>
+
+<p>Done.</p>
+<p>Holy cow, that's cool, right? Not so hard, this AI stuff.</p>
+<p><strong>Reality check though:</strong> While this tutorial shows you how everything fits together, I have to be honest - 7B models like the Mistral we're using are pretty rough when it comes to orchestration and function calling. They'll stumble on multi-step reasoning, make questionable decisions about when to use tools, and generally struggle with the complex planning that makes agents truly useful. If you're building something for production, you really want 13B+ models or something specifically trained for function calling. But hey, this is about learning the architecture, and for that, our setup works just fine.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+<footer class="section">
+    <div class="container has-text-centered">
+        <p>&copy; <a href="https://grski.pl">Olaf Górski</a> 2025</p>
+
+        <p>Powered by XD philosophy and <a href="https://github.com/grski/braindead">braindead</a>.</p>
+
+    </div>
+</footer>
+</body>
+
+</html>
